@@ -21,11 +21,11 @@ const projects: Project[] = [
       </svg>
     ),
     preview: [
-      "🥗 Weekly meal planning",
-      "📱 Grocery list generation",
-      "🍳 Cooking time estimation",
-      "💡 Smart ingredient substitutions",
-      "📊 Nutritional analysis dashboard"
+      "Weekly meal planning",
+      "Grocery list generation",
+      "Cooking time estimation",
+      "Smart ingredient substitutions",
+      "Nutritional analysis dashboard"
     ]
   },
   {
@@ -40,11 +40,11 @@ const projects: Project[] = [
       </svg>
     ),
     preview: [
-      "⏱ 25-minute focus sessions",
-      "🎵 Nature sounds & white noise",
-      "📈 Daily productivity tracking",
-      "🎯 Goal setting & achievements",
-      "📱 Cross-device synchronization"
+      "25-minute focus sessions",
+      "Nature sounds & white noise",
+      "Daily productivity tracking",
+      "Goal setting & achievements",
+      "Cross-device synchronization"
     ]
   },
   {
@@ -59,11 +59,11 @@ const projects: Project[] = [
       </svg>
     ),
     preview: [
-      "🌡 Real-time temperature & humidity",
-      "📊 Historical weather patterns",
-      "🌧 Rain prediction algorithms",
-      "📱 Mobile alerts & notifications",
-      "🏠 Indoor air quality monitoring"
+      "Real-time temperature & humidity",
+      "Historical weather patterns",
+      "Rain prediction algorithms",
+      "Mobile alerts & notifications",
+      "Indoor air quality monitoring"
     ]
   }
 ];

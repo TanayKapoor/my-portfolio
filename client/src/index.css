@@ -975,12 +975,15 @@
 /* Project Image Placeholder */
 .project-image-placeholder {
   margin-top: auto;
-  padding-top: 1.5rem;
-  width: 100%;
-  height: 120px;
+  margin-left: -1.5rem;
+  margin-right: -1.5rem;
+  margin-bottom: -1.5rem;
+  width: calc(100% + 3rem);
+  height: 160px;
   background: rgba(0, 0, 0, 0.2);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
+  border-radius: 0 0 20px 20px;
+  border-top: none;
   display: flex;
   align-items: center;
   justify-content: center;
