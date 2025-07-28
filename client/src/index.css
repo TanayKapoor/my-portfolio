@@ -154,7 +154,7 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -40%);
   z-index: 2;
   isolation: isolate;
   text-align: center;
@@ -167,7 +167,7 @@
   padding: 0 2rem;
   min-height: 0;
   gap: 0;
-  padding-top: clamp(120px, 20vw, 160px);
+  padding-top: clamp(140px, 25vw, 180px);
 }
 
 /* Profile picture styling with enhanced pulse animation */
@@ -695,7 +695,8 @@
   
   .halftone-content {
     padding: 0 1rem;
-    padding-top: clamp(90px, 18vw, 120px);
+    padding-top: clamp(110px, 22vw, 140px);
+    transform: translate(-50%, -35%);
   }
   
   .profile-picture {
@@ -740,7 +741,8 @@
   
   .halftone-content {
     padding: 0 1.5rem;
-    padding-top: clamp(110px, 19vw, 140px);
+    padding-top: clamp(130px, 23vw, 160px);
+    transform: translate(-50%, -38%);
   }
   
   .profile-picture {
@@ -760,7 +762,8 @@
 @media (min-width: 769px) and (max-width: 1024px) {
   .halftone-content {
     padding: 0 2rem;
-    padding-top: clamp(130px, 20vw, 150px);
+    padding-top: clamp(150px, 24vw, 170px);
+    transform: translate(-50%, -42%);
   }
   
   .profile-picture {
