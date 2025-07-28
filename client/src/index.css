@@ -411,8 +411,8 @@
 
 .tldr-label {
   font-family: 'Courier Prime', monospace;
-  font-size: 0.875rem;
-  font-weight: 500;
+  font-size: 1rem;
+  font-weight: 600;
   color: hsl(211, 13%, 82%);
   text-transform: uppercase;
   letter-spacing: 0.05em;
