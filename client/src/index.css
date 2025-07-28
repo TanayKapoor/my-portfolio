@@ -254,21 +254,26 @@
   font-size: 2.4rem;
   color: hsl(0, 0%, 100%);
   text-shadow: 
-    -1px -1px 0 hsl(0, 0%, 0%),
-    1px -1px 0 hsl(0, 0%, 0%),
-    -1px 1px 0 hsl(0, 0%, 0%),
-    1px 1px 0 hsl(0, 0%, 0%),
-    -2px 0 0 hsl(0, 0%, 0%),
-    2px 0 0 hsl(0, 0%, 0%),
-    0 -2px 0 hsl(0, 0%, 0%),
-    0 2px 0 hsl(0, 0%, 0%),
-    0 0 20px rgba(0, 0, 0, 0.9),
-    0 0 30px rgba(0, 0, 0, 0.8),
-    0 0 40px rgba(0, 0, 0, 0.7),
-    0 0 50px rgba(0, 0, 0, 0.6),
+    -2px -2px 0 hsl(0, 0%, 0%),
+    2px -2px 0 hsl(0, 0%, 0%),
+    -2px 2px 0 hsl(0, 0%, 0%),
+    2px 2px 0 hsl(0, 0%, 0%),
+    -3px 0 0 hsl(0, 0%, 0%),
+    3px 0 0 hsl(0, 0%, 0%),
+    0 -3px 0 hsl(0, 0%, 0%),
+    0 3px 0 hsl(0, 0%, 0%),
+    -4px -4px 0 hsl(0, 0%, 0%),
+    4px -4px 0 hsl(0, 0%, 0%),
+    -4px 4px 0 hsl(0, 0%, 0%),
+    4px 4px 0 hsl(0, 0%, 0%),
+    0 0 15px rgba(0, 0, 0, 1),
+    0 0 25px rgba(0, 0, 0, 0.9),
+    0 0 35px rgba(0, 0, 0, 0.8),
+    0 0 45px rgba(0, 0, 0, 0.7),
+    0 0 55px rgba(0, 0, 0, 0.6),
     0 0 8px rgba(255, 255, 255, 0.6),
     0 0 16px rgba(255, 255, 255, 0.4),
-    2px 2px 4px rgba(0, 0, 0, 0.7);
+    4px 4px 8px rgba(0, 0, 0, 0.8);
   margin-top: 1rem;
   letter-spacing: 0.05em;
   text-align: center;
@@ -281,14 +286,6 @@
   white-space: nowrap;
   width: 100%;
   max-width: 90vw;
-  background: rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(8px);
-  border-radius: 15px;
-  padding: 1rem 2rem;
-  box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.5),
-    0 0 20px rgba(0, 0, 0, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .greeting-text:hover {
