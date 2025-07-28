@@ -20,8 +20,8 @@ export default function HalftoneHero() {
   return (
     <section className="halftone-section">
       <div className="halftone"></div>
-      <div className="halftone-content">
-        {/* Profile Picture - Center of pulse animation */}
+      {/* Profile Picture - Absolute center of pulse animation */}
+      <div className="profile-picture-center">
         <div className="profile-picture">
           <img 
             src={profilePic} 
@@ -29,7 +29,10 @@ export default function HalftoneHero() {
             className="profile-img"
           />
         </div>
+      </div>
 
+      {/* Content below profile picture */}
+      <div className="halftone-content">
         {/* Job Title - Below profile picture */}
         <h2 className="job-title">
           FullStack Machine Learning Engineer

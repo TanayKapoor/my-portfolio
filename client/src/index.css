@@ -137,7 +137,19 @@
   filter: contrast(21);
 }
 
-/* Content styling */
+/* Profile picture center container - absolute center of screen */
+.profile-picture-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Content styling - positioned below profile picture */
 .halftone-content {
   position: absolute;
   top: 50%;
@@ -155,6 +167,7 @@
   padding: 0 2rem;
   min-height: 0;
   gap: 0;
+  padding-top: clamp(120px, 20vw, 160px);
 }
 
 /* Profile picture styling with enhanced pulse animation */
@@ -174,9 +187,7 @@
     0 0 clamp(60px, 12vw, 90px) rgba(255, 255, 255, 0.08),
     inset 0 0 clamp(15px, 3vw, 20px) rgba(255, 255, 255, 0.1);
   transition: all 0.3s ease;
-  margin: 0 auto 3rem auto;
   position: relative;
-  z-index: 10;
   flex-shrink: 0;
   animation: profilePulse 3s ease-in-out infinite;
 }
@@ -684,12 +695,12 @@
   
   .halftone-content {
     padding: 0 1rem;
+    padding-top: clamp(90px, 18vw, 120px);
   }
   
   .profile-picture {
     width: clamp(120px, 30vw, 150px);
     height: clamp(120px, 30vw, 150px);
-    margin: 0 auto 2rem auto;
   }
   
   .job-title {
@@ -729,13 +740,12 @@
   
   .halftone-content {
     padding: 0 1.5rem;
-    top: 50%;
+    padding-top: clamp(110px, 19vw, 140px);
   }
   
   .profile-picture {
     width: clamp(140px, 28vw, 180px);
     height: clamp(140px, 28vw, 180px);
-    margin: 0 auto 2.5rem auto;
   }
   
   .job-title {
@@ -750,6 +760,7 @@
 @media (min-width: 769px) and (max-width: 1024px) {
   .halftone-content {
     padding: 0 2rem;
+    padding-top: clamp(130px, 20vw, 150px);
   }
   
   .profile-picture {
