@@ -443,6 +443,7 @@
 }
 
 .stat-label {
+  font-family: 'Courier Prime', monospace;
   font-size: 1rem;
   color: hsl(211, 13%, 82%);
   font-weight: 500;
@@ -456,6 +457,7 @@
   color: white;
   padding: 0.5rem 1rem;
   border-radius: 25px;
+  font-family: 'Courier Prime', monospace;
   font-size: 0.875rem;
   font-weight: 500;
   text-transform: uppercase;
@@ -538,11 +540,13 @@
   }
 }
 
-/* Override text colours for readability */
+/* Override text colours and fonts for readability */
 .about-text h3 {
+  font-family: 'Courier Prime', monospace;
   color: hsl(0, 0%, 100%);
 }
 
 .about-text p {
+  font-family: 'Courier Prime', monospace;
   color: hsl(211, 13%, 82%);
 }
