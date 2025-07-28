@@ -75,7 +75,7 @@ export default function Typewriter({
       clearInterval(typewriterInterval);
       clearInterval(cursorInterval);
     };
-  }, [messages, currentMessageIndex, typingSpeed, backspaceSpeed, pauseBetweenMessages]);
+  }, [messages, typingSpeed, backspaceSpeed, pauseBetweenMessages]);
 
   return (
     <span className="greeting-text">

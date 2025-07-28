@@ -1,4 +1,5 @@
 import Typewriter from './typewriter';
+import profilePic from '@assets/pfp_1753712646611.png';
 
 export default function HalftoneHero() {
   const greetingMessages = [
@@ -23,7 +24,7 @@ export default function HalftoneHero() {
         {/* Profile Picture */}
         <div className="profile-picture mb-8">
           <img 
-            src="@assets/pfp_1753712646611.png" 
+            src={profilePic} 
             alt="Tanay's pixel art avatar" 
             className="profile-img"
           />
