@@ -42,12 +42,12 @@ export default function AboutSection() {
         <div className="parallax-background"></div>
         <div ref={aboutContentRef} className="about-content">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-16">
+            <div className="text-center mb-8">
               <h2 className="about-title">Here is a little background</h2>
               <div className="title-underline"></div>
             </div>
             
-            <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div className="grid md:grid-cols-2 gap-8 items-start">
               <div className="about-text">
                 <h3 className="text-2xl font-bold text-gray-100 mb-6">
                   Hello! I'm Tanay
