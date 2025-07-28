@@ -1,0 +1,768 @@
+html {
+  scroll-behavior: smooth;
+}
+
+// CSS Custom Properties for animations
+@property --i0 {
+  syntax: '<number>';
+  initial-value: 0;
+  inherits: true;
+}
+
+@property --j0 {
+  syntax: '<number>';
+  initial-value: 0;
+  inherits: true;
+}
+
+@property --k0 {
+  syntax: '<number>';
+  initial-value: 0;
+  inherits: true;
+}
+
+// Animation keyframes
+@keyframes i0 { 
+  to { --i0: 1; } 
+}
+
+@keyframes j0 { 
+  to { --j0: 1; } 
+}
+
+@keyframes k0 { 
+  to { --k0: 1; } 
+}
+
+// Main section styling
+.halftone-section {
+  --i0: 0;
+  --j0: 0;
+  --k0: 0;
+  // Growing circular waves pattern
+  --map: repeating-radial-gradient(circle, 
+    #777 calc((var(--k0) - 1)*20%), #000, #777 calc(var(--k0)*20%));
+  animation: 
+    i0 3.2591s linear infinite, 
+    j0 4.6087s linear infinite, 
+    k0 7.5s linear infinite;
+  display: grid;
+  min-height: 100vh;
+  position: relative;
+  
+  *, &::before {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  
+  &::before {
+    background: linear-gradient(90deg, 
+      #75D9B4, #AA6B71, #F2896F, #FFB87F, #FFEC72);
+    content: '';
+  }
+}
+
+// Halftone pattern overlay
+.halftone {
+  place-self: stretch;
+  position: relative;
+  z-index: 1;
+  background: 
+    var(--map, 
+      linear-gradient(calc(var(--k0)*360deg), #777 9%, #000)), 
+    var(--pattern, 
+      radial-gradient(closest-side, #888, #000) 0/ 1em 1em space);
+  background-blend-mode: screen;
+  mix-blend-mode: multiply;
+  filter: contrast(21);
+}
+
+// Content styling
+.halftone-content {
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  isolation: isolate;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+// Profile picture styling
+.profile-picture {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 3px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 
+    0 0 30px rgba(255, 255, 255, 0.3),
+    0 0 60px rgba(255, 255, 255, 0.15),
+    inset 0 0 20px rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+  margin: 0 auto; // Ensure horizontal centering
+  
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 
+      0 0 40px rgba(255, 255, 255, 0.4),
+      0 0 80px rgba(250, 182, 127, 0.6),
+      0 0 120px rgba(250, 182, 127, 0.4),
+      0 0 160px rgba(250, 182, 127, 0.2),
+      inset 0 0 25px rgba(255, 255, 255, 0.15);
+  }
+}
+
+.profile-img {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  object-fit: cover;
+  image-rendering: pixelated; // Maintains pixel art quality
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+}
+
+// Job title styling
+.job-title {
+  font-family: 'Minecraft', monospace;
+  font-size: 1.2rem;
+  color: #ffffff;
+  text-shadow: 
+    0 0 10px rgba(255, 255, 255, 0.5),
+    0 0 20px rgba(255, 255, 255, 0.3),
+    2px 2px 4px rgba(0, 0, 0, 0.8);
+  margin-top: 2rem;
+  letter-spacing: 0.1em;
+  text-align: center;
+  animation: glow 2s ease-in-out infinite alternate;
+  
+  // Blurred pill background
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50px;
+  padding: 12px 24px;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    0 0 20px rgba(255, 255, 255, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 
+      0 12px 40px rgba(0, 0, 0, 0.4),
+      0 0 30px rgba(255, 255, 255, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  }
+}
+
+@keyframes glow {
+  from {
+    text-shadow: 
+      0 0 10px rgba(255, 255, 255, 0.5),
+      0 0 20px rgba(255, 255, 255, 0.3),
+      2px 2px 4px rgba(0, 0, 0, 0.8);
+  }
+  to {
+    text-shadow: 
+      0 0 15px rgba(255, 255, 255, 0.8),
+      0 0 30px rgba(255, 255, 255, 0.5),
+      2px 2px 4px rgba(0, 0, 0, 0.8);
+  }
+}
+
+// Greeting text styling
+.greeting-text {
+  font-family: 'Minecraft', monospace;
+  font-size: 2.4rem;
+  color: #ffffff;
+  text-shadow: 
+    -1px -1px 0 #000000,
+    1px -1px 0 #000000,
+    -1px 1px 0 #000000,
+    1px 1px 0 #000000,
+    -2px 0 0 #000000,
+    2px 0 0 #000000,
+    0 -2px 0 #000000,
+    0 2px 0 #000000,
+    0 0 20px rgba(0, 0, 0, 0.9),
+    0 0 30px rgba(0, 0, 0, 0.8),
+    0 0 40px rgba(0, 0, 0, 0.7),
+    0 0 50px rgba(0, 0, 0, 0.6),
+    0 0 8px rgba(255, 255, 255, 0.6),
+    0 0 16px rgba(255, 255, 255, 0.4),
+    2px 2px 4px rgba(0, 0, 0, 0.7);
+  margin-top: 1rem;
+  // padding-top: 1rem;
+  letter-spacing: 0.05em;
+  text-align: center;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-1px);
+  }
+}
+
+// Dynamic cursor styles
+.cursor {
+  color: #ffffff;
+  text-shadow: 
+    0 0 8px rgba(255, 255, 255, 0.8),
+    0 0 16px rgba(250, 182, 127, 0.4);
+  opacity: 0;
+  transition: opacity 0.1s ease-in-out;
+  
+  &.visible {
+    opacity: 1;
+  }
+}
+
+// Scroll indicator
+.scroll-indicator {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  opacity: 0.8;
+  
+  &:hover {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-5px);
+  }
+}
+
+.scroll-text {
+  font-family: 'Minecraft', monospace;
+  font-size: 0.875rem;
+  color: #ffffff;
+  text-shadow: 
+    -1px -1px 0 #000000,
+    1px -1px 0 #000000,
+    -1px 1px 0 #000000,
+    1px 1px 0 #000000,
+    0 0 10px rgba(255, 255, 255, 0.5);
+  letter-spacing: 0.05em;
+  margin-bottom: 0.25rem;
+}
+
+.scroll-arrow {
+  color: #ffffff;
+  text-shadow: 
+    -1px -1px 0 #000000,
+    1px -1px 0 #000000,
+    -1px 1px 0 #000000,
+    1px 1px 0 #000000,
+    0 0 10px rgba(255, 255, 255, 0.5);
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-5px);
+  }
+  60% {
+    transform: translateY(-3px);
+  }
+}
+
+// About Section with Parallax Effect
+.about-section {
+  position: relative;
+  min-height: 100vh;
+  background: transparent;
+  color: #ffffff;
+  overflow: hidden;
+  perspective: 90vw; /* provides depth for children */
+  display: grid;
+  place-items: center;
+}
+
+.parallax-container {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.parallax-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 120%;
+  /* Transparent background to remove container effect */
+  background: transparent;
+  z-index: 0;
+  transform: translateY(-20px);
+  transition: transform 0.3s ease-out;
+}
+
+.about-content {
+  position: relative;
+  z-index: 2;
+  padding: 6rem 0;
+  width: 100%;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  
+  &.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.about-title {
+  font-family: 'Minecraft', monospace;
+  font-size: 3rem;
+  font-weight: bold;
+  color: #ffffff;
+  text-align: center;
+  margin-bottom: 1rem;
+  letter-spacing: 0.05em;
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 120%;
+    height: 120%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+    z-index: -1;
+    border-radius: 50%;
+  }
+}
+
+.title-underline {
+  width: 80px;
+  height: 4px;
+  background: #ffffff;
+  margin: 0 auto;
+  border-radius: 2px;
+  position: relative;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 120%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    border-radius: 1px;
+  }
+}
+
+.about-text {
+  animation: slideInFromLeft 1s ease-out;
+}
+
+.about-stats {
+  display: grid;
+  /* Responsive columns: two on medium, three on large */
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 2rem;
+  animation: slideInFromRight 1s ease-out;
+}
+
+.stat-item {
+  text-align: center;
+  padding: 2rem;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+  /* No hover lift animation */
+  transition: none;
+
+  /* Static subtle shine line */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.04), transparent);
+    pointer-events: none;
+  }
+}
+
+.stat-number {
+  font-family: 'Minecraft', monospace;
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #ffffff;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.stat-label {
+  font-size: 1rem;
+  color: #d1d5db;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.skill-tag {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 25px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.15);
+  }
+}
+
+// Parallax scroll effect
+@media (prefers-reduced-motion: no-preference) {
+  .parallax-background {
+    will-change: transform;
+  }
+}
+
+// Animations
+@keyframes slideInFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .about-title {
+    font-size: 2rem;
+  }
+  
+  .about-content {
+    padding: 4rem 0;
+  }
+  
+  .about-stats {
+    margin-top: 3rem;
+  }
+  
+  .stat-item {
+    padding: 1.5rem;
+  }
+  
+  .stat-number {
+    font-size: 2rem;
+  }
+}
+
+/* Override text colours inside about section for readability on dark background */
+.about-text h3 {
+  color: #ffffff;
+}
+
+.about-text p {
+  color: #d1d5db;
+}
+
+/* ------------------------------------------------------------------
+   3D Angled Navigation Styles (About Section)
+------------------------------------------------------------------ */
+.about-section {
+  /* Angled light grid overlay */
+  .angled-overlay {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle, #fff 1px, transparent 1px) 10px 10px/ 10px 10px;
+    pointer-events: none;
+    opacity: 0.5;
+    mix-blend-mode: overlay;
+  }
+
+  /* Navigation strip */
+  .angled-nav {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem 2rem;
+    transform: rotateY(-12deg);
+    position: relative;
+    z-index: 5;
+
+    a {
+      --w: 3px; /* border width variable */
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: auto;
+      text-decoration: none;
+      color: #fff;
+      font-family: 'Minecraft', monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      transition: color 0.3s ease;
+
+      &:before {
+        content: '';
+        display: block;
+        position: absolute;
+        inset: 0 -50%;
+        background: #014d89;
+        pointer-events: none;
+        opacity: 0;
+      }
+
+      span {
+        grid-row: 1;
+      }
+
+      span.l {
+        grid-column: 1 / 1;
+        z-index: 1;
+      }
+
+      span.r {
+        grid-column: 2 / 2;
+        z-index: 1;
+      }
+
+      span:where(.l, .r) {
+        &:hover {
+          grid-column: -1 / 1;
+          z-index: 2;
+        }
+      }
+
+      span.content {
+        display: block;
+        padding: 1em 2em;
+        grid-column: -1 / 1;
+        z-index: 1;
+      }
+
+      &:after {
+        content: '';
+        display: block;
+        grid-column: -1 / 1;
+        grid-row: 1;
+        inset: 0;
+        z-index: 0;
+        background: linear-gradient(
+              #fff var(--w),
+              transparent var(--w),
+              transparent calc(100% - var(--w)),
+              #fff calc(100% - var(--w))
+            )
+            calc(var(--w) * -1) 0 / calc(var(--w) * 2.5) no-repeat,
+          linear-gradient(
+              #fff var(--w),
+              transparent var(--w),
+              transparent calc(100% - var(--w)),
+              #fff calc(100% - var(--w))
+            )
+            calc(var(--w) + 100%) 0 / calc(var(--w) * 2.5) no-repeat;
+      }
+
+      /* Dots only, no colored overlay animation */
+    }
+  }
+}
+
+/* Keyframes for angled navigation */
+@keyframes enter-hover-left {
+  from {
+    opacity: 1;
+    clip-path: polygon(0 0, 25% 0, 25% 100%, 0 100%);
+  }
+  25% {
+    clip-path: polygon(0 0, 75% 0, 25% 100%, 0 100%);
+  }
+  50% {
+    clip-path: polygon(0 0, 75% 0, 75% 100%, 0 100%);
+  }
+  75% {
+    clip-path: polygon(0 0, 75% 0, 75% 100%, 25% 100%);
+  }
+  to {
+    opacity: 1;
+    clip-path: polygon(25% 0, 75% 0, 75% 100%, 25% 100%);
+  }
+}
+
+@keyframes enter-hover-right {
+  from {
+    opacity: 1;
+    clip-path: polygon(75% 0, 100% 0, 100% 100%, 75% 100%);
+  }
+  25% {
+    clip-path: polygon(25% 0, 100% 0, 100% 100%, 75% 100%);
+  }
+  50% {
+    clip-path: polygon(25% 0, 75% 0, 100% 100%, 75% 100%);
+  }
+  75% {
+    clip-path: polygon(25% 0, 75% 0, 75% 100%, 75% 100%);
+  }
+  to {
+    opacity: 1;
+    clip-path: polygon(25% 0, 75% 0, 75% 100%, 25% 100%);
+  }
+}
+
+@keyframes blink {
+  from {
+    filter: brightness(1.5);
+  }
+  80%,
+  to {
+    filter: brightness(1);
+  }
+}
+
+/* ------------------------------------------------------------------
+   Highlight animation for about-section text
+------------------------------------------------------------------ */
+.highlight-anim {
+  position: relative;
+  display: inline-block;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0 -50%;
+    background: #014d89;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  &:hover::before {
+    animation: enter-hover 160ms forwards steps(2), blink 1200ms ease-in 114ms infinite;
+  }
+}
+
+@keyframes enter-hover {
+  from {
+    opacity: 0;
+    clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+  }
+  25% {
+    clip-path: polygon(0 0, 100% 0, 100% 0, 0 100%);
+  }
+  50% {
+    clip-path: polygon(0 50%, 100% 0, 100% 0, 0 100%);
+  }
+  75% {
+    clip-path: polygon(0 50%, 100% 0, 100% 100%, 0 100%);
+  }
+  to {
+    opacity: 1;
+    clip-path: polygon(0 50%, 100% 50%, 100% 100%, 0 100%);
+  }
+}
+
+/* ------------------------------------------------------------------
+   Split hover animation (similar to provided menu) for about text
+------------------------------------------------------------------ */
+.about-section {
+  .split-hover {
+    --w: 3px;
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: auto;
+    text-decoration: none;
+    color: inherit;
+
+    /* Dotted scan-line borders only */
+    &::after {
+      content: '';
+      display: block;
+      grid-column: -1 / 1;
+      grid-row: 1;
+      inset: 0;
+      z-index: 0;
+      background: linear-gradient(
+            #fff var(--w),
+            transparent var(--w),
+            transparent calc(100% - var(--w)),
+            #fff calc(100% - var(--w))
+          )
+          calc(var(--w) * -1) 0 / calc(var(--w) * 2.5) no-repeat,
+        linear-gradient(
+            #fff var(--w),
+            transparent var(--w),
+            transparent calc(100% - var(--w)),
+            #fff calc(100% - var(--w))
+          )
+          calc(var(--w) + 100%) 0 / calc(var(--w) * 2.5) no-repeat;
+    }
+
+    /* Ring animation around text */
+    &::before {
+      content: '';
+      position: absolute;
+      inset: -6px;
+      border: 2px solid rgba(255, 255, 255, 0.7);
+      border-radius: 8px;
+      opacity: 0;
+      transform: scale(0.8);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      pointer-events: none;
+      box-shadow: 0 0 8px rgba(255, 255, 255, 0.4), 0 0 16px rgba(255, 255, 255, 0.2);
+      z-index: 2;
+    }
+
+    &:hover::before {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+}
+
+
