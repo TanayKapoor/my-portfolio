@@ -48,23 +48,24 @@ export default function AboutSection() {
               <div className="title-underline"></div>
             </div>
             
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-2xl font-bold text-gray-100">
+                Hello! I'm Tanay
+              </h3>
+              <div className="tldr-toggle-container">
+                <span className="tldr-label">TL;DR</span>
+                <button 
+                  onClick={() => setShowTldr(!showTldr)}
+                  className={`tldr-toggle ${showTldr ? 'active' : ''}`}
+                  aria-label={showTldr ? "Show full content" : "Show TL;DR"}
+                >
+                  <div className="toggle-slider"></div>
+                </button>
+              </div>
+            </div>
+            
             <div className="grid md:grid-cols-2 gap-8 items-start">
               <div className="about-text">
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-2xl font-bold text-gray-100">
-                    Hello! I'm Tanay
-                  </h3>
-                  <div className="tldr-toggle-container">
-                    <span className="tldr-label">TL;DR</span>
-                    <button 
-                      onClick={() => setShowTldr(!showTldr)}
-                      className={`tldr-toggle ${showTldr ? 'active' : ''}`}
-                      aria-label={showTldr ? "Show full content" : "Show TL;DR"}
-                    >
-                      <div className="toggle-slider"></div>
-                    </button>
-                  </div>
-                </div>
                 
                 {showTldr ? (
                   <div className="tldr-content">
