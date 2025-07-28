@@ -417,6 +417,9 @@
   text-transform: uppercase;
   letter-spacing: 0.05em;
   transition: all 0.3s ease;
+  height: 24px;
+  display: flex;
+  align-items: center;
 }
 
 .tldr-toggle.active + .tldr-label,
