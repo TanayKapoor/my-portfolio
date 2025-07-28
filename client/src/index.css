@@ -279,13 +279,14 @@
   text-align: center;
   transition: all 0.3s ease;
   line-height: 1.2;
-  min-height: 2.88rem; /* Fixed height to prevent jumping: 2.4rem * 1.2 line-height */
+  min-height: 2.88rem; /* Minimum height for single line */
   display: flex;
   align-items: center;
   justify-content: center;
-  white-space: nowrap;
   width: 100%;
   max-width: 90vw;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .greeting-text:hover {
@@ -523,7 +524,7 @@
   
   .greeting-text {
     font-size: 1.5rem;
-    min-height: 2.16rem; /* Adjusted for smaller font: 1.8rem * 1.2 */
+    min-height: 1.8rem; /* Adjusted for smaller font */
   }
   
   .profile-picture {
