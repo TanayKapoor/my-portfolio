@@ -3,6 +3,8 @@ import { useEffect, useRef, useState } from 'react';
 export default function AboutSection() {
   const aboutContentRef = useRef<HTMLDivElement>(null);
   const [showTldr, setShowTldr] = useState(false);
+  const [displayText, setDisplayText] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
 
   useEffect(() => {
     const setupScrollObserver = () => {
@@ -30,6 +32,56 @@ export default function AboutSection() {
   }, []);
 
   const skills = ['Python', 'JavaScript', 'Machine Learning', 'React', 'Node.js', 'TensorFlow'];
+
+  const tldrText = "Full Stack ML Engineer from India. I build AI-powered products with Python, LLMs, and modern web tech. Love solving real-world problems with smart, scalable systems.";
+  const fullText = `Hey, I'm Tanay, and I currently work as a Full Stack Machine Learning Engineer in India. I work on all parts of the stack, but my primary focus is on making smart, AI-powered products that truly make a difference. I studied engineering and slowly moved toward Python and LLMs. I've been making things with them ever since.
+
+When not focusing on new features or making workflows better, I'm usually in a terminal, enhancing architectures or looking for better ways to use code to solve real-world problems.
+
+I like making ideas come to life with smart, scalable systems, whether they are front-end or back-end.`;
+
+  useEffect(() => {
+    if (showTldr) {
+      // Start with current text and erase quickly
+      const currentText = fullText;
+      setIsTyping(true);
+      
+      // Fast erase phase
+      let eraseIndex = currentText.length;
+      const eraseInterval = setInterval(() => {
+        setDisplayText(currentText.substring(0, eraseIndex));
+        eraseIndex -= 3; // Erase 3 characters at a time for speed
+        
+        if (eraseIndex <= 0) {
+          clearInterval(eraseInterval);
+          setDisplayText('');
+          
+          // Start typing the TL;DR text
+          let typeIndex = 0;
+          const typeInterval = setInterval(() => {
+            setDisplayText(tldrText.substring(0, typeIndex + 1));
+            typeIndex++;
+            
+            if (typeIndex >= tldrText.length) {
+              clearInterval(typeInterval);
+              setIsTyping(false);
+            }
+          }, 30); // Type one character every 30ms
+        }
+      }, 20); // Erase every 20ms
+    } else {
+      // When switching to full content, just show it immediately
+      setDisplayText(fullText);
+      setIsTyping(false);
+    }
+  }, [showTldr]);
+
+  // Initialize with full text
+  useEffect(() => {
+    if (!showTldr && displayText === '') {
+      setDisplayText(fullText);
+    }
+  }, []);
 
   const calculateYearsOfExperience = () => {
     const startYear = 2022;
@@ -91,25 +143,12 @@ export default function AboutSection() {
               <div className="about-text">
                 
                 <div className="content-container">
-                  {showTldr ? (
-                    <div key="tldr" className="tldr-content">
-                      <p className="text-gray-300 text-lg leading-relaxed mb-6">
-                        Full Stack ML Engineer from India. I build AI-powered products with Python, LLMs, and modern web tech. Love solving real-world problems with smart, scalable systems.
-                      </p>
-                    </div>
-                  ) : (
-                    <div key="full" className="full-content">
-                      <p className="text-gray-300 text-lg leading-relaxed mb-6">
-                        Hey, I'm Tanay, and I currently work as a Full Stack Machine Learning Engineer in India. I work on all parts of the stack, but my primary focus is on making smart, AI-powered products that truly make a difference. I studied engineering and slowly moved toward Python and LLMs. I've been making things with them ever since.
-                      </p>
-                      <p className="text-gray-300 text-lg leading-relaxed mb-6">
-                        When not focusing on new features or making workflows better, I'm usually in a terminal, enhancing architectures or looking for better ways to use code to solve real-world problems.
-                      </p>
-                      <p className="text-gray-300 text-lg leading-relaxed mb-6">
-                        I like making ideas come to life with smart, scalable systems, whether they are front-end or back-end.
-                      </p>
-                    </div>
-                  )}
+                  <div className={`typing-content ${showTldr ? 'tldr-mode' : 'full-mode'}`}>
+                    <p className="text-gray-300 text-lg leading-relaxed mb-6" style={{ whiteSpace: 'pre-line' }}>
+                      {displayText}
+                      {isTyping && <span className="typing-cursor">|</span>}
+                    </p>
+                  </div>
                 </div>
                 <div className="flex flex-wrap gap-3">
                   {skills.map((skill, index) => (
