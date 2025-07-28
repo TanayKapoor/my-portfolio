@@ -140,7 +140,7 @@
 /* Profile picture center container - absolute center of screen */
 .profile-picture-center {
   position: absolute;
-  top: 50%;
+  top: 40%;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 10;
@@ -152,9 +152,9 @@
 /* Content styling - positioned below profile picture */
 .halftone-content {
   position: absolute;
-  top: 50%;
+  top: calc(40% + clamp(100px, 15vw, 140px));
   left: 50%;
-  transform: translate(-50%, -40%);
+  transform: translateX(-50%);
   z-index: 2;
   isolation: isolate;
   text-align: center;
@@ -166,8 +166,7 @@
   max-width: 1200px;
   padding: 0 2rem;
   min-height: 0;
-  gap: 0;
-  padding-top: clamp(140px, 25vw, 180px);
+  gap: 1rem;
 }
 
 /* Profile picture styling with enhanced pulse animation */
@@ -241,7 +240,7 @@
     0 0 10px rgba(255, 255, 255, 0.5),
     0 0 20px rgba(255, 255, 255, 0.3),
     2px 2px 4px rgba(0, 0, 0, 0.8);
-  margin: 0 auto 2rem auto;
+  margin: 0 auto;
   letter-spacing: 0.1em;
   text-align: center;
   animation: glow 2s ease-in-out infinite alternate;
@@ -695,8 +694,11 @@
   
   .halftone-content {
     padding: 0 1rem;
-    padding-top: clamp(110px, 22vw, 140px);
-    transform: translate(-50%, -35%);
+    top: calc(40% + clamp(80px, 12vw, 100px));
+  }
+  
+  .profile-picture-center {
+    top: 40%;
   }
   
   .profile-picture {
@@ -708,7 +710,7 @@
     font-size: 1rem;
     min-width: 280px;
     padding: 10px 20px;
-    margin: 0 auto 1.5rem auto;
+    margin: 0 auto;
   }
 }
 
@@ -741,8 +743,11 @@
   
   .halftone-content {
     padding: 0 1.5rem;
-    padding-top: clamp(130px, 23vw, 160px);
-    transform: translate(-50%, -38%);
+    top: calc(40% + clamp(90px, 14vw, 120px));
+  }
+  
+  .profile-picture-center {
+    top: 40%;
   }
   
   .profile-picture {
@@ -754,7 +759,7 @@
     font-size: 1.1rem;
     min-width: 300px;
     padding: 11px 22px;
-    margin: 0 auto 1.5rem auto;
+    margin: 0 auto;
   }
 }
 
@@ -762,8 +767,7 @@
 @media (min-width: 769px) and (max-width: 1024px) {
   .halftone-content {
     padding: 0 2rem;
-    padding-top: clamp(150px, 24vw, 170px);
-    transform: translate(-50%, -42%);
+    top: calc(40% + clamp(100px, 15vw, 130px));
   }
   
   .profile-picture {
