@@ -529,7 +529,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 2rem;
-  margin-top: 3.5rem; /* Align with content paragraphs */
+  margin-top: 1rem; /* Reduced gap between toggle and cards */
   animation: slideInFromRight 1s ease-out;
 }
 
