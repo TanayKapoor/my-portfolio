@@ -1,5 +1,6 @@
 import HalftoneHero from '@/components/halftone-hero';
 import AboutSection from '@/components/about-section';
+import ProjectsSection from '@/components/projects-section';
 
 export default function Home() {
   const handleContactClick = () => {
@@ -57,6 +58,7 @@ export default function Home() {
       <main>
         <HalftoneHero />
         <AboutSection />
+        <ProjectsSection />
       </main>
     </div>
   );
