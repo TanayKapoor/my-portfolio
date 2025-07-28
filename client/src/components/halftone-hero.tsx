@@ -21,8 +21,8 @@ export default function HalftoneHero() {
     <section className="halftone-section">
       <div className="halftone"></div>
       <div className="halftone-content">
-        {/* Profile Picture */}
-        <div className="profile-picture mb-8">
+        {/* Profile Picture - Center of pulse animation */}
+        <div className="profile-picture">
           <img 
             src={profilePic} 
             alt="Tanay's pixel art avatar" 
@@ -30,12 +30,12 @@ export default function HalftoneHero() {
           />
         </div>
 
-        {/* Job Title */}
+        {/* Job Title - Below profile picture */}
         <h2 className="job-title">
           FullStack Machine Learning Engineer
         </h2>
 
-        {/* Typewriter Text */}
+        {/* Typewriter Text - Below job title */}
         <div className="w-full max-w-7xl px-4">
           <Typewriter 
             messages={greetingMessages} 

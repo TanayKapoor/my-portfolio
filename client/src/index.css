@@ -149,14 +149,15 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   width: 100%;
   max-width: 1200px;
   padding: 0 2rem;
   min-height: 0;
+  gap: 0;
 }
 
-/* Profile picture styling */
+/* Profile picture styling with enhanced pulse animation */
 .profile-picture {
   display: flex;
   justify-content: center;
@@ -170,22 +171,44 @@
   box-shadow: 
     0 0 clamp(20px, 4vw, 30px) rgba(255, 255, 255, 0.3),
     0 0 clamp(40px, 8vw, 60px) rgba(255, 255, 255, 0.15),
+    0 0 clamp(60px, 12vw, 90px) rgba(255, 255, 255, 0.08),
     inset 0 0 clamp(15px, 3vw, 20px) rgba(255, 255, 255, 0.1);
   transition: all 0.3s ease;
-  margin: 0 auto;
+  margin: 0 auto 3rem auto;
   position: relative;
   z-index: 10;
   flex-shrink: 0;
+  animation: profilePulse 3s ease-in-out infinite;
+}
+
+/* Enhanced pulse animation */
+@keyframes profilePulse {
+  0%, 100% {
+    box-shadow: 
+      0 0 clamp(20px, 4vw, 30px) rgba(255, 255, 255, 0.3),
+      0 0 clamp(40px, 8vw, 60px) rgba(255, 255, 255, 0.15),
+      0 0 clamp(60px, 12vw, 90px) rgba(255, 255, 255, 0.08),
+      inset 0 0 clamp(15px, 3vw, 20px) rgba(255, 255, 255, 0.1);
+  }
+  50% {
+    box-shadow: 
+      0 0 clamp(30px, 6vw, 45px) rgba(255, 255, 255, 0.4),
+      0 0 clamp(60px, 12vw, 90px) rgba(255, 255, 255, 0.2),
+      0 0 clamp(90px, 18vw, 135px) rgba(255, 255, 255, 0.12),
+      0 0 clamp(120px, 24vw, 180px) rgba(255, 255, 255, 0.06),
+      inset 0 0 clamp(18px, 3.5vw, 25px) rgba(255, 255, 255, 0.15);
+  }
 }
 
 .profile-picture:hover {
   transform: scale(1.05);
+  animation-play-state: paused;
   box-shadow: 
-    0 0 clamp(25px, 5vw, 40px) rgba(255, 255, 255, 0.4),
-    0 0 clamp(50px, 10vw, 80px) rgba(250, 182, 127, 0.6),
-    0 0 clamp(75px, 15vw, 120px) rgba(250, 182, 127, 0.4),
-    0 0 clamp(100px, 20vw, 160px) rgba(250, 182, 127, 0.2),
-    inset 0 0 clamp(18px, 3.5vw, 25px) rgba(255, 255, 255, 0.15);
+    0 0 clamp(35px, 7vw, 50px) rgba(255, 255, 255, 0.5),
+    0 0 clamp(70px, 14vw, 100px) rgba(250, 182, 127, 0.6),
+    0 0 clamp(105px, 21vw, 150px) rgba(250, 182, 127, 0.4),
+    0 0 clamp(140px, 28vw, 200px) rgba(250, 182, 127, 0.2),
+    inset 0 0 clamp(20px, 4vw, 30px) rgba(255, 255, 255, 0.2);
 }
 
 .profile-img {
@@ -207,7 +230,7 @@
     0 0 10px rgba(255, 255, 255, 0.5),
     0 0 20px rgba(255, 255, 255, 0.3),
     2px 2px 4px rgba(0, 0, 0, 0.8);
-  margin-top: 2rem;
+  margin: 0 auto 2rem auto;
   letter-spacing: 0.1em;
   text-align: center;
   animation: glow 2s ease-in-out infinite alternate;
@@ -666,13 +689,14 @@
   .profile-picture {
     width: clamp(120px, 30vw, 150px);
     height: clamp(120px, 30vw, 150px);
+    margin: 0 auto 2rem auto;
   }
   
   .job-title {
     font-size: 1rem;
     min-width: 280px;
     padding: 10px 20px;
-    margin-top: 1.5rem;
+    margin: 0 auto 1.5rem auto;
   }
 }
 
@@ -711,13 +735,14 @@
   .profile-picture {
     width: clamp(140px, 28vw, 180px);
     height: clamp(140px, 28vw, 180px);
-    margin-bottom: 1.5rem;
+    margin: 0 auto 2.5rem auto;
   }
   
   .job-title {
     font-size: 1.1rem;
     min-width: 300px;
     padding: 11px 22px;
+    margin: 0 auto 1.5rem auto;
   }
 }
 
