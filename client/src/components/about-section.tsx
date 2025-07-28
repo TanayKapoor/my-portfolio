@@ -147,7 +147,7 @@ I like making ideas come to life with smart, scalable systems, whether they are 
               <div className="title-underline"></div>
             </div>
             
-            <div className="flex justify-between items-center mb-6">
+            <div className="flex justify-between items-center mb-3">
               <h3 className="text-2xl font-bold text-gray-100">
                 Hello! I'm Tanay
               </h3>
