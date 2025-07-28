@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ExternalLink, Github } from 'lucide-react';
+import { ExternalLink, Github, ChevronRight, Code2, Brain, FileSearch } from 'lucide-react';
 
 interface Project {
   id: number;
@@ -10,35 +10,61 @@ interface Project {
   liveUrl?: string;
   githubUrl?: string;
   featured?: boolean;
+  icon?: React.ReactNode;
+  preview?: string[];
 }
 
 const projects: Project[] = [
   {
     id: 1,
-    title: "AI-Powered Code Assistant",
-    description: "An intelligent IDE plugin that provides real-time code suggestions and refactoring recommendations using advanced LLMs.",
+    title: "CodeFlow",
+    description: "Create, search and modify your code without leaving your keyboard.",
     image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=500&h=300&fit=crop&crop=entropy",
     techStack: ["Python", "TensorFlow", "TypeScript", "React"],
     liveUrl: "https://example.com",
     githubUrl: "https://github.com",
-    featured: true
+    featured: true,
+    icon: <Code2 size={32} />,
+    preview: [
+      "// AI-powered code completion",
+      "function generateOptimizedCode() {",
+      "  const suggestions = await AI.analyze(context);",
+      "  return suggestions.map(s => s.optimized);",
+      "}"
+    ]
   },
   {
     id: 2,
-    title: "Real-time Analytics Dashboard",
-    description: "A comprehensive dashboard for monitoring and analyzing application metrics with ML-based anomaly detection.",
+    title: "Neural Translate",
+    description: "Use AI to effortlessly translate into multiple languages",
     image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=500&h=300&fit=crop&crop=entropy",
     techStack: ["React", "Node.js", "PostgreSQL", "Chart.js"],
     liveUrl: "https://example.com",
-    githubUrl: "https://github.com"
+    githubUrl: "https://github.com",
+    icon: <Brain size={32} />,
+    preview: [
+      "Machine Learning Models",
+      "Natural Language Processing",
+      "Real-time Translation API",
+      "Multi-language Support",
+      "Context-aware Results"
+    ]
   },
   {
     id: 3,
-    title: "Smart Document Processor",
-    description: "Automated document processing system using OCR and NLP to extract and categorize information from various file formats.",
+    title: "DocuScan",
+    description: "Automated document processing with OCR and intelligent categorization",
     image: "https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=500&h=300&fit=crop&crop=entropy",
     techStack: ["Python", "OpenCV", "FastAPI", "Docker"],
-    githubUrl: "https://github.com"
+    githubUrl: "https://github.com",
+    icon: <FileSearch size={32} />,
+    preview: [
+      "• PDF Document Analysis",
+      "• Image Text Extraction",
+      "• Smart Categorization",
+      "• Batch Processing",
+      "• API Integration"
+    ]
   },
   {
     id: 4,
@@ -88,77 +114,94 @@ export default function ProjectsSection() {
             {displayedProjects.map((project) => (
               <div
                 key={project.id}
-                className={`project-card ${project.featured ? 'featured' : ''}`}
+                className={`project-card raycast-style ${project.featured ? 'featured' : ''}`}
                 onMouseEnter={() => setHoveredProject(project.id)}
                 onMouseLeave={() => setHoveredProject(null)}
               >
-                {/* Project Image */}
-                <div className="project-image-container">
-                  <img
-                    src={project.image}
-                    alt={project.title}
-                    className="project-image"
-                  />
-                  <div className={`project-overlay ${hoveredProject === project.id ? 'active' : ''}`}>
-                    <div className="project-links">
-                      {project.liveUrl && (
-                        <a
-                          href={project.liveUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="project-link"
-                          aria-label="View live project"
-                        >
-                          <ExternalLink size={20} />
-                        </a>
-                      )}
-                      {project.githubUrl && (
-                        <a
-                          href={project.githubUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="project-link"
-                          aria-label="View source code"
-                        >
-                          <Github size={20} />
-                        </a>
-                      )}
-                    </div>
+                {/* Header with Icon and Title */}
+                <div className="project-header">
+                  <div className="project-icon-wrapper">
+                    {project.icon || <Code2 size={32} />}
                   </div>
+                  <h3 className="project-title">{project.title}</h3>
+                  <button className="project-arrow">
+                    <ChevronRight size={20} />
+                  </button>
                 </div>
 
-                {/* Project Content */}
-                <div className="project-content">
-                  <h3 className="project-title">{project.title}</h3>
-                  <p className="project-description">{project.description}</p>
-                  
-                  {/* Tech Stack */}
-                  <div className="project-tech-stack">
-                    {project.techStack.map((tech, index) => (
-                      <span key={index} className="tech-tag">
-                        {tech}
-                      </span>
+                {/* Description */}
+                <p className="project-description">{project.description}</p>
+
+                {/* Preview Content */}
+                {project.preview && (
+                  <div className="project-preview">
+                    {project.preview.map((line, index) => (
+                      <div key={index} className="preview-line">
+                        {line}
+                      </div>
                     ))}
+                  </div>
+                )}
+
+                {/* Bottom Section with Links */}
+                <div className="project-bottom">
+                  <div className="project-links">
+                    {project.liveUrl && (
+                      <a
+                        href={project.liveUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="project-link-icon"
+                        aria-label="View live project"
+                      >
+                        <ExternalLink size={16} />
+                      </a>
+                    )}
+                    {project.githubUrl && (
+                      <a
+                        href={project.githubUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="project-link-icon"
+                        aria-label="View source code"
+                      >
+                        <Github size={16} />
+                      </a>
+                    )}
                   </div>
                 </div>
               </div>
             ))}
             
             {/* View More Card */}
-            <div className="project-card view-more-card">
-              <div className="view-more-content">
-                <div className="view-more-icon">
-                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <div className="project-card raycast-style view-more-card">
+              <div className="project-header">
+                <div className="project-icon-wrapper">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M12 5v14M5 12h14"/>
                   </svg>
                 </div>
-                <h3 className="view-more-title">View More Projects</h3>
-                <p className="view-more-description">
-                  Explore additional projects and experiments
-                </p>
-                <button className="view-more-button">
-                  Browse All Projects
+                <h3 className="project-title">View More</h3>
+                <button className="project-arrow">
+                  <ChevronRight size={20} />
                 </button>
+              </div>
+              
+              <p className="project-description">
+                Explore additional projects and experiments
+              </p>
+              
+              <div className="view-more-preview">
+                <div className="more-project-item">
+                  <span className="more-project-number">+6</span>
+                  <span className="more-project-text">More Projects</span>
+                </div>
+                <div className="more-categories">
+                  <div className="category-tag">Machine Learning</div>
+                  <div className="category-tag">Web Development</div>
+                  <div className="category-tag">Mobile Apps</div>
+                  <div className="category-tag">Data Science</div>
+                </div>
               </div>
             </div>
           </div>
