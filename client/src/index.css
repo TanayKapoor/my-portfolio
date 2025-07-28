@@ -403,26 +403,58 @@
   animation: slideInFromLeft 1s ease-out;
 }
 
-.tldr-switch {
+.tldr-toggle-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.tldr-label {
   font-family: 'Courier Prime', monospace;
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
   font-size: 0.875rem;
   font-weight: 500;
+  color: hsl(211, 13%, 82%);
   text-transform: uppercase;
   letter-spacing: 0.05em;
+}
+
+.tldr-toggle {
+  position: relative;
+  width: 50px;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 24px;
   cursor: pointer;
   transition: all 0.3s ease;
   backdrop-filter: blur(10px);
+  outline: none;
 }
 
-.tldr-switch:hover {
-  background: rgba(255, 255, 255, 0.15);
+.tldr-toggle:hover {
   border-color: rgba(255, 255, 255, 0.3);
-  transform: translateY(-1px);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+.tldr-toggle.active {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.toggle-slider {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  background: white;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.tldr-toggle.active .toggle-slider {
+  transform: translateX(26px);
 }
 
 .tldr-content, .full-content {

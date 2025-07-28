@@ -54,13 +54,16 @@ export default function AboutSection() {
                   <h3 className="text-2xl font-bold text-gray-100">
                     Hello! I'm Tanay
                   </h3>
-                  <button 
-                    onClick={() => setShowTldr(!showTldr)}
-                    className="tldr-switch"
-                    aria-label={showTldr ? "Show full content" : "Show TL;DR"}
-                  >
-                    {showTldr ? "Full" : "TL;DR"}
-                  </button>
+                  <div className="tldr-toggle-container">
+                    <span className="tldr-label">TL;DR</span>
+                    <button 
+                      onClick={() => setShowTldr(!showTldr)}
+                      className={`tldr-toggle ${showTldr ? 'active' : ''}`}
+                      aria-label={showTldr ? "Show full content" : "Show TL;DR"}
+                    >
+                      <div className="toggle-slider"></div>
+                    </button>
+                  </div>
                 </div>
                 
                 {showTldr ? (
