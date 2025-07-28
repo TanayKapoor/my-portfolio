@@ -70,9 +70,33 @@ I like making ideas come to life with smart, scalable systems, whether they are 
         }
       }, 10); // Erase every 10ms
     } else {
-      // When switching to full content, just show it immediately
-      setDisplayText(fullText);
-      setIsTyping(false);
+      // When switching to full content, animate it too
+      const currentText = tldrText;
+      setIsTyping(true);
+      
+      // Fast erase phase
+      let eraseIndex = currentText.length;
+      const eraseInterval = setInterval(() => {
+        setDisplayText(currentText.substring(0, eraseIndex));
+        eraseIndex -= 8; // Erase 8 characters at a time for speed
+        
+        if (eraseIndex <= 0) {
+          clearInterval(eraseInterval);
+          setDisplayText('');
+          
+          // Start typing the full text
+          let typeIndex = 0;
+          const typeInterval = setInterval(() => {
+            setDisplayText(fullText.substring(0, typeIndex + 1));
+            typeIndex++;
+            
+            if (typeIndex >= fullText.length) {
+              clearInterval(typeInterval);
+              setIsTyping(false);
+            }
+          }, 8); // Type faster for longer text
+        }
+      }, 10); // Erase every 10ms
     }
   }, [showTldr]);
 

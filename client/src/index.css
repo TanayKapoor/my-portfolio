@@ -437,8 +437,12 @@
 }
 
 .tldr-toggle.active {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(0, 255, 0, 0.2);
+  border-color: rgba(0, 255, 0, 0.6);
+  box-shadow: 
+    0 0 10px rgba(0, 255, 0, 0.3),
+    0 0 20px rgba(0, 255, 0, 0.2),
+    inset 0 0 10px rgba(0, 255, 0, 0.1);
 }
 
 .toggle-slider {
@@ -451,6 +455,14 @@
   border-radius: 50%;
   transition: all 0.3s ease;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.tldr-toggle.active .toggle-slider {
+  background: #00ff00;
+  box-shadow: 
+    0 0 8px rgba(0, 255, 0, 0.6),
+    0 0 16px rgba(0, 255, 0, 0.4),
+    0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .tldr-toggle.active .toggle-slider {
