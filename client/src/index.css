@@ -1019,6 +1019,99 @@
 .project-card:nth-child(5) { animation-delay: 0.5s; }
 .project-card:nth-child(6) { animation-delay: 0.6s; }
 
+/* View More Card */
+.view-more-card {
+  background: rgba(17, 17, 17, 0.4);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 380px;
+  transition: all 0.3s ease;
+}
+
+.view-more-card:hover {
+  background: rgba(17, 17, 17, 0.6);
+  transform: translateY(-4px);
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 
+    0 12px 24px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.15) inset;
+}
+
+.view-more-content {
+  text-align: center;
+  padding: 2rem;
+}
+
+.view-more-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 1.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.view-more-card:hover .view-more-icon {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: scale(1.1);
+}
+
+.view-more-icon svg {
+  color: rgba(255, 255, 255, 0.6);
+  transition: all 0.3s ease;
+}
+
+.view-more-card:hover .view-more-icon svg {
+  color: rgba(255, 255, 255, 0.9);
+  transform: rotate(90deg);
+}
+
+.view-more-title {
+  font-family: 'Courier Prime', monospace;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: hsl(0, 0%, 100%);
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.01em;
+}
+
+.view-more-description {
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.view-more-button {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 0.75rem 2rem;
+  border-radius: 8px;
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  outline: none;
+}
+
+.view-more-button:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .projects-title {
@@ -1037,6 +1130,10 @@
   .project-image-container {
     height: 180px;
   }
+  
+  .view-more-card {
+    min-height: 300px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -1050,5 +1147,14 @@
   
   .project-content {
     padding: 1.25rem;
+  }
+  
+  .view-more-icon {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .view-more-title {
+    font-size: 1.25rem;
   }
 }

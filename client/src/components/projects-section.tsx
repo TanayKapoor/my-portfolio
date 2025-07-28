@@ -69,6 +69,7 @@ const projects: Project[] = [
 
 export default function ProjectsSection() {
   const [hoveredProject, setHoveredProject] = useState<number | null>(null);
+  const displayedProjects = projects.slice(0, 3); // Show only first 3 projects
 
   return (
     <section className="projects-section" id="projects">
@@ -84,7 +85,7 @@ export default function ProjectsSection() {
 
           {/* Projects Grid */}
           <div className="projects-grid">
-            {projects.map((project) => (
+            {displayedProjects.map((project) => (
               <div
                 key={project.id}
                 className={`project-card ${project.featured ? 'featured' : ''}`}
@@ -142,6 +143,24 @@ export default function ProjectsSection() {
                 </div>
               </div>
             ))}
+            
+            {/* View More Card */}
+            <div className="project-card view-more-card">
+              <div className="view-more-content">
+                <div className="view-more-icon">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M12 5v14M5 12h14"/>
+                  </svg>
+                </div>
+                <h3 className="view-more-title">View More Projects</h3>
+                <p className="view-more-description">
+                  Explore additional projects and experiments
+                </p>
+                <button className="view-more-button">
+                  Browse All Projects
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
