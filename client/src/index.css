@@ -416,6 +416,16 @@
   color: hsl(211, 13%, 82%);
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  transition: all 0.3s ease;
+}
+
+.tldr-toggle.active + .tldr-label,
+.tldr-toggle-container:has(.tldr-toggle.active) .tldr-label {
+  color: #00ff00;
+  text-shadow: 
+    0 0 5px rgba(0, 255, 0, 0.8),
+    0 0 10px rgba(0, 255, 0, 0.6),
+    0 0 15px rgba(0, 255, 0, 0.4);
 }
 
 .tldr-toggle {
