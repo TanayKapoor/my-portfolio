@@ -403,6 +403,32 @@
   animation: slideInFromLeft 1s ease-out;
 }
 
+.tldr-switch {
+  font-family: 'Courier Prime', monospace;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.tldr-switch:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.tldr-content, .full-content {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
 .about-stats {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -470,6 +496,17 @@
 .skill-tag:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(255, 255, 255, 0.15);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Animations */
