@@ -36,14 +36,14 @@ export default function HalftoneHero() {
         </h2>
 
         {/* Typewriter Text */}
-        <p>
+        <div className="w-full max-w-7xl px-4">
           <Typewriter 
             messages={greetingMessages} 
             typingSpeed={150}
             backspaceSpeed={75}
             pauseBetweenMessages={2000}
           />
-        </p>
+        </div>
       </div>
     </section>
   );
