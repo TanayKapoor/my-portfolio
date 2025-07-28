@@ -140,7 +140,7 @@
 /* Profile picture center container - absolute center of screen */
 .profile-picture-center {
   position: absolute;
-  top: 40%;
+  top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 10;
@@ -152,7 +152,7 @@
 /* Content styling - positioned below profile picture */
 .halftone-content {
   position: absolute;
-  top: calc(40% + clamp(100px, 15vw, 140px));
+  top: calc(50% + clamp(120px, 18vw, 160px));
   left: 50%;
   transform: translateX(-50%);
   z-index: 2;
@@ -234,7 +234,7 @@
 /* Job title styling */
 .job-title {
   font-family: 'Courier Prime', monospace;
-  font-size: 1.2rem;
+  font-size: clamp(0.9rem, 2.5vw, 1.2rem);
   color: hsl(0, 0%, 100%);
   text-shadow: 
     0 0 10px rgba(255, 255, 255, 0.5),
@@ -249,15 +249,15 @@
   backdrop-filter: blur(15px);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 50px;
-  padding: 12px 24px;
+  padding: clamp(8px, 1.5vw, 12px) clamp(16px, 3vw, 24px);
   box-shadow: 
     0 8px 32px rgba(0, 0, 0, 0.3),
     0 0 20px rgba(255, 255, 255, 0.2),
     inset 0 1px 0 rgba(255, 255, 255, 0.3);
   transition: all 0.3s ease;
-  white-space: nowrap;
+  white-space: normal;
   width: fit-content;
-  min-width: 320px;
+  max-width: 90%;
 }
 
 .job-title:hover {
@@ -694,11 +694,11 @@
   
   .halftone-content {
     padding: 0 1rem;
-    top: calc(40% + clamp(80px, 12vw, 100px));
+    top: calc(50% + clamp(90px, 15vw, 120px));
   }
   
   .profile-picture-center {
-    top: 40%;
+    top: 50%;
   }
   
   .profile-picture {
@@ -707,10 +707,10 @@
   }
   
   .job-title {
-    font-size: 1rem;
-    min-width: 280px;
-    padding: 10px 20px;
+    font-size: clamp(0.8rem, 2vw, 1rem);
+    padding: 8px 16px;
     margin: 0 auto;
+    max-width: 95%;
   }
 }
 
@@ -743,11 +743,11 @@
   
   .halftone-content {
     padding: 0 1.5rem;
-    top: calc(40% + clamp(90px, 14vw, 120px));
+    top: calc(50% + clamp(100px, 16vw, 130px));
   }
   
   .profile-picture-center {
-    top: 40%;
+    top: 50%;
   }
   
   .profile-picture {
@@ -756,10 +756,10 @@
   }
   
   .job-title {
-    font-size: 1.1rem;
-    min-width: 300px;
-    padding: 11px 22px;
+    font-size: clamp(0.85rem, 2.2vw, 1.1rem);
+    padding: 10px 20px;
     margin: 0 auto;
+    max-width: 90%;
   }
 }
 
@@ -767,7 +767,7 @@
 @media (min-width: 769px) and (max-width: 1024px) {
   .halftone-content {
     padding: 0 2rem;
-    top: calc(40% + clamp(100px, 15vw, 130px));
+    top: calc(50% + clamp(110px, 17vw, 140px));
   }
   
   .profile-picture {
