@@ -50,7 +50,7 @@ I like making ideas come to life with smart, scalable systems, whether they are 
       let eraseIndex = currentText.length;
       const eraseInterval = setInterval(() => {
         setDisplayText(currentText.substring(0, eraseIndex));
-        eraseIndex -= 3; // Erase 3 characters at a time for speed
+        eraseIndex -= 8; // Erase 8 characters at a time for speed
         
         if (eraseIndex <= 0) {
           clearInterval(eraseInterval);
@@ -66,9 +66,9 @@ I like making ideas come to life with smart, scalable systems, whether they are 
               clearInterval(typeInterval);
               setIsTyping(false);
             }
-          }, 30); // Type one character every 30ms
+          }, 15); // Type one character every 15ms
         }
-      }, 20); // Erase every 20ms
+      }, 10); // Erase every 10ms
     } else {
       // When switching to full content, just show it immediately
       setDisplayText(fullText);
