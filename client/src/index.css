@@ -478,6 +478,16 @@
     0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
+.tldr-toggle.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.tldr-toggle.disabled .toggle-slider {
+  animation: none;
+}
+
 .tldr-toggle.active .toggle-slider {
   transform: translateX(26px);
 }

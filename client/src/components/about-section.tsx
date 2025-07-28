@@ -154,9 +154,10 @@ I like making ideas come to life with smart, scalable systems, whether they are 
               <div className="tldr-toggle-container">
                 <span className="tldr-label">TL;DR</span>
                 <button 
-                  onClick={() => setShowTldr(!showTldr)}
-                  className={`tldr-toggle ${showTldr ? 'active' : ''}`}
+                  onClick={() => !isTyping && setShowTldr(!showTldr)}
+                  className={`tldr-toggle ${showTldr ? 'active' : ''} ${isTyping ? 'disabled' : ''}`}
                   aria-label={showTldr ? "Show full content" : "Show TL;DR"}
+                  disabled={isTyping}
                 >
                   <div className="toggle-slider"></div>
                 </button>
