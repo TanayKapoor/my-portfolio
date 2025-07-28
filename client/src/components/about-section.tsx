@@ -31,8 +31,31 @@ export default function AboutSection() {
 
   const skills = ['Python', 'JavaScript', 'Machine Learning', 'React', 'Node.js', 'TensorFlow'];
 
+  const calculateYearsOfExperience = () => {
+    const startYear = 2022;
+    const currentYear = new Date().getFullYear();
+    const currentMonth = new Date().getMonth() + 1; // 0-indexed, so add 1
+    
+    let years = currentYear - startYear;
+    
+    // If we're still early in the year (before work anniversary), show previous year value
+    // Assuming work started around mid-year for more accurate calculation
+    if (currentMonth < 6) {
+      years = Math.max(0, years - 1);
+    }
+    
+    // Format the display
+    if (years === 0) {
+      return '<1';
+    } else if (years === 1) {
+      return '1+';
+    } else {
+      return `${years}+`;
+    }
+  };
+
   const stats = [
-    { number: '1.5+', label: 'Years of Experience' },
+    { number: calculateYearsOfExperience(), label: 'Years of Experience' },
     { number: '10+', label: 'Projects Completed' },
     { number: '∞', label: 'Cups of Tea' }
   ];
