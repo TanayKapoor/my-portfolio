@@ -457,8 +457,22 @@
   transform: translateX(26px);
 }
 
+.content-container {
+  position: relative;
+  min-height: 200px;
+}
+
 .tldr-content, .full-content {
-  animation: fadeIn 0.3s ease-in-out;
+  animation: slideInContent 0.4s ease-out;
+  transform-origin: top;
+}
+
+.tldr-content {
+  animation: slideInFromRight 0.4s ease-out;
+}
+
+.full-content {
+  animation: slideInFromLeft 0.4s ease-out;
 }
 
 .about-stats {
@@ -528,6 +542,28 @@
 .skill-tag:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(255, 255, 255, 0.15);
+}
+
+@keyframes slideInContent {
+  from {
+    opacity: 0;
+    transform: translateY(15px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes slideInFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) translateY(0);
+  }
 }
 
 @keyframes fadeIn {
