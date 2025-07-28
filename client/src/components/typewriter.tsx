@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 interface TypewriterProps {
   messages: string[];
@@ -15,67 +15,48 @@ export default function Typewriter({
 }: TypewriterProps) {
   const [currentText, setCurrentText] = useState('');
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
-  const [isTyping, setIsTyping] = useState(true);
   const [showCursor, setShowCursor] = useState(true);
+  const [charIndex, setCharIndex] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
-    let typewriterInterval: NodeJS.Timeout;
-    let cursorInterval: NodeJS.Timeout;
-
-    const startTypewriterAnimation = () => {
-      const typeMessage = () => {
-        let charIndex = 0;
-        const currentMessage = messages[currentMessageIndex];
-        setIsTyping(true);
-
-        typewriterInterval = setInterval(() => {
-          if (charIndex < currentMessage.length) {
-            setCurrentText(currentMessage.substring(0, charIndex + 1));
-            charIndex++;
-          } else {
-            clearInterval(typewriterInterval);
-            setTimeout(() => {
-              setIsTyping(false);
-              startBackspacing(currentMessage, charIndex);
-            }, pauseBetweenMessages);
-          }
-        }, typingSpeed);
-      };
-
-      typeMessage();
-    };
-
-    const startBackspacing = (message: string, startIndex: number) => {
-      let charIndex = startIndex;
-
-      typewriterInterval = setInterval(() => {
-        if (charIndex > 0) {
-          charIndex--;
-          setCurrentText(message.substring(0, charIndex));
+    const currentMessage = messages[currentMessageIndex];
+    
+    const typeTimeout = setTimeout(() => {
+      if (!isDeleting) {
+        // Typing
+        if (charIndex < currentMessage.length) {
+          setCurrentText(currentMessage.substring(0, charIndex + 1));
+          setCharIndex(charIndex + 1);
         } else {
-          clearInterval(typewriterInterval);
-          setCurrentMessageIndex((prev) => (prev + 1) % messages.length);
+          // Finished typing, pause then start deleting
           setTimeout(() => {
-            startTypewriterAnimation();
-          }, 500);
+            setIsDeleting(true);
+          }, pauseBetweenMessages);
         }
-      }, backspaceSpeed);
-    };
+      } else {
+        // Deleting
+        if (charIndex > 0) {
+          setCurrentText(currentMessage.substring(0, charIndex - 1));
+          setCharIndex(charIndex - 1);
+        } else {
+          // Finished deleting, move to next message
+          setIsDeleting(false);
+          setCurrentMessageIndex((prev) => (prev + 1) % messages.length);
+        }
+      }
+    }, isDeleting ? backspaceSpeed : typingSpeed);
 
-    const startCursorBlink = () => {
-      cursorInterval = setInterval(() => {
-        setShowCursor(prev => !prev);
-      }, 600);
-    };
+    return () => clearTimeout(typeTimeout);
+  }, [charIndex, currentMessageIndex, isDeleting, messages, typingSpeed, backspaceSpeed, pauseBetweenMessages]);
 
-    startTypewriterAnimation();
-    startCursorBlink();
+  useEffect(() => {
+    const cursorInterval = setInterval(() => {
+      setShowCursor(prev => !prev);
+    }, 600);
 
-    return () => {
-      clearInterval(typewriterInterval);
-      clearInterval(cursorInterval);
-    };
-  }, [messages, typingSpeed, backspaceSpeed, pauseBetweenMessages]);
+    return () => clearInterval(cursorInterval);
+  }, []);
 
   return (
     <span className="greeting-text">
