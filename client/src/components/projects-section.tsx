@@ -6,7 +6,6 @@ interface Project {
   title: string;
   description: string;
   icon?: React.ReactNode;
-  preview?: string[];
 }
 
 const projects: Project[] = [
@@ -20,13 +19,7 @@ const projects: Project[] = [
         <path d="M16 8v8m-4-4h8M12 20h8a2 2 0 002-2v-4a2 2 0 00-2-2h-8a2 2 0 00-2 2v4a2 2 0 002 2z" stroke="rgba(255, 255, 255, 0.9)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
       </svg>
     ),
-    preview: [
-      "Weekly meal planning",
-      "Grocery list generation",
-      "Cooking time estimation",
-      "Smart ingredient substitutions",
-      "Nutritional analysis dashboard"
-    ]
+
   },
   {
     id: 2,
@@ -39,13 +32,7 @@ const projects: Project[] = [
         <path d="M16 12v4l3 3" stroke="rgba(255, 255, 255, 0.9)" strokeWidth="2" strokeLinecap="round"/>
       </svg>
     ),
-    preview: [
-      "25-minute focus sessions",
-      "Nature sounds & white noise",
-      "Daily productivity tracking",
-      "Goal setting & achievements",
-      "Cross-device synchronization"
-    ]
+
   },
   {
     id: 3,
@@ -58,13 +45,7 @@ const projects: Project[] = [
         <path d="M12 24v-4M20 24v-4" stroke="rgba(255, 255, 255, 0.9)" strokeWidth="2" strokeLinecap="round"/>
       </svg>
     ),
-    preview: [
-      "Real-time temperature & humidity",
-      "Historical weather patterns",
-      "Rain prediction algorithms",
-      "Mobile alerts & notifications",
-      "Indoor air quality monitoring"
-    ]
+
   }
 ];
 
@@ -106,17 +87,6 @@ export default function ProjectsSection() {
 
                 {/* Description */}
                 <p className="project-description">{project.description}</p>
-
-                {/* Preview Content */}
-                {project.preview && (
-                  <div className="project-preview">
-                    {project.preview.map((line, index) => (
-                      <div key={index} className="preview-line">
-                        {line}
-                      </div>
-                    ))}
-                  </div>
-                )}
 
                 {/* Bottom Image Placeholder */}
                 <div className="project-image-placeholder">
