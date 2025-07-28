@@ -18,6 +18,22 @@ export default function Typewriter({
   const [showCursor, setShowCursor] = useState(true);
   const [charIndex, setCharIndex] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [fontSize, setFontSize] = useState('2.4rem');
+
+  // Calculate dynamic font size based on text length
+  const calculateFontSize = (text: string) => {
+    const length = text.length;
+    if (length <= 20) return 'clamp(1.5rem, 4vw, 2.4rem)';
+    if (length <= 30) return 'clamp(1.3rem, 3.5vw, 2rem)';
+    if (length <= 40) return 'clamp(1.1rem, 3vw, 1.7rem)';
+    return 'clamp(0.9rem, 2.5vw, 1.4rem)';
+  };
+
+  // Update font size when message changes
+  useEffect(() => {
+    const newFontSize = calculateFontSize(messages[currentMessageIndex]);
+    setFontSize(newFontSize);
+  }, [currentMessageIndex, messages]);
 
   useEffect(() => {
     const currentMessage = messages[currentMessageIndex];
@@ -59,7 +75,7 @@ export default function Typewriter({
   }, []);
 
   return (
-    <span className="greeting-text">
+    <span className="greeting-text" style={{ fontSize, transition: 'font-size 0.3s ease' }}>
       {currentText}
       <span className={`cursor ${showCursor ? 'visible' : ''}`}>|</span>
     </span>

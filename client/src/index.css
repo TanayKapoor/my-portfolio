@@ -286,7 +286,7 @@
 /* Greeting text styling */
 .greeting-text {
   font-family: 'Courier Prime', monospace;
-  font-size: 2.4rem;
+  /* Font size is now dynamically set by the component */
   color: hsl(0, 0%, 100%);
   text-shadow: 
     -2px -2px 0 hsl(0, 0%, 0%),
@@ -314,8 +314,8 @@
   text-align: center;
   transition: all 0.3s ease;
   line-height: 1.2;
-  min-height: 2.88rem; /* Minimum height for single line */
-  display: flex;
+  min-height: 1.44rem; /* Adjusted for dynamic sizing */
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 100%;
@@ -688,8 +688,8 @@
 /* Additional responsive for very small screens */
 @media (max-width: 480px) {
   .greeting-text {
-    font-size: 1.2rem;
-    min-height: 1.44rem;
+    /* Font size handled dynamically by component */
+    min-height: 1.2rem;
   }
   
   .halftone-content {
@@ -737,8 +737,8 @@
   }
   
   .greeting-text {
-    font-size: 1.5rem;
-    min-height: 1.8rem; /* Adjusted for smaller font */
+    /* Font size handled dynamically by component */
+    min-height: 1.4rem;
   }
   
   .halftone-content {
