@@ -99,7 +99,7 @@
   --i0: 0;
   --j0: 0;
   --k0: 0;
-  --map: repeating-radial-gradient(circle, 
+  --map: repeating-radial-gradient(circle at 50% 60%, 
     hsl(0, 0%, 46.7%) calc((var(--k0) - 1)*20%), hsl(0, 0%, 0%), hsl(0, 0%, 46.7%) calc(var(--k0)*20%));
   animation: 
     i0 3.2591s linear infinite, 
@@ -172,6 +172,8 @@
     inset 0 0 20px rgba(255, 255, 255, 0.1);
   transition: all 0.3s ease;
   margin: 0 auto;
+  position: relative;
+  z-index: 10;
 }
 
 .profile-picture:hover {
