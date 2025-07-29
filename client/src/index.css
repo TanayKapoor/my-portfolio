@@ -1588,39 +1588,28 @@
   border-radius: 2px;
 }
 
-/* Timeline Dots Container */
-.timeline-dots-container {
-  position: absolute;
-  top: 5.4rem;
-  left: calc(50vw - 200px + 2rem + 200px);
-  height: 18px;
-  display: flex;
-  align-items: center;
-  z-index: 3;
-  pointer-events: none;
-  gap: calc(400px + 3rem);
-}
-
-/* Timeline Dot */
-.timeline-dot {
-  position: relative;
-  width: 18px;
-  height: 18px;
-  background: rgba(15, 23, 42, 0.95);
-  border: 2px solid rgba(59, 130, 246, 0.8);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
 /* Timeline Item */
 .timeline-item {
   position: relative;
   min-width: 400px;
   flex-shrink: 0;
-  padding-top: 2rem;
+}
+
+/* Timeline Dot */
+.timeline-dot {
+  position: absolute;
+  top: calc(5rem - 9px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 18px;
+  height: 18px;
+  background: rgba(15, 23, 42, 0.95);
+  border: 2px solid rgba(59, 130, 246, 0.8);
+  border-radius: 50%;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .timeline-dot.current {
@@ -1651,11 +1640,11 @@
 
 @keyframes pulse-current {
   0%, 100% {
-    transform: scale(1);
+    transform: scale(1) translateX(-50%);
     opacity: 1;
   }
   50% {
-    transform: scale(1.15);
+    transform: scale(1.15) translateX(-50%);
     opacity: 0.9;
   }
 }
@@ -1669,7 +1658,7 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 20px;
   padding: 2rem;
-  margin-top: 3rem;
+  margin-top: 5rem;
   backdrop-filter: blur(40px);
   transition: all 0.3s ease;
   position: relative;

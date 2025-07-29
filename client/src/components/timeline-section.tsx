@@ -176,18 +176,14 @@ export default function TimelineSection() {
               {/* Timeline Line */}
               <div className="timeline-line"></div>
               
-              {/* Timeline Dots Container */}
-              <div className="timeline-dots-container">
-                {workExperiences.map((experience, index) => (
-                  <div key={`dot-${experience.id}`} className={`timeline-dot ${experience.type}`}>
-                    <div className="dot-inner"></div>
-                  </div>
-                ))}
-              </div>
-              
               {/* Experience Cards */}
               {workExperiences.map((experience, index) => (
                 <div key={experience.id} className={`timeline-item ${experience.type}`}>
+                  
+                  {/* Timeline Dot */}
+                  <div className={`timeline-dot ${experience.type}`}>
+                    <div className="dot-inner"></div>
+                  </div>
                   
                   {/* Experience Card */}
                   <div className="experience-card">
