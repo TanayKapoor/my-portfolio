@@ -109,22 +109,24 @@ export default function TimelineSection() {
       const cardWidth = 400;
       const gap = 48; // 3rem = 48px
       
-      // Get viewport center
-      const viewportCenter = window.innerWidth / 2;
+      // Get viewport dimensions
+      const viewportWidth = window.innerWidth;
+      const viewportCenter = viewportWidth / 2;
       
-      // Calculate the position to place current card in the center of viewport
-      // The card should be centered, with all other cards to the left
-      const containerPadding = (window.innerWidth / 2) - 200; // calc(50vw - 200px)
-      const itemLeftPosition = currentIndex * (cardWidth + gap);
+      // Calculate total width of all items before current
+      const totalWidthBeforeCurrent = currentIndex * (cardWidth + gap);
       
-      // Position current card so its center aligns with viewport center
-      // We want: itemLeftPosition + cardWidth/2 = viewportCenter
-      // So scroll = itemLeftPosition + cardWidth/2 - viewportCenter + containerPadding
-      const scrollNeeded = itemLeftPosition + (cardWidth / 2) - viewportCenter + containerPadding;
+      // We want the current card to be centered in viewport
+      // So the left edge of current card should be at: viewportCenter - cardWidth/2
+      // Container padding shifts everything, so we need to account for that
+      const containerPadding = (viewportWidth / 2) - 200; // calc(50vw - 200px)
+      
+      // The scroll amount needed to position current card in center
+      const scrollNeeded = totalWidthBeforeCurrent - (viewportCenter - cardWidth/2) + containerPadding;
       
       // Apply the scroll
       container.scrollLeft = Math.max(0, scrollNeeded);
-      console.log(`Centering current position. Scroll to: ${scrollNeeded}, viewport center: ${viewportCenter}, current index: ${currentIndex}`);
+      console.log(`Centering current position. Scroll: ${scrollNeeded}, viewport: ${viewportWidth}, center: ${viewportCenter}, current index: ${currentIndex}`);
     };
 
     // Multiple attempts to ensure proper centering
