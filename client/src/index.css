@@ -854,6 +854,13 @@
   display: none;
 }
 
+/* Project Card Link Wrapper */
+.project-card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
 /* Project Card - Raycast Style */
 .project-card {
   background: linear-gradient(135deg, 

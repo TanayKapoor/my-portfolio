@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { ExternalLink, Github, ChevronRight, Code2, Brain, FileSearch, ChevronLeft } from 'lucide-react';
+import { Link } from 'wouter';
 
 interface Project {
   id: number;
@@ -158,13 +159,17 @@ export default function ProjectsSection() {
           {/* Projects Horizontal Scroll */}
           <div className="projects-scroll-container pl-[0px] pr-[0px] mt-[23px] mb-[23px]" ref={scrollContainerRef}>
             {projects.map((project) => (
-              <div
-                key={project.id}
-                className="project-card raycast-style"
-                data-project-id={project.id}
-                onMouseEnter={() => setHoveredProject(project.id)}
-                onMouseLeave={() => setHoveredProject(null)}
+              <Link 
+                key={project.id} 
+                href={`/project/${project.id}`}
+                className="project-card-link"
               >
+                <div
+                  className="project-card raycast-style"
+                  data-project-id={project.id}
+                  onMouseEnter={() => setHoveredProject(project.id)}
+                  onMouseLeave={() => setHoveredProject(null)}
+                >
                 {/* Header with Icon and Title */}
                 <div className="project-header">
                   <div className="project-icon-wrapper">
@@ -247,6 +252,7 @@ export default function ProjectsSection() {
                   </div>
                 </div>
               </div>
+              </Link>
             ))}
           </div>
           
