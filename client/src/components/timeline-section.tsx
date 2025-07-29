@@ -138,7 +138,7 @@ export default function TimelineSection() {
           <div className="timeline-header">
             <h2 className="timeline-title">Work Experience</h2>
             <p className="timeline-subtitle">
-              My professional journey through the years
+              Starting from my current position, scroll right to explore my career journey back in time
             </p>
           </div>
 
@@ -205,14 +205,14 @@ export default function TimelineSection() {
           {/* Navigation Controls */}
           <div className="timeline-controls">
             <div className="timeline-nav-text">
-              <span>Navigate timeline →</span>
+              <span>← Present | Scroll right to explore past →</span>
             </div>
             <div className="timeline-nav-buttons">
               <button 
                 className={`nav-button ${!canScrollLeft ? 'disabled' : ''}`}
                 onClick={scrollLeft}
                 disabled={!canScrollLeft}
-                aria-label="Scroll to recent"
+                aria-label="Back to present"
               >
                 <ChevronLeft size={16} />
               </button>
@@ -220,7 +220,7 @@ export default function TimelineSection() {
                 className={`nav-button ${!canScrollRight ? 'disabled' : ''}`}
                 onClick={scrollRight}
                 disabled={!canScrollRight}
-                aria-label="Scroll to past"
+                aria-label="Explore past"
               >
                 <ChevronRight size={16} />
               </button>
