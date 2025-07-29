@@ -1812,23 +1812,29 @@
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+  height: 320px;
+  display: flex;
+  flex-direction: column;
 }
 
 @media (min-width: 480px) {
   .experience-card {
     padding: 1.25rem;
+    height: 340px;
   }
 }
 
 @media (min-width: 640px) {
   .experience-card {
     padding: 1.75rem;
+    height: 360px;
   }
 }
 
 @media (min-width: 768px) {
   .experience-card {
     padding: 2rem;
+    height: 380px;
   }
 }
 
@@ -2010,6 +2016,9 @@
 /* Experience Description */
 .experience-description {
   margin-bottom: 1.5rem;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .description-item {
