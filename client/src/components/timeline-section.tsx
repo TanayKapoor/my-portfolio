@@ -16,37 +16,20 @@ interface WorkExperience {
 
 const workExperiences: WorkExperience[] = [
   {
-    id: 1,
-    position: "Full Stack Machine Learning Engineer",
-    company: "TechFlow Solutions",
-    location: "Mumbai, India",
-    duration: "2023 - Present",
-    startDate: "2023",
-    endDate: "Present",
+    id: 4,
+    position: "Intern - Software Development",
+    company: "InnovateLabs",
+    location: "Remote",
+    duration: "2019 - 2020",
+    startDate: "2019", 
+    endDate: "2020",
     description: [
-      "Leading development of AI-powered products using modern ML frameworks",
-      "Building scalable web applications with React, Node.js, and Python",
-      "Implementing LLM integrations and prompt engineering solutions",
-      "Architecting cloud-native solutions for production ML workflows"
+      "Assisted in developing mobile applications using React Native",
+      "Learned fundamentals of software engineering and testing",
+      "Participated in code reviews and documentation",
+      "Built personal projects to strengthen programming skills"
     ],
-    technologies: ["Python", "React", "Node.js", "TensorFlow", "AWS", "Docker"],
-    type: "current"
-  },
-  {
-    id: 2,
-    position: "Software Engineer",
-    company: "DataBridge Analytics",
-    location: "Bangalore, India",
-    duration: "2021 - 2023",
-    startDate: "2021",
-    endDate: "2023",
-    description: [
-      "Developed data visualization dashboards using React and D3.js",
-      "Built ETL pipelines for processing large-scale datasets",
-      "Implemented machine learning models for predictive analytics",
-      "Collaborated with cross-functional teams on product roadmap"
-    ],
-    technologies: ["JavaScript", "Python", "React", "Django", "PostgreSQL", "Redis"],
+    technologies: ["React Native", "JavaScript", "Firebase", "Git"],
     type: "past"
   },
   {
@@ -67,21 +50,38 @@ const workExperiences: WorkExperience[] = [
     type: "past"
   },
   {
-    id: 4,
-    position: "Intern - Software Development",
-    company: "InnovateLabs",
-    location: "Remote",
-    duration: "2019 - 2020",
-    startDate: "2019", 
-    endDate: "2020",
+    id: 2,
+    position: "Software Engineer",
+    company: "DataBridge Analytics",
+    location: "Bangalore, India",
+    duration: "2021 - 2023",
+    startDate: "2021",
+    endDate: "2023",
     description: [
-      "Assisted in developing mobile applications using React Native",
-      "Learned fundamentals of software engineering and testing",
-      "Participated in code reviews and documentation",
-      "Built personal projects to strengthen programming skills"
+      "Developed data visualization dashboards using React and D3.js",
+      "Built ETL pipelines for processing large-scale datasets",
+      "Implemented machine learning models for predictive analytics",
+      "Collaborated with cross-functional teams on product roadmap"
     ],
-    technologies: ["React Native", "JavaScript", "Firebase", "Git"],
+    technologies: ["JavaScript", "Python", "React", "Django", "PostgreSQL", "Redis"],
     type: "past"
+  },
+  {
+    id: 1,
+    position: "Full Stack Machine Learning Engineer",
+    company: "TechFlow Solutions",
+    location: "Mumbai, India",
+    duration: "2023 - Present",
+    startDate: "2023",
+    endDate: "Present",
+    description: [
+      "Leading development of AI-powered products using modern ML frameworks",
+      "Building scalable web applications with React, Node.js, and Python",
+      "Implementing LLM integrations and prompt engineering solutions",
+      "Architecting cloud-native solutions for production ML workflows"
+    ],
+    technologies: ["Python", "React", "Node.js", "TensorFlow", "AWS", "Docker"],
+    type: "current"
   }
 ];
 
@@ -102,8 +102,22 @@ export default function TimelineSection() {
       setCanScrollRight(scrollLeft < maxScroll - 1);
     };
 
-    // Initial state
-    updateScrollState();
+    // Scroll to center the current position on initial load
+    const scrollToCenter = () => {
+      const currentIndex = workExperiences.findIndex(exp => exp.type === 'current');
+      if (currentIndex !== -1) {
+        const cardWidth = 400; // min-width of timeline-item
+        const gap = 48; // 3rem gap
+        const scrollPosition = (currentIndex * (cardWidth + gap)) - (container.clientWidth / 2) + (cardWidth / 2);
+        container.scrollLeft = scrollPosition;
+      }
+    };
+
+    // Initial state and center scroll
+    setTimeout(() => {
+      scrollToCenter();
+      updateScrollState();
+    }, 100);
     
     // Update on scroll
     container.addEventListener('scroll', updateScrollState);
@@ -138,7 +152,7 @@ export default function TimelineSection() {
           <div className="timeline-header">
             <h2 className="timeline-title">Work Experience</h2>
             <p className="timeline-subtitle">
-              Starting from my current position, scroll right to explore my career journey back in time
+              My professional journey through the years - current role highlighted in the center
             </p>
           </div>
 
@@ -205,7 +219,7 @@ export default function TimelineSection() {
           {/* Navigation Controls */}
           <div className="timeline-controls">
             <div className="timeline-nav-text">
-              <span>← Present | Scroll right to explore past →</span>
+              <span>← Past experiences | Current position | Future →</span>
             </div>
             <div className="timeline-nav-buttons">
               <button 
