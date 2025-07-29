@@ -113,20 +113,24 @@ export default function TimelineSection() {
       const viewportWidth = window.innerWidth;
       const viewportCenter = viewportWidth / 2;
       
-      // Calculate total width of all items before current
-      const totalWidthBeforeCurrent = currentIndex * (cardWidth + gap);
+      // Calculate position of current card's left edge relative to container start
+      const currentCardLeft = currentIndex * (cardWidth + gap);
       
-      // We want the current card to be centered in viewport
-      // So the left edge of current card should be at: viewportCenter - cardWidth/2
-      // Container padding shifts everything, so we need to account for that
+      // Calculate position of current card's center
+      const currentCardCenter = currentCardLeft + (cardWidth / 2);
+      
+      // Container has padding that shifts content
       const containerPadding = (viewportWidth / 2) - 200; // calc(50vw - 200px)
       
-      // The scroll amount needed to position current card in center
-      const scrollNeeded = totalWidthBeforeCurrent - (viewportCenter - cardWidth/2) + containerPadding;
+      // We want: current card center = viewport center (when scrolled)
+      // scroll + viewportCenter = currentCardCenter + containerPadding
+      // Therefore: scroll = currentCardCenter + containerPadding - viewportCenter
+      const scrollNeeded = currentCardCenter + containerPadding - viewportCenter;
       
-      // Apply the scroll
-      container.scrollLeft = Math.max(0, scrollNeeded);
-      console.log(`Centering current position. Scroll: ${scrollNeeded}, viewport: ${viewportWidth}, center: ${viewportCenter}, current index: ${currentIndex}`);
+      // Apply the scroll with slight additional offset to ensure nothing appears to the right
+      const finalScroll = scrollNeeded + 50; // Add 50px to ensure current is truly rightmost visible
+      container.scrollLeft = Math.max(0, finalScroll);
+      console.log(`Centering current position. Final scroll: ${finalScroll}, card center: ${currentCardCenter}, viewport center: ${viewportCenter}`);
     };
 
     // Multiple attempts to ensure proper centering
