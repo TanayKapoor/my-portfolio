@@ -972,9 +972,17 @@
   color: rgba(255, 255, 255, 0.7);
 }
 
+/* Project Divider */
+.project-divider {
+  width: 100%;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+  margin: 1.5rem 0 0 0;
+}
+
 /* Project Image Placeholder */
 .project-image-placeholder {
-  margin-top: 1rem;
+  margin-top: 0;
   margin-left: -1.5rem;
   margin-right: -1.5rem;
   margin-bottom: -1.5rem;

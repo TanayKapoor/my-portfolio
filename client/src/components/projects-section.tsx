@@ -88,6 +88,9 @@ export default function ProjectsSection() {
                 {/* Description */}
                 <p className="project-description">{project.description}</p>
 
+                {/* Divider */}
+                <div className="project-divider"></div>
+
                 {/* Bottom Image Placeholder */}
                 <div className="project-image-placeholder">
                   <div className="image-placeholder-content">
