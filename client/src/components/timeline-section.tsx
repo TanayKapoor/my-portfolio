@@ -109,20 +109,20 @@ export default function TimelineSection() {
       const cardWidth = 400;
       const gap = 48;
       
-      // Calculate total scroll needed to center the current position
-      const totalScrollWidth = container.scrollWidth;
-      const containerWidth = container.clientWidth;
-      const maxScroll = totalScrollWidth - containerWidth;
+      // Get viewport center
+      const viewportCenter = window.innerWidth / 2;
       
-      // Position current item in center of viewport
-      const itemPosition = currentIndex * (cardWidth + gap);
-      const scrollToCenter = itemPosition - (containerWidth / 2) + (cardWidth / 2);
+      // Calculate the position of the current item relative to the container
+      const itemLeftPosition = currentIndex * (cardWidth + gap);
+      const itemCenter = itemLeftPosition + (cardWidth / 2);
       
-      // Ensure we don't scroll beyond bounds
-      const finalScrollPosition = Math.min(Math.max(0, scrollToCenter), maxScroll);
+      // Calculate scroll needed to center the current item in viewport
+      const containerPadding = (window.innerWidth / 2) - 200; // calc(50vw - 200px)
+      const scrollNeeded = itemCenter - viewportCenter + containerPadding;
       
-      container.scrollLeft = finalScrollPosition;
-      console.log(`Scrolling to position: ${finalScrollPosition}, current index: ${currentIndex}`);
+      // Apply the scroll
+      container.scrollLeft = Math.max(0, scrollNeeded);
+      console.log(`Centering current position. Scroll to: ${scrollNeeded}, viewport center: ${viewportCenter}`);
     };
 
     // Multiple attempts to ensure proper centering

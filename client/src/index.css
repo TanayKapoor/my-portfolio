@@ -1547,20 +1547,20 @@
   display: flex;
   gap: 3rem;
   overflow-x: auto;
-  padding: 2rem 200px 3rem 200px;
+  padding: 2rem calc(50vw - 200px) 3rem calc(50vw - 200px);
   scrollbar-width: none;
   -ms-overflow-style: none;
   position: relative;
   mask: linear-gradient(90deg, 
     transparent 0px, 
-    black 60px, 
-    black calc(100% - 60px), 
+    black 80px, 
+    black calc(100% - 80px), 
     transparent 100%
   );
   -webkit-mask: linear-gradient(90deg, 
     transparent 0px, 
-    black 60px, 
-    black calc(100% - 60px), 
+    black 80px, 
+    black calc(100% - 80px), 
     transparent 100%
   );
 }
@@ -1573,8 +1573,8 @@
 .timeline-line {
   position: absolute;
   top: 6rem;
-  left: 200px;
-  right: 200px;
+  left: calc(50vw - 200px);
+  right: calc(50vw - 200px);
   height: 3px;
   background: linear-gradient(
     90deg,
