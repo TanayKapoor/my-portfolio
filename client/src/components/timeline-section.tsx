@@ -112,13 +112,15 @@ export default function TimelineSection() {
       // Get viewport center
       const viewportCenter = window.innerWidth / 2;
       
-      // Calculate the position of the current item relative to the container start
+      // Calculate the position to place current card in the center of viewport
+      // The card should be centered, with all other cards to the left
       const containerPadding = (window.innerWidth / 2) - 200; // calc(50vw - 200px)
       const itemLeftPosition = currentIndex * (cardWidth + gap);
-      const itemCenter = itemLeftPosition + (cardWidth / 2);
       
-      // Calculate scroll needed to center the current item in viewport
-      const scrollNeeded = itemCenter - (viewportCenter - containerPadding);
+      // Position current card so its center aligns with viewport center
+      // We want: itemLeftPosition + cardWidth/2 = viewportCenter
+      // So scroll = itemLeftPosition + cardWidth/2 - viewportCenter + containerPadding
+      const scrollNeeded = itemLeftPosition + (cardWidth / 2) - viewportCenter + containerPadding;
       
       // Apply the scroll
       container.scrollLeft = Math.max(0, scrollNeeded);
