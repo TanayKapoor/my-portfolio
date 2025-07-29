@@ -1003,31 +1003,101 @@
   border-color: rgba(255, 255, 255, 0.12);
 }
 
-.image-placeholder-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.75rem;
-  color: rgba(255, 255, 255, 0.4);
-}
-
-.placeholder-icon {
+/* Project Visual Content */
+.project-visual-content {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 100%;
+  height: 100%;
 }
 
-.placeholder-text {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  font-size: 0.875rem;
-  font-weight: 500;
-  letter-spacing: -0.01em;
+/* Meal Planner Visual */
+.meal-planner-visual {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.project-card:hover .image-placeholder-content {
-  color: rgba(255, 255, 255, 0.6);
+.food-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+}
+
+.food-item {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  opacity: 0.6;
+}
+
+.food-item.green { background: rgba(34, 197, 94, 0.4); }
+.food-item.orange { background: rgba(249, 115, 22, 0.4); }
+.food-item.red { background: rgba(239, 68, 68, 0.4); }
+.food-item.yellow { background: rgba(245, 158, 11, 0.4); }
+
+/* Timer Visual */
+.timer-visual {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.timer-circle {
+  width: 80px;
+  height: 80px;
+  border: 2px solid rgba(59, 130, 246, 0.3);
+  border-radius: 50%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.timer-progress {
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  width: 80px;
+  height: 80px;
+  border: 2px solid rgba(59, 130, 246, 0.8);
+  border-radius: 50%;
+  border-right-color: transparent;
+  border-bottom-color: transparent;
+  transform: rotate(-90deg);
+}
+
+.timer-center {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+  font-weight: 600;
+  font-family: 'Courier New', monospace;
+}
+
+/* Weather Visual */
+.weather-visual {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.weather-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+  height: 60px;
+}
+
+.chart-bar {
+  width: 8px;
+  background: rgba(245, 158, 11, 0.6);
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+.project-card:hover .chart-bar {
+  background: rgba(245, 158, 11, 0.8);
 }
 
 

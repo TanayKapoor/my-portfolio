@@ -93,15 +93,37 @@ export default function ProjectsSection() {
 
                 {/* Bottom Image Placeholder */}
                 <div className="project-image-placeholder">
-                  <div className="image-placeholder-content">
-                    <div className="placeholder-icon">
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                        <circle cx="8.5" cy="8.5" r="1.5"/>
-                        <path d="M21 15l-5-5L5 21"/>
-                      </svg>
-                    </div>
-                    <span className="placeholder-text">Project Preview</span>
+                  <div className="project-visual-content">
+                    {/* Create visual elements based on project type */}
+                    {project.id === 1 && (
+                      <div className="meal-planner-visual">
+                        <div className="food-grid">
+                          <div className="food-item green"></div>
+                          <div className="food-item orange"></div>
+                          <div className="food-item red"></div>
+                          <div className="food-item yellow"></div>
+                        </div>
+                      </div>
+                    )}
+                    {project.id === 2 && (
+                      <div className="timer-visual">
+                        <div className="timer-circle">
+                          <div className="timer-progress"></div>
+                          <div className="timer-center">25:00</div>
+                        </div>
+                      </div>
+                    )}
+                    {project.id === 3 && (
+                      <div className="weather-visual">
+                        <div className="weather-chart">
+                          <div className="chart-bar" style={{height: '30%'}}></div>
+                          <div className="chart-bar" style={{height: '60%'}}></div>
+                          <div className="chart-bar" style={{height: '45%'}}></div>
+                          <div className="chart-bar" style={{height: '80%'}}></div>
+                          <div className="chart-bar" style={{height: '35%'}}></div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
