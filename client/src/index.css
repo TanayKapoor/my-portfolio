@@ -1541,6 +1541,7 @@
 .timeline-scroll-wrapper {
   position: relative;
   margin-bottom: 3rem;
+  overflow: visible;
 }
 
 .timeline-scroll-container {
@@ -1573,8 +1574,9 @@
 .timeline-line {
   position: absolute;
   top: calc(5rem - 30px + 9px);
-  left: calc(50vw - 200px);
-  right: calc(50vw - 200px);
+  left: 0;
+  right: 0;
+  width: 100vw;
   height: 2px;
   background: linear-gradient(
     90deg,

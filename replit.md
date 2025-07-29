@@ -137,3 +137,6 @@ All major features for the projects section have been implemented and optimized.
 - Auto-centering functionality to display current position in viewport center
 - Enhanced visual indicators with gradient timeline line and pulsing dots
 - Responsive padding and masking for professional presentation
+- Timeline dots positioned above cards without overlapping
+- Timeline line extends through entire screen width
+- Only current position dot shows active green styling
