@@ -1299,8 +1299,9 @@
 
 /* View More Text */
 .view-more-text {
-  text-align: center;
-  margin-top: 3rem;
+  text-align: left;
+  margin-top: 1.5rem;
+  padding-left: 0;
 }
 
 .view-more-text span {
