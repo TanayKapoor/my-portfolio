@@ -108,26 +108,42 @@ export default function TimelineSection() {
       if (currentIndex !== -1) {
         const cardWidth = 400; // min-width of timeline-item
         const gap = 48; // 3rem gap
-        const scrollPosition = (currentIndex * (cardWidth + gap)) - (container.clientWidth / 2) + (cardWidth / 2);
-        container.scrollLeft = scrollPosition;
+        const containerWidth = container.clientWidth;
+        const totalItemWidth = cardWidth + gap;
+        
+        // Calculate the scroll position to center the current item
+        const scrollPosition = (currentIndex * totalItemWidth) - (containerWidth / 2) + (cardWidth / 2);
+        
+        // Ensure smooth scrolling
+        container.scrollTo({
+          left: Math.max(0, scrollPosition),
+          behavior: 'instant'
+        });
       }
     };
 
-    // Initial state and center scroll
-    setTimeout(() => {
+    // Wait for DOM to be fully ready before centering
+    const centerTimeout = setTimeout(() => {
       scrollToCenter();
       updateScrollState();
-    }, 100);
+    }, 300);
+    
+    // Also center on window resize
+    const handleResize = () => {
+      scrollToCenter();
+      updateScrollState();
+    };
     
     // Update on scroll
     container.addEventListener('scroll', updateScrollState);
     
-    // Update on resize
-    window.addEventListener('resize', updateScrollState);
+    // Update on resize with centering
+    window.addEventListener('resize', handleResize);
     
     return () => {
+      clearTimeout(centerTimeout);
       container.removeEventListener('scroll', updateScrollState);
-      window.removeEventListener('resize', updateScrollState);
+      window.removeEventListener('resize', handleResize);
     };
   }, []);
 
