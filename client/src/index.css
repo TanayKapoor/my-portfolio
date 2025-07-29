@@ -877,6 +877,33 @@
   box-shadow: 
     0 8px 32px rgba(0, 0, 0, 0.2),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  position: relative;
+}
+
+.project-card.raycast-style::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 60%;
+  height: 60%;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.3) 0%, transparent 70%);
+  border-radius: 24px 0 0 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.project-card.raycast-style::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 60%;
+  height: 60%;
+  background: linear-gradient(-45deg, rgba(0, 0, 0, 0.3) 0%, transparent 70%);
+  border-radius: 0 0 24px 0;
+  pointer-events: none;
+  z-index: 1;
 }
 
 /* Individual project card colors based on icon colors */
@@ -945,6 +972,8 @@
   align-items: center;
   gap: 1rem;
   margin-bottom: 1rem;
+  position: relative;
+  z-index: 2;
 }
 
 .project-icon-wrapper {
@@ -1000,6 +1029,8 @@
   line-height: 1.5;
   margin-bottom: 1.5rem;
   padding: 0;
+  position: relative;
+  z-index: 2;
 }
 
 /* Project Preview */
@@ -1032,6 +1063,8 @@
   background: rgba(255, 255, 255, 0.08);
   margin: auto 0 1.5rem 0;
   flex-shrink: 0;
+  position: relative;
+  z-index: 2;
 }
 
 /* Project Image Placeholder */
@@ -1046,6 +1079,8 @@
   border-radius: 0 0 20px 20px;
   border-top: none;
   display: flex;
+  position: relative;
+  z-index: 2;
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
