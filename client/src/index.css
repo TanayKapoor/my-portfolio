@@ -839,11 +839,18 @@
 }
 
 /* Projects Grid */
-.projects-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+.projects-scroll-container {
+  display: flex;
   gap: 2rem;
+  overflow-x: auto;
+  padding-bottom: 1rem;
   margin-top: 4rem;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.projects-scroll-container::-webkit-scrollbar {
+  display: none;
 }
 
 /* Project Card - Raycast Style */
@@ -860,6 +867,8 @@
   position: relative;
   padding: 2rem;
   min-height: 480px;
+  min-width: 350px;
+  flex-shrink: 0;
   display: flex;
   flex-direction: column;
 }
@@ -1098,6 +1107,93 @@
 
 .project-card:hover .chart-bar {
   background: rgba(245, 158, 11, 0.8);
+}
+
+/* Expense Visual */
+.expense-visual {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.expense-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 120px;
+}
+
+.expense-category {
+  height: 8px;
+  background: rgba(168, 85, 247, 0.6);
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+/* Reading Visual */
+.reading-visual {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.book-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.book {
+  width: 60px;
+  height: 8px;
+  border-radius: 2px;
+}
+
+.book-1 { background: rgba(236, 72, 153, 0.6); }
+.book-2 { background: rgba(236, 72, 153, 0.4); }
+.book-3 { background: rgba(236, 72, 153, 0.2); }
+
+/* Plant Visual */
+.plant-visual {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.plant-growth {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+  height: 60px;
+}
+
+.growth-stage {
+  width: 6px;
+  background: rgba(20, 184, 166, 0.6);
+  border-radius: 3px;
+}
+
+.stage-1 { height: 20%; }
+.stage-2 { height: 40%; }
+.stage-3 { height: 65%; }
+.stage-4 { height: 85%; }
+
+/* View More Text */
+.view-more-text {
+  text-align: center;
+  margin-top: 3rem;
+}
+
+.view-more-text span {
+  font-family: 'Courier Prime', monospace;
+  font-size: 1.125rem;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.view-more-text span:hover {
+  color: rgba(255, 255, 255, 0.8);
 }
 
 

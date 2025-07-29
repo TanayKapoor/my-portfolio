@@ -19,7 +19,6 @@ const projects: Project[] = [
         <path d="M16 8v8m-4-4h8M12 20h8a2 2 0 002-2v-4a2 2 0 00-2-2h-8a2 2 0 00-2 2v4a2 2 0 002 2z" stroke="rgba(255, 255, 255, 0.9)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
       </svg>
     ),
-
   },
   {
     id: 2,
@@ -32,7 +31,6 @@ const projects: Project[] = [
         <path d="M16 12v4l3 3" stroke="rgba(255, 255, 255, 0.9)" strokeWidth="2" strokeLinecap="round"/>
       </svg>
     ),
-
   },
   {
     id: 3,
@@ -45,14 +43,44 @@ const projects: Project[] = [
         <path d="M12 24v-4M20 24v-4" stroke="rgba(255, 255, 255, 0.9)" strokeWidth="2" strokeLinecap="round"/>
       </svg>
     ),
-
+  },
+  {
+    id: 4,
+    title: "Expense Tracker",
+    description: "Simple expense tracking with smart categorization and insightful spending analytics.",
+    icon: (
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+        <rect width="32" height="32" rx="8" fill="rgba(168, 85, 247, 0.3)"/>
+        <path d="M16 8v16M8 12h16l-2-2M8 20h16l-2 2" stroke="rgba(255, 255, 255, 0.9)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+    ),
+  },
+  {
+    id: 5,
+    title: "Reading List",
+    description: "Personal book tracker with reading progress, notes, and recommendations from your favorite genres.",
+    icon: (
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+        <rect width="32" height="32" rx="8" fill="rgba(236, 72, 153, 0.3)"/>
+        <path d="M8 6h16a2 2 0 012 2v16a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2zM12 12h8M12 16h6" stroke="rgba(255, 255, 255, 0.9)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+    ),
+  },
+  {
+    id: 6,
+    title: "Plant Care Assistant",
+    description: "Track watering schedules, growth progress, and health monitoring for your indoor plant collection.",
+    icon: (
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+        <rect width="32" height="32" rx="8" fill="rgba(20, 184, 166, 0.3)"/>
+        <path d="M16 26v-8M8 18s0-6 8-6 8 6 8 6M12 22c0-2 2-4 4-4s4 2 4 4" stroke="rgba(255, 255, 255, 0.9)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+    ),
   }
 ];
 
 export default function ProjectsSection() {
   const [hoveredProject, setHoveredProject] = useState<number | null>(null);
-  const displayedProjects = projects.slice(0, 3); // Show only first 3 projects
-
   return (
     <section className="projects-section" id="projects">
       <div className="projects-container">
@@ -65,9 +93,9 @@ export default function ProjectsSection() {
             </p>
           </div>
 
-          {/* Projects Grid */}
-          <div className="projects-grid">
-            {displayedProjects.map((project) => (
+          {/* Projects Horizontal Scroll */}
+          <div className="projects-scroll-container">
+            {projects.map((project) => (
               <div
                 key={project.id}
                 className="project-card raycast-style"
@@ -124,42 +152,44 @@ export default function ProjectsSection() {
                         </div>
                       </div>
                     )}
+                    {project.id === 4 && (
+                      <div className="expense-visual">
+                        <div className="expense-chart">
+                          <div className="expense-category" style={{width: '40%'}}></div>
+                          <div className="expense-category" style={{width: '25%'}}></div>
+                          <div className="expense-category" style={{width: '20%'}}></div>
+                          <div className="expense-category" style={{width: '15%'}}></div>
+                        </div>
+                      </div>
+                    )}
+                    {project.id === 5 && (
+                      <div className="reading-visual">
+                        <div className="book-stack">
+                          <div className="book book-1"></div>
+                          <div className="book book-2"></div>
+                          <div className="book book-3"></div>
+                        </div>
+                      </div>
+                    )}
+                    {project.id === 6 && (
+                      <div className="plant-visual">
+                        <div className="plant-growth">
+                          <div className="growth-stage stage-1"></div>
+                          <div className="growth-stage stage-2"></div>
+                          <div className="growth-stage stage-3"></div>
+                          <div className="growth-stage stage-4"></div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
             ))}
-            
-            {/* View More Card */}
-            <div className="project-card raycast-style view-more-card">
-              <div className="project-header">
-                <div className="project-icon-wrapper">
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M12 5v14M5 12h14"/>
-                  </svg>
-                </div>
-                <h3 className="project-title">View More</h3>
-                <button className="project-arrow">
-                  <ChevronRight size={20} />
-                </button>
-              </div>
-              
-              <p className="project-description">
-                Explore additional projects and experiments
-              </p>
-              
-              <div className="view-more-preview">
-                <div className="more-project-item">
-                  <span className="more-project-number">+6</span>
-                  <span className="more-project-text">More Projects</span>
-                </div>
-                <div className="more-categories">
-                  <div className="category-tag">Machine Learning</div>
-                  <div className="category-tag">Web Development</div>
-                  <div className="category-tag">Mobile Apps</div>
-                  <div className="category-tag">Data Science</div>
-                </div>
-              </div>
-            </div>
+          </div>
+          
+          {/* View More Text */}
+          <div className="view-more-text">
+            <span>View more →</span>
           </div>
         </div>
       </div>
