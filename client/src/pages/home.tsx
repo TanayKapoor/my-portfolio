@@ -1,12 +1,49 @@
+import { useState } from 'react';
 import HalftoneHero from '@/components/halftone-hero';
 import AboutSection from '@/components/about-section';
 import ProjectsSection from '@/components/projects-section';
 import TimelineSection from '@/components/timeline-section';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
+import { Mail, Send } from 'lucide-react';
 
 export default function Home() {
-  const handleContactClick = () => {
-    console.log('Contact button clicked');
-    // TODO: Implement contact form or mailto functionality
+  const [email, setEmail] = useState('');
+  const [isConnecting, setIsConnecting] = useState(false);
+  const { toast } = useToast();
+
+  const handleEmailSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      toast({
+        title: "Invalid email",
+        description: "Please enter a valid email address",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsConnecting(true);
+    
+    // Simulate saving email (in real app, this would be an API call)
+    setTimeout(() => {
+      toast({
+        title: "Email saved!",
+        description: "Thanks for connecting. I'll be in touch soon!",
+      });
+      setEmail('');
+      setIsConnecting(false);
+    }, 1000);
   };
 
   return (
@@ -42,14 +79,61 @@ export default function Home() {
               </a>
             </div>
 
-            {/* Right side - Get in touch button */}
+            {/* Right side - Get in touch dropdown */}
             <div className="flex items-center">
-              <button 
-                onClick={handleContactClick}
-                className="bg-black hover:bg-gray-800 text-white px-6 py-2 rounded-full font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
-              >
-                Get in touch
-              </button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button 
+                    className="bg-black hover:bg-gray-800 text-white px-6 py-2 rounded-full font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
+                  >
+                    Get in touch
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-80 p-4 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800">
+                  {/* Send email option */}
+                  <DropdownMenuItem 
+                    className="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 p-3 rounded-lg"
+                    onClick={() => window.location.href = 'mailto:tanay_kapoor@icloud.com'}
+                  >
+                    <Mail className="mr-3 h-5 w-5" />
+                    <span>Send me an email</span>
+                  </DropdownMenuItem>
+                  
+                  {/* Divider */}
+                  <DropdownMenuSeparator className="my-4 bg-gray-200 dark:bg-gray-700" />
+                  
+                  {/* Email input form */}
+                  <div className="px-2">
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                      Or share your email and I'll reach out to you
+                    </p>
+                    <form onSubmit={handleEmailSubmit} className="space-y-3">
+                      <Input
+                        type="email"
+                        placeholder="your@email.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="w-full"
+                        disabled={isConnecting}
+                      />
+                      <Button 
+                        type="submit" 
+                        className="w-full"
+                        disabled={isConnecting}
+                      >
+                        {isConnecting ? (
+                          "Connecting..."
+                        ) : (
+                          <>
+                            <Send className="mr-2 h-4 w-4" />
+                            Let's connect
+                          </>
+                        )}
+                      </Button>
+                    </form>
+                  </div>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </div>
