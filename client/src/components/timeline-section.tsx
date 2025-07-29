@@ -181,7 +181,7 @@ export default function TimelineSection() {
                 <div key={experience.id} className={`timeline-item ${experience.type}`}>
                   
                   {/* Timeline Dot */}
-                  <div className={`timeline-dot ${experience.type}`}>
+                  <div className="timeline-dot current pl-[0px] pr-[0px] mt-[-13px] mb-[-13px]">
                     <div className="dot-inner"></div>
                   </div>
                   
