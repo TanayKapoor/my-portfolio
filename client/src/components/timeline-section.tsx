@@ -121,8 +121,26 @@ export default function TimelineSection() {
     const initializeScroll = () => {
       // Current position is at index 3 (last item - current position)
       const currentIndex = workExperiences.length - 1; // Last item is current
-      const cardWidth = 400;
-      const gap = 48; // 3rem = 48px
+      
+      // Get actual card width based on screen size
+      let cardWidth = 320; // Mobile default
+      if (window.innerWidth >= 1024) {
+        cardWidth = 400;
+      } else if (window.innerWidth >= 768) {
+        cardWidth = 380;
+      } else if (window.innerWidth >= 640) {
+        cardWidth = 350;
+      }
+      
+      // Get actual gap based on screen size
+      let gap = 24; // 1.5rem = 24px (mobile)
+      if (window.innerWidth >= 1024) {
+        gap = 48; // 3rem = 48px
+      } else if (window.innerWidth >= 768) {
+        gap = 40; // 2.5rem = 40px
+      } else if (window.innerWidth >= 640) {
+        gap = 32; // 2rem = 32px
+      }
 
       // Get viewport dimensions
       const viewportWidth = window.innerWidth;
@@ -135,7 +153,14 @@ export default function TimelineSection() {
       const currentCardCenter = currentCardLeft + cardWidth / 2;
 
       // Container has padding that shifts content
-      const containerPadding = viewportWidth / 2 - 200; // calc(50vw - 200px)
+      let containerPadding = 16; // Mobile: 1rem
+      if (window.innerWidth >= 1024) {
+        containerPadding = viewportWidth / 2 - 200;
+      } else if (window.innerWidth >= 768) {
+        containerPadding = viewportWidth / 2 - 300;
+      } else if (window.innerWidth >= 640) {
+        containerPadding = 32; // 2rem
+      }
 
       // We want: current card center = viewport center (when scrolled)
       // scroll + viewportCenter = currentCardCenter + containerPadding
@@ -144,7 +169,7 @@ export default function TimelineSection() {
         currentCardCenter + containerPadding - viewportCenter;
 
       // Apply the scroll with additional offset to ensure nothing appears to the right
-      const finalScroll = scrollNeeded + 550; // Add 150px to move current card more to the left
+      const finalScroll = scrollNeeded + (window.innerWidth >= 768 ? 550 : 300); // Responsive offset
       container.scrollLeft = Math.max(0, finalScroll);
       console.log(
         `Centering current position. Final scroll: ${finalScroll}, card center: ${currentCardCenter}, viewport center: ${viewportCenter}`,
@@ -172,13 +197,31 @@ export default function TimelineSection() {
 
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollBy({ left: -400, behavior: "smooth" });
+      // Get dynamic card width based on screen size
+      let scrollAmount = 320;
+      if (window.innerWidth >= 1024) {
+        scrollAmount = 400;
+      } else if (window.innerWidth >= 768) {
+        scrollAmount = 380;
+      } else if (window.innerWidth >= 640) {
+        scrollAmount = 350;
+      }
+      scrollContainerRef.current.scrollBy({ left: -scrollAmount, behavior: "smooth" });
     }
   };
 
   const scrollRight = () => {
     if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollBy({ left: 400, behavior: "smooth" });
+      // Get dynamic card width based on screen size
+      let scrollAmount = 320;
+      if (window.innerWidth >= 1024) {
+        scrollAmount = 400;
+      } else if (window.innerWidth >= 768) {
+        scrollAmount = 380;
+      } else if (window.innerWidth >= 640) {
+        scrollAmount = 350;
+      }
+      scrollContainerRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
     }
   };
 
