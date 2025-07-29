@@ -6,6 +6,8 @@ export default function AboutSection() {
   const [displayText, setDisplayText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const lastScrollY = useRef(0);
+  const scrollDistance = useRef(0);
 
   useEffect(() => {
     const setupScrollObserver = () => {
@@ -31,9 +33,18 @@ export default function AboutSection() {
 
     const setupScrollListener = () => {
       const handleScroll = () => {
-        // If TL;DR is active and user scrolls, disable it
-        if (showTldr && !isTyping) {
+        const currentScrollY = window.scrollY;
+        const deltaY = Math.abs(currentScrollY - lastScrollY.current);
+        
+        // Accumulate scroll distance
+        scrollDistance.current += deltaY;
+        lastScrollY.current = currentScrollY;
+        
+        // Only disable TL;DR if user has scrolled a significant distance (more than 300px)
+        // and TL;DR is currently active
+        if (showTldr && !isTyping && scrollDistance.current > 300) {
           setShowTldr(false);
+          scrollDistance.current = 0; // Reset after disabling
         }
         
         // Clear any existing timeout
@@ -41,12 +52,15 @@ export default function AboutSection() {
           clearTimeout(scrollTimeoutRef.current);
         }
         
-        // Set a timeout to detect when scrolling stops
+        // Reset scroll distance after a period of no scrolling
         scrollTimeoutRef.current = setTimeout(() => {
-          // Scrolling has stopped - we could add additional logic here if needed
-        }, 150);
+          scrollDistance.current = 0;
+        }, 1000);
       };
 
+      // Initialize scroll position
+      lastScrollY.current = window.scrollY;
+      
       // Add scroll listener to window for this section
       window.addEventListener('scroll', handleScroll, { passive: true });
       
