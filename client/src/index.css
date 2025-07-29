@@ -854,30 +854,32 @@
   display: none;
 }
 
-.projects-scroll-container::before {
-  content: '';
+.projects-scroll-container .scroll-fade-left,
+.projects-scroll-container .scroll-fade-right {
   position: absolute;
   top: 0;
-  left: 0;
   width: 60px;
   height: 100%;
   background: linear-gradient(90deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.4) 50%, transparent 100%);
   filter: blur(8px);
   pointer-events: none;
   z-index: 10;
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
-.projects-scroll-container::after {
-  content: '';
-  position: absolute;
-  top: 0;
+.projects-scroll-container .scroll-fade-right {
   right: 0;
-  width: 60px;
-  height: 100%;
   background: linear-gradient(-90deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.4) 50%, transparent 100%);
-  filter: blur(8px);
-  pointer-events: none;
-  z-index: 10;
+}
+
+.projects-scroll-container .scroll-fade-left {
+  left: 0;
+}
+
+.projects-scroll-container.scrolling .scroll-fade-left,
+.projects-scroll-container.scrolling .scroll-fade-right {
+  opacity: 1;
 }
 
 /* Project Card - Raycast Style */
