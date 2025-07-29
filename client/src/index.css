@@ -961,10 +961,136 @@
 .project-card:hover {
   transform: translateY(-4px);
   border-color: rgba(255, 255, 255, 0.16);
-  box-shadow: 
-    0 24px 48px rgba(0, 0, 0, 0.5),
-    0 0 0 1px rgba(255, 255, 255, 0.1) inset,
-    0 0 80px rgba(37, 56, 133, 0.3);
+  animation: subtle-neon 2s ease-in-out infinite alternate;
+}
+
+@keyframes subtle-neon {
+  0% {
+    box-shadow: 
+      0 24px 48px rgba(0, 0, 0, 0.5),
+      0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+  }
+  100% {
+    box-shadow: 
+      0 24px 48px rgba(0, 0, 0, 0.5),
+      0 0 0 1px rgba(255, 255, 255, 0.1) inset,
+      0 0 20px rgba(255, 255, 255, 0.1);
+  }
+}
+
+/* Individual card neon colors */
+.project-card[data-project-id="1"]:hover {
+  animation: green-neon 2s ease-in-out infinite alternate;
+}
+
+.project-card[data-project-id="2"]:hover {
+  animation: blue-neon 2s ease-in-out infinite alternate;
+}
+
+.project-card[data-project-id="3"]:hover {
+  animation: orange-neon 2s ease-in-out infinite alternate;
+}
+
+.project-card[data-project-id="4"]:hover {
+  animation: purple-neon 2s ease-in-out infinite alternate;
+}
+
+.project-card[data-project-id="5"]:hover {
+  animation: pink-neon 2s ease-in-out infinite alternate;
+}
+
+.project-card[data-project-id="6"]:hover {
+  animation: teal-neon 2s ease-in-out infinite alternate;
+}
+
+@keyframes green-neon {
+  0% {
+    box-shadow: 
+      0 24px 48px rgba(0, 0, 0, 0.5),
+      0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+  }
+  100% {
+    box-shadow: 
+      0 24px 48px rgba(0, 0, 0, 0.5),
+      0 0 0 1px rgba(255, 255, 255, 0.1) inset,
+      0 0 20px rgba(34, 197, 94, 0.3),
+      0 0 40px rgba(34, 197, 94, 0.1);
+  }
+}
+
+@keyframes blue-neon {
+  0% {
+    box-shadow: 
+      0 24px 48px rgba(0, 0, 0, 0.5),
+      0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+  }
+  100% {
+    box-shadow: 
+      0 24px 48px rgba(0, 0, 0, 0.5),
+      0 0 0 1px rgba(255, 255, 255, 0.1) inset,
+      0 0 20px rgba(59, 130, 246, 0.3),
+      0 0 40px rgba(59, 130, 246, 0.1);
+  }
+}
+
+@keyframes orange-neon {
+  0% {
+    box-shadow: 
+      0 24px 48px rgba(0, 0, 0, 0.5),
+      0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+  }
+  100% {
+    box-shadow: 
+      0 24px 48px rgba(0, 0, 0, 0.5),
+      0 0 0 1px rgba(255, 255, 255, 0.1) inset,
+      0 0 20px rgba(245, 158, 11, 0.3),
+      0 0 40px rgba(245, 158, 11, 0.1);
+  }
+}
+
+@keyframes purple-neon {
+  0% {
+    box-shadow: 
+      0 24px 48px rgba(0, 0, 0, 0.5),
+      0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+  }
+  100% {
+    box-shadow: 
+      0 24px 48px rgba(0, 0, 0, 0.5),
+      0 0 0 1px rgba(255, 255, 255, 0.1) inset,
+      0 0 20px rgba(168, 85, 247, 0.3),
+      0 0 40px rgba(168, 85, 247, 0.1);
+  }
+}
+
+@keyframes pink-neon {
+  0% {
+    box-shadow: 
+      0 24px 48px rgba(0, 0, 0, 0.5),
+      0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+  }
+  100% {
+    box-shadow: 
+      0 24px 48px rgba(0, 0, 0, 0.5),
+      0 0 0 1px rgba(255, 255, 255, 0.1) inset,
+      0 0 20px rgba(236, 72, 153, 0.3),
+      0 0 40px rgba(236, 72, 153, 0.1);
+  }
+}
+
+@keyframes teal-neon {
+  0% {
+    box-shadow: 
+      0 24px 48px rgba(0, 0, 0, 0.5),
+      0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+  }
+  100% {
+    box-shadow: 
+      0 24px 48px rgba(0, 0, 0, 0.5),
+      0 0 0 1px rgba(255, 255, 255, 0.1) inset,
+      0 0 20px rgba(20, 184, 166, 0.3),
+      0 0 40px rgba(20, 184, 166, 0.1);
+  }
 }
 
 
