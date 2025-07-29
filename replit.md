@@ -138,5 +138,7 @@ All major features for the projects section have been implemented and optimized.
 - Enhanced visual indicators with gradient timeline line and pulsing dots
 - Responsive padding and masking for professional presentation
 - Timeline dots positioned above cards without overlapping
-- Timeline line extends through entire screen width
+- Timeline line design updated: solid line up to current position, then dotted line with arrow
 - Only current position dot shows active green styling
+- Improved scroll initialization with additional offset for perfect centering
+- Timeline no longer extends to screen edge - ends with arrow after current position

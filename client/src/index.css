@@ -1570,33 +1570,61 @@
   display: none;
 }
 
-/* Timeline Line */
-.timeline-line {
+/* Timeline Line Container */
+.timeline-line-container {
   position: absolute;
   top: calc(2rem + 5rem - 50px + 9px);
   left: -50vw;
   width: 200vw;
   height: 2px;
+  z-index: -1;
+  display: flex;
+  align-items: center;
+}
+
+/* Solid line to current position */
+.timeline-line-solid {
+  position: absolute;
+  left: 50vw;
+  width: calc(50vw - 200px + 2rem + 200px + 3*(400px + 3rem));
+  height: 2px;
   background: linear-gradient(
     90deg,
     rgba(59, 130, 246, 0.4) 0%,
     rgba(168, 85, 247, 0.6) 30%,
-    rgba(34, 197, 94, 1) 75%,
-    rgba(34, 197, 94, 0.8) 85%,
-    rgba(236, 72, 153, 0.3) 100%
+    rgba(34, 197, 94, 1) 90%,
+    rgba(34, 197, 94, 1) 100%
   );
-  z-index: -1;
-  border-radius: 1px;
   mask: 
-    radial-gradient(circle at calc(50vw - 200px + 2rem + 200px), transparent 12px, black 15px),
-    radial-gradient(circle at calc(50vw - 200px + 2rem + 200px + 400px + 3rem), transparent 12px, black 15px),
-    radial-gradient(circle at calc(50vw - 200px + 2rem + 200px + 2*(400px + 3rem)), transparent 12px, black 15px),
-    radial-gradient(circle at calc(50vw - 200px + 2rem + 200px + 3*(400px + 3rem)), transparent 12px, black 15px);
+    radial-gradient(circle at calc(0px + 2rem + 200px), transparent 12px, black 15px),
+    radial-gradient(circle at calc(0px + 2rem + 200px + 400px + 3rem), transparent 12px, black 15px),
+    radial-gradient(circle at calc(0px + 2rem + 200px + 2*(400px + 3rem)), transparent 12px, black 15px),
+    radial-gradient(circle at calc(0px + 2rem + 200px + 3*(400px + 3rem)), transparent 12px, black 15px);
   -webkit-mask: 
-    radial-gradient(circle at calc(50vw - 200px + 2rem + 200px), transparent 12px, black 15px),
-    radial-gradient(circle at calc(50vw - 200px + 2rem + 200px + 400px + 3rem), transparent 12px, black 15px),
-    radial-gradient(circle at calc(50vw - 200px + 2rem + 200px + 2*(400px + 3rem)), transparent 12px, black 15px),
-    radial-gradient(circle at calc(50vw - 200px + 2rem + 200px + 3*(400px + 3rem)), transparent 12px, black 15px);
+    radial-gradient(circle at calc(0px + 2rem + 200px), transparent 12px, black 15px),
+    radial-gradient(circle at calc(0px + 2rem + 200px + 400px + 3rem), transparent 12px, black 15px),
+    radial-gradient(circle at calc(0px + 2rem + 200px + 2*(400px + 3rem)), transparent 12px, black 15px),
+    radial-gradient(circle at calc(0px + 2rem + 200px + 3*(400px + 3rem)), transparent 12px, black 15px);
+}
+
+/* Dotted line after current */
+.timeline-line-dotted {
+  position: absolute;
+  left: calc(50vw + 50vw - 200px + 2rem + 200px + 3*(400px + 3rem));
+  width: 150px;
+  height: 2px;
+  border-top: 2px dashed rgba(34, 197, 94, 0.5);
+}
+
+/* Arrow at the end */
+.timeline-arrow {
+  position: absolute;
+  left: calc(50vw + 50vw - 200px + 2rem + 200px + 3*(400px + 3rem) + 150px);
+  width: 0;
+  height: 0;
+  border-left: 8px solid rgba(34, 197, 94, 0.7);
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
 }
 
 /* Timeline Item */

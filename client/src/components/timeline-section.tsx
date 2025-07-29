@@ -1,5 +1,11 @@
-import { useState, useEffect, useRef } from 'react';
-import { Calendar, MapPin, ExternalLink, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useState, useEffect, useRef } from "react";
+import {
+  Calendar,
+  MapPin,
+  ExternalLink,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 
 interface WorkExperience {
   id: number;
@@ -11,7 +17,7 @@ interface WorkExperience {
   endDate: string;
   description: string[];
   technologies: string[];
-  type: 'current' | 'past';
+  type: "current" | "past";
 }
 
 const workExperiences: WorkExperience[] = [
@@ -21,22 +27,22 @@ const workExperiences: WorkExperience[] = [
     company: "InnovateLabs",
     location: "Remote",
     duration: "2019 - 2020",
-    startDate: "2019", 
+    startDate: "2019",
     endDate: "2020",
     description: [
       "Assisted in developing mobile applications using React Native",
       "Learned fundamentals of software engineering and testing",
       "Participated in code reviews and documentation",
-      "Built personal projects to strengthen programming skills"
+      "Built personal projects to strengthen programming skills",
     ],
     technologies: ["React Native", "JavaScript", "Firebase", "Git"],
-    type: "past"
+    type: "past",
   },
   {
     id: 3,
     position: "Junior Developer",
     company: "StartupHub India",
-    location: "Delhi, India", 
+    location: "Delhi, India",
     duration: "2020 - 2021",
     startDate: "2020",
     endDate: "2021",
@@ -44,10 +50,10 @@ const workExperiences: WorkExperience[] = [
       "Worked on full-stack web applications using MERN stack",
       "Contributed to open-source projects and internal tools",
       "Participated in agile development processes",
-      "Gained experience in deployment and DevOps practices"
+      "Gained experience in deployment and DevOps practices",
     ],
     technologies: ["MongoDB", "Express.js", "React", "Node.js", "Git", "Linux"],
-    type: "past"
+    type: "past",
   },
   {
     id: 2,
@@ -61,10 +67,17 @@ const workExperiences: WorkExperience[] = [
       "Developed data visualization dashboards using React and D3.js",
       "Built ETL pipelines for processing large-scale datasets",
       "Implemented machine learning models for predictive analytics",
-      "Collaborated with cross-functional teams on product roadmap"
+      "Collaborated with cross-functional teams on product roadmap",
     ],
-    technologies: ["JavaScript", "Python", "React", "Django", "PostgreSQL", "Redis"],
-    type: "past"
+    technologies: [
+      "JavaScript",
+      "Python",
+      "React",
+      "Django",
+      "PostgreSQL",
+      "Redis",
+    ],
+    type: "past",
   },
   {
     id: 1,
@@ -78,11 +91,11 @@ const workExperiences: WorkExperience[] = [
       "Leading development of AI-powered products using modern ML frameworks",
       "Building scalable web applications with React, Node.js, and Python",
       "Implementing LLM integrations and prompt engineering solutions",
-      "Architecting cloud-native solutions for production ML workflows"
+      "Architecting cloud-native solutions for production ML workflows",
     ],
     technologies: ["Python", "React", "Node.js", "TensorFlow", "AWS", "Docker"],
-    type: "current"
-  }
+    type: "current",
+  },
 ];
 
 export default function TimelineSection() {
@@ -97,7 +110,7 @@ export default function TimelineSection() {
     const updateScrollState = () => {
       const scrollLeft = container.scrollLeft;
       const maxScroll = container.scrollWidth - container.clientWidth;
-      
+
       setCanScrollLeft(scrollLeft > 0);
       setCanScrollRight(scrollLeft < maxScroll - 1);
     };
@@ -108,29 +121,32 @@ export default function TimelineSection() {
       const currentIndex = workExperiences.length - 1; // Last item is current
       const cardWidth = 400;
       const gap = 48; // 3rem = 48px
-      
+
       // Get viewport dimensions
       const viewportWidth = window.innerWidth;
       const viewportCenter = viewportWidth / 2;
-      
+
       // Calculate position of current card's left edge relative to container start
       const currentCardLeft = currentIndex * (cardWidth + gap);
-      
+
       // Calculate position of current card's center
-      const currentCardCenter = currentCardLeft + (cardWidth / 2);
-      
+      const currentCardCenter = currentCardLeft + cardWidth / 2;
+
       // Container has padding that shifts content
-      const containerPadding = (viewportWidth / 2) - 200; // calc(50vw - 200px)
-      
+      const containerPadding = viewportWidth / 2 - 200; // calc(50vw - 200px)
+
       // We want: current card center = viewport center (when scrolled)
       // scroll + viewportCenter = currentCardCenter + containerPadding
       // Therefore: scroll = currentCardCenter + containerPadding - viewportCenter
-      const scrollNeeded = currentCardCenter + containerPadding - viewportCenter;
-      
+      const scrollNeeded =
+        currentCardCenter + containerPadding - viewportCenter;
+
       // Apply the scroll with additional offset to ensure nothing appears to the right
-      const finalScroll = scrollNeeded + 150; // Add 150px to move current card more to the left
+      const finalScroll = scrollNeeded + 550; // Add 150px to move current card more to the left
       container.scrollLeft = Math.max(0, finalScroll);
-      console.log(`Centering current position. Final scroll: ${finalScroll}, card center: ${currentCardCenter}, viewport center: ${viewportCenter}`);
+      console.log(
+        `Centering current position. Final scroll: ${finalScroll}, card center: ${currentCardCenter}, viewport center: ${viewportCenter}`,
+      );
     };
 
     // Multiple attempts to ensure proper centering
@@ -140,27 +156,27 @@ export default function TimelineSection() {
       initializeScroll();
       updateScrollState();
     }, 1000);
-    
+
     // Update on scroll
-    container.addEventListener('scroll', updateScrollState);
-    
+    container.addEventListener("scroll", updateScrollState);
+
     return () => {
       clearTimeout(initTimeout1);
       clearTimeout(initTimeout2);
       clearTimeout(initTimeout3);
-      container.removeEventListener('scroll', updateScrollState);
+      container.removeEventListener("scroll", updateScrollState);
     };
   }, []);
 
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollBy({ left: -400, behavior: 'smooth' });
+      scrollContainerRef.current.scrollBy({ left: -400, behavior: "smooth" });
     }
   };
 
   const scrollRight = () => {
     if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollBy({ left: 400, behavior: 'smooth' });
+      scrollContainerRef.current.scrollBy({ left: 400, behavior: "smooth" });
     }
   };
 
@@ -168,40 +184,53 @@ export default function TimelineSection() {
     <section className="timeline-section" id="timeline">
       <div className="timeline-container">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          
           {/* Section Header */}
           <div className="timeline-header">
             <h2 className="timeline-title">Work Experience</h2>
             <p className="timeline-subtitle">
-              My professional journey through the years - current role highlighted in the center
+              My professional journey through the years - current role
+              highlighted in the center
             </p>
           </div>
 
           {/* Timeline Scroll Container */}
           <div className="timeline-scroll-wrapper">
-            {/* Timeline Line - Outside scroll container */}
-            <div className="timeline-line"></div>
-            
+            {/* Timeline Line - Solid to current, dotted after */}
+            <div className="timeline-line-container">
+              {/* Solid line up to current position */}
+              <div className="timeline-line-solid" />
+              {/* Dotted line after current */}
+              <div className="timeline-line-dotted" />
+              {/* Arrow at the end */}
+              <div className="timeline-arrow" />
+            </div>
+
             <div className="timeline-scroll-container" ref={scrollContainerRef}>
-              
               {/* Experience Cards */}
               {workExperiences.map((experience, index) => (
-                <div key={experience.id} className={`timeline-item ${experience.type}`}>
-                  
+                <div
+                  key={experience.id}
+                  className={`timeline-item ${experience.type}`}
+                >
                   {/* Timeline Dot */}
-                  <div className={`timeline-dot ${index === workExperiences.length - 1 ? 'current' : ''}`}>
+                  <div
+                    className={`timeline-dot ${index === workExperiences.length - 1 ? "current" : ""}`}
+                  >
                     <div className="dot-inner"></div>
                   </div>
-                  
+
                   {/* Experience Card */}
                   <div className="experience-card">
-                    
                     {/* Card Header */}
                     <div className="card-header">
                       <div className="position-info">
-                        <h3 className="position-title">{experience.position}</h3>
+                        <h3 className="position-title">
+                          {experience.position}
+                        </h3>
                         <div className="company-info">
-                          <span className="company-name">{experience.company}</span>
+                          <span className="company-name">
+                            {experience.company}
+                          </span>
                           <div className="location-duration">
                             <MapPin size={14} />
                             <span>{experience.location}</span>
@@ -210,7 +239,7 @@ export default function TimelineSection() {
                           </div>
                         </div>
                       </div>
-                      {experience.type === 'current' && (
+                      {experience.type === "current" && (
                         <div className="current-badge">Current</div>
                       )}
                     </div>
@@ -228,7 +257,9 @@ export default function TimelineSection() {
                     {/* Technologies */}
                     <div className="technologies">
                       {experience.technologies.map((tech, i) => (
-                        <span key={i} className="tech-tag">{tech}</span>
+                        <span key={i} className="tech-tag">
+                          {tech}
+                        </span>
                       ))}
                     </div>
                   </div>
@@ -243,16 +274,16 @@ export default function TimelineSection() {
               <span>← Past experiences | Current position | Future →</span>
             </div>
             <div className="timeline-nav-buttons">
-              <button 
-                className={`nav-button ${!canScrollLeft ? 'disabled' : ''}`}
+              <button
+                className={`nav-button ${!canScrollLeft ? "disabled" : ""}`}
                 onClick={scrollLeft}
                 disabled={!canScrollLeft}
                 aria-label="Back to present"
               >
                 <ChevronLeft size={16} />
               </button>
-              <button 
-                className={`nav-button ${!canScrollRight ? 'disabled' : ''}`}
+              <button
+                className={`nav-button ${!canScrollRight ? "disabled" : ""}`}
                 onClick={scrollRight}
                 disabled={!canScrollRight}
                 aria-label="Explore past"
