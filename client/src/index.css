@@ -1607,7 +1607,7 @@
   background: rgba(15, 23, 42, 0.95);
   border: 2px solid rgba(59, 130, 246, 0.8);
   border-radius: 50%;
-  z-index: 10;
+  z-index: 100;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1659,7 +1659,7 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 20px;
   padding: 2rem;
-  margin-top: 3.5rem;
+  margin-top: 5.25rem;
   backdrop-filter: blur(40px);
   transition: all 0.3s ease;
   position: relative;
