@@ -99,6 +99,7 @@ export default function ProjectsSection() {
               <div
                 key={project.id}
                 className="project-card raycast-style"
+                data-project-id={project.id}
                 onMouseEnter={() => setHoveredProject(project.id)}
                 onMouseLeave={() => setHoveredProject(null)}
               >
