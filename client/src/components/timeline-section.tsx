@@ -123,13 +123,15 @@ export default function TimelineSection() {
       const currentIndex = workExperiences.length - 1; // Last item is current
       
       // Get actual card width based on screen size
-      let cardWidth = 320; // Mobile default
+      let cardWidth = 260; // Mobile default
       if (window.innerWidth >= 1024) {
         cardWidth = 400;
       } else if (window.innerWidth >= 768) {
         cardWidth = 380;
       } else if (window.innerWidth >= 640) {
         cardWidth = 350;
+      } else if (window.innerWidth >= 480) {
+        cardWidth = 320;
       }
       
       // Get actual gap based on screen size
@@ -198,13 +200,15 @@ export default function TimelineSection() {
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
       // Get dynamic card width based on screen size
-      let scrollAmount = 320;
+      let scrollAmount = 260;
       if (window.innerWidth >= 1024) {
         scrollAmount = 400;
       } else if (window.innerWidth >= 768) {
         scrollAmount = 380;
       } else if (window.innerWidth >= 640) {
         scrollAmount = 350;
+      } else if (window.innerWidth >= 480) {
+        scrollAmount = 320;
       }
       scrollContainerRef.current.scrollBy({ left: -scrollAmount, behavior: "smooth" });
     }
@@ -213,13 +217,15 @@ export default function TimelineSection() {
   const scrollRight = () => {
     if (scrollContainerRef.current) {
       // Get dynamic card width based on screen size
-      let scrollAmount = 320;
+      let scrollAmount = 260;
       if (window.innerWidth >= 1024) {
         scrollAmount = 400;
       } else if (window.innerWidth >= 768) {
         scrollAmount = 380;
       } else if (window.innerWidth >= 640) {
         scrollAmount = 350;
+      } else if (window.innerWidth >= 480) {
+        scrollAmount = 320;
       }
       scrollContainerRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
     }

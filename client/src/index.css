@@ -1575,22 +1575,22 @@
 
 .timeline-scroll-container {
   display: flex;
-  gap: 1.5rem;
+  gap: 1rem;
   overflow-x: auto;
-  padding: 2rem 1rem 3rem 1rem;
+  padding: 2rem 0.5rem 3rem 0.5rem;
   scrollbar-width: none;
   -ms-overflow-style: none;
   position: relative;
   mask: linear-gradient(90deg, 
     transparent 0px, 
-    black 40px, 
-    black calc(100% - 40px), 
+    black 20px, 
+    black calc(100% - 20px), 
     transparent 100%
   );
   -webkit-mask: linear-gradient(90deg, 
     transparent 0px, 
-    black 40px, 
-    black calc(100% - 40px), 
+    black 20px, 
+    black calc(100% - 20px), 
     transparent 100%
   );
 }
@@ -1704,11 +1704,17 @@
 /* Timeline Item */
 .timeline-item {
   position: relative;
-  min-width: 320px;
+  min-width: 260px;
   flex-shrink: 0;
 }
 
 /* Responsive Timeline Items */
+@media (min-width: 480px) {
+  .timeline-item {
+    min-width: 320px;
+  }
+}
+
 @media (min-width: 640px) {
   .timeline-item {
     min-width: 350px;
@@ -1791,12 +1797,18 @@
   );
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 20px;
-  padding: 1.5rem;
+  padding: 1rem;
   margin-top: 5.25rem;
   backdrop-filter: blur(40px);
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+}
+
+@media (min-width: 480px) {
+  .experience-card {
+    padding: 1.25rem;
+  }
 }
 
 @media (min-width: 640px) {
