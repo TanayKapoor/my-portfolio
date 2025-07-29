@@ -104,29 +104,42 @@ export default function TimelineSection() {
 
     // Initialize scroll to show current position in center
     const initializeScroll = () => {
-      // For the reversed array, current position is at index 3 (last item)
-      const currentIndex = 3; // Since we reversed the array
+      // Current position is at index 3 (last item in our reversed array)
+      const currentIndex = 3;
       const cardWidth = 400;
       const gap = 48;
       
-      // Calculate scroll to center current position
-      const centerOffset = container.clientWidth / 2;
-      const scrollToPosition = (currentIndex * (cardWidth + gap)) - centerOffset + (cardWidth / 2);
+      // Calculate total scroll needed to center the current position
+      const totalScrollWidth = container.scrollWidth;
+      const containerWidth = container.clientWidth;
+      const maxScroll = totalScrollWidth - containerWidth;
       
-      container.scrollLeft = Math.max(0, scrollToPosition);
+      // Position current item in center of viewport
+      const itemPosition = currentIndex * (cardWidth + gap);
+      const scrollToCenter = itemPosition - (containerWidth / 2) + (cardWidth / 2);
+      
+      // Ensure we don't scroll beyond bounds
+      const finalScrollPosition = Math.min(Math.max(0, scrollToCenter), maxScroll);
+      
+      container.scrollLeft = finalScrollPosition;
+      console.log(`Scrolling to position: ${finalScrollPosition}, current index: ${currentIndex}`);
     };
 
-    // Wait for layout to complete
-    const initTimeout = setTimeout(() => {
+    // Multiple attempts to ensure proper centering
+    const initTimeout1 = setTimeout(initializeScroll, 100);
+    const initTimeout2 = setTimeout(initializeScroll, 500);
+    const initTimeout3 = setTimeout(() => {
       initializeScroll();
       updateScrollState();
-    }, 500);
+    }, 1000);
     
     // Update on scroll
     container.addEventListener('scroll', updateScrollState);
     
     return () => {
-      clearTimeout(initTimeout);
+      clearTimeout(initTimeout1);
+      clearTimeout(initTimeout2);
+      clearTimeout(initTimeout3);
       container.removeEventListener('scroll', updateScrollState);
     };
   }, []);
