@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { ExternalLink, Github, ChevronRight, Code2, Brain, FileSearch } from 'lucide-react';
+import { ExternalLink, Github, ChevronRight, Code2, Brain, FileSearch, ChevronLeft } from 'lucide-react';
 
 interface Project {
   id: number;
@@ -82,6 +82,8 @@ const projects: Project[] = [
 export default function ProjectsSection() {
   const [hoveredProject, setHoveredProject] = useState<number | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
 
   useEffect(() => {
     const container = scrollContainerRef.current;
@@ -90,6 +92,10 @@ export default function ProjectsSection() {
     const updateMask = () => {
       const scrollLeft = container.scrollLeft;
       const maxScroll = container.scrollWidth - container.clientWidth;
+      
+      // Update button states
+      setCanScrollLeft(scrollLeft > 0);
+      setCanScrollRight(scrollLeft < maxScroll - 1);
       
       let maskGradient = '';
       
@@ -125,6 +131,18 @@ export default function ProjectsSection() {
       window.removeEventListener('resize', updateMask);
     };
   }, []);
+
+  const scrollLeft = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({ left: -320, behavior: 'smooth' });
+    }
+  };
+
+  const scrollRight = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({ left: 320, behavior: 'smooth' });
+    }
+  };
   return (
     <section className="projects-section" id="projects">
       <div className="projects-container">
@@ -232,9 +250,27 @@ export default function ProjectsSection() {
             ))}
           </div>
           
-          {/* View More Text */}
-          <div className="view-more-text">
-            <span>View more →</span>
+          {/* View More Text with Scroll Controls */}
+          <div className="view-more-container">
+            <div className="view-more-text">
+              <span>View more →</span>
+            </div>
+            <div className="scroll-controls">
+              <button 
+                className={`scroll-button ${!canScrollLeft ? 'disabled' : ''}`}
+                onClick={scrollLeft}
+                disabled={!canScrollLeft}
+              >
+                <ChevronLeft size={16} />
+              </button>
+              <button 
+                className={`scroll-button ${!canScrollRight ? 'disabled' : ''}`}
+                onClick={scrollRight}
+                disabled={!canScrollRight}
+              >
+                <ChevronRight size={16} />
+              </button>
+            </div>
           </div>
         </div>
       </div>

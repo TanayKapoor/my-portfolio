@@ -1297,11 +1297,18 @@
 .stage-3 { height: 65%; }
 .stage-4 { height: 85%; }
 
+/* View More Container */
+.view-more-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.25rem;
+  padding-left: 0;
+}
+
 /* View More Text */
 .view-more-text {
   text-align: left;
-  margin-top: 0.25rem;
-  padding-left: 0;
 }
 
 .view-more-text span {
@@ -1314,6 +1321,43 @@
 
 .view-more-text span:hover {
   color: rgba(255, 255, 255, 0.8);
+}
+
+/* Scroll Controls */
+.scroll-controls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.scroll-button {
+  width: 40px;
+  height: 40px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.scroll-button:hover:not(.disabled) {
+  background: rgba(0, 0, 0, 0.6);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.9);
+  transform: scale(1.05);
+}
+
+.scroll-button.disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.scroll-button:active:not(.disabled) {
+  transform: scale(0.95);
 }
 
 
