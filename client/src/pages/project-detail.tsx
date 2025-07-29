@@ -1,7 +1,8 @@
 import { useParams, Link } from "wouter";
-import { ArrowLeft, ExternalLink, Github, Code2, Zap, Brain, Target, Package, Calendar, User, Image, Terminal, Clock, Download, Play, Settings, GitBranch, CheckCircle, AlertCircle } from "lucide-react";
+import { ArrowLeft, ExternalLink, Github, Code2, Zap, Brain, Target, Package, Calendar, User, Image, Terminal, Clock, Download, Play, Settings, GitBranch, CheckCircle, AlertCircle, ChevronLeft, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
+import useEmblaCarousel from "embla-carousel-react";
 
 // Project data - in a real app, this would come from an API or database
 const projectsData = {
@@ -592,7 +593,7 @@ function OverviewTab({ project }: { project: any }) {
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
       {/* Left Column - Main Content */}
       <div className="lg:col-span-2 space-y-8">
-        {/* Screenshots Section */}
+        {/* Screenshots Carousel Section */}
         <motion.section
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -600,15 +601,7 @@ function OverviewTab({ project }: { project: any }) {
           className="bg-gray-900/50 backdrop-blur-sm rounded-xl p-6 border border-gray-800"
         >
           <h2 className="text-2xl font-bold mb-6 font-['Courier_Prime']">Screenshots</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {project.screenshots?.map((screenshot: any, index: number) => (
-              <div key={index} className="bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-lg p-6 border border-gray-700 flex flex-col items-center justify-center min-h-[160px]">
-                <Image size={32} className="text-gray-500 mb-3" />
-                <h3 className="font-semibold text-white text-sm text-center">{screenshot.title}</h3>
-                <p className="text-xs text-gray-400 text-center mt-1">{screenshot.description}</p>
-              </div>
-            ))}
-          </div>
+          <ScreenshotCarousel screenshots={project.screenshots} />
         </motion.section>
 
         {/* Description */}
@@ -850,6 +843,100 @@ function VersionsTab({ project }: { project: any }) {
           ))}
         </div>
       </motion.section>
+    </div>
+  );
+}
+
+// Screenshots Carousel Component
+function ScreenshotCarousel({ screenshots }: { screenshots: any[] }) {
+  const [emblaRef, emblaApi] = useEmblaCarousel({ 
+    loop: true,
+    align: "start",
+    skipSnaps: false,
+    dragFree: false
+  });
+  const [prevBtnEnabled, setPrevBtnEnabled] = useState(false);
+  const [nextBtnEnabled, setNextBtnEnabled] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
+  const scrollPrev = () => emblaApi?.scrollPrev();
+  const scrollNext = () => emblaApi?.scrollNext();
+
+  const onSelect = useCallback(() => {
+    if (!emblaApi) return;
+    setSelectedIndex(emblaApi.selectedScrollSnap());
+    setPrevBtnEnabled(emblaApi.canScrollPrev());
+    setNextBtnEnabled(emblaApi.canScrollNext());
+  }, [emblaApi]);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    onSelect();
+    emblaApi.on("select", onSelect);
+    emblaApi.on("reInit", onSelect);
+  }, [emblaApi, onSelect]);
+
+  if (!screenshots || screenshots.length === 0) {
+    return (
+      <div className="bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-lg p-8 border border-gray-700 flex flex-col items-center justify-center min-h-[200px]">
+        <Image size={48} className="text-gray-500 mb-3" />
+        <p className="text-gray-400 text-center">No screenshots available</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="relative">
+      <div className="overflow-hidden rounded-lg" ref={emblaRef}>
+        <div className="flex">
+          {screenshots.map((screenshot: any, index: number) => (
+            <div key={index} className="flex-[0_0_100%] min-w-0 relative">
+              <div className="bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-lg p-8 border border-gray-700 flex flex-col items-center justify-center min-h-[220px] mx-2">
+                <Image size={48} className="text-gray-500 mb-4" />
+                <h3 className="font-semibold text-white text-lg text-center mb-2">{screenshot.title}</h3>
+                <p className="text-sm text-gray-400 text-center max-w-xs">{screenshot.description}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {screenshots.length > 1 && (
+        <>
+          <button
+            className={`absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/50 backdrop-blur-sm border border-gray-600 flex items-center justify-center transition-all ${
+              prevBtnEnabled ? "text-white hover:bg-black/70" : "text-gray-600 cursor-not-allowed"
+            }`}
+            onClick={scrollPrev}
+            disabled={!prevBtnEnabled}
+          >
+            <ChevronLeft size={20} />
+          </button>
+          <button
+            className={`absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/50 backdrop-blur-sm border border-gray-600 flex items-center justify-center transition-all ${
+              nextBtnEnabled ? "text-white hover:bg-black/70" : "text-gray-600 cursor-not-allowed"
+            }`}
+            onClick={scrollNext}
+            disabled={!nextBtnEnabled}
+          >
+            <ChevronRight size={20} />
+          </button>
+        </>
+      )}
+
+      {screenshots.length > 1 && (
+        <div className="flex justify-center mt-4 gap-2">
+          {screenshots.map((_, index) => (
+            <button
+              key={index}
+              className={`w-2 h-2 rounded-full transition-all ${
+                index === selectedIndex ? "bg-white" : "bg-gray-600"
+              }`}
+              onClick={() => emblaApi?.scrollTo(index)}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
