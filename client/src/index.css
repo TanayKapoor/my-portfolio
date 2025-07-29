@@ -1572,10 +1572,10 @@
 /* Timeline Line */
 .timeline-line {
   position: absolute;
-  top: calc(5rem - 21px);
+  top: calc(5rem - 30px + 9px);
   left: calc(50vw - 200px);
   right: calc(50vw - 200px);
-  height: 3px;
+  height: 2px;
   background: linear-gradient(
     90deg,
     rgba(59, 130, 246, 0.4) 0%,
@@ -1584,8 +1584,8 @@
     rgba(34, 197, 94, 0.8) 85%,
     rgba(236, 72, 153, 0.3) 100%
   );
-  z-index: 1;
-  border-radius: 2px;
+  z-index: 2;
+  border-radius: 1px;
 }
 
 /* Timeline Item */
