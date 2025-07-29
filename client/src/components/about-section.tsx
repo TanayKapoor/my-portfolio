@@ -5,6 +5,7 @@ export default function AboutSection() {
   const [showTldr, setShowTldr] = useState(false);
   const [displayText, setDisplayText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const setupScrollObserver = () => {
@@ -28,8 +29,43 @@ export default function AboutSection() {
       }
     };
 
-    setupScrollObserver();
-  }, []);
+    const setupScrollListener = () => {
+      const handleScroll = () => {
+        // If TL;DR is active and user scrolls, disable it
+        if (showTldr && !isTyping) {
+          setShowTldr(false);
+        }
+        
+        // Clear any existing timeout
+        if (scrollTimeoutRef.current) {
+          clearTimeout(scrollTimeoutRef.current);
+        }
+        
+        // Set a timeout to detect when scrolling stops
+        scrollTimeoutRef.current = setTimeout(() => {
+          // Scrolling has stopped - we could add additional logic here if needed
+        }, 150);
+      };
+
+      // Add scroll listener to window for this section
+      window.addEventListener('scroll', handleScroll, { passive: true });
+      
+      return () => {
+        window.removeEventListener('scroll', handleScroll);
+        if (scrollTimeoutRef.current) {
+          clearTimeout(scrollTimeoutRef.current);
+        }
+      };
+    };
+
+    const cleanupObserver = setupScrollObserver();
+    const cleanupScrollListener = setupScrollListener();
+    
+    return () => {
+      cleanupObserver?.();
+      cleanupScrollListener?.();
+    };
+  }, [showTldr, isTyping]);
 
   const skills = ['Python', 'JavaScript', 'Machine Learning', 'React', 'Node.js', 'TensorFlow'];
 
