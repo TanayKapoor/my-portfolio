@@ -102,48 +102,32 @@ export default function TimelineSection() {
       setCanScrollRight(scrollLeft < maxScroll - 1);
     };
 
-    // Scroll to center the current position on initial load
-    const scrollToCenter = () => {
-      const currentIndex = workExperiences.findIndex(exp => exp.type === 'current');
-      if (currentIndex !== -1) {
-        const cardWidth = 400; // min-width of timeline-item
-        const gap = 48; // 3rem gap
-        const containerWidth = container.clientWidth;
-        const totalItemWidth = cardWidth + gap;
-        
-        // Calculate the scroll position to center the current item
-        const scrollPosition = (currentIndex * totalItemWidth) - (containerWidth / 2) + (cardWidth / 2);
-        
-        // Ensure smooth scrolling
-        container.scrollTo({
-          left: Math.max(0, scrollPosition),
-          behavior: 'instant'
-        });
-      }
+    // Initialize scroll to show current position in center
+    const initializeScroll = () => {
+      // For the reversed array, current position is at index 3 (last item)
+      const currentIndex = 3; // Since we reversed the array
+      const cardWidth = 400;
+      const gap = 48;
+      
+      // Calculate scroll to center current position
+      const centerOffset = container.clientWidth / 2;
+      const scrollToPosition = (currentIndex * (cardWidth + gap)) - centerOffset + (cardWidth / 2);
+      
+      container.scrollLeft = Math.max(0, scrollToPosition);
     };
 
-    // Wait for DOM to be fully ready before centering
-    const centerTimeout = setTimeout(() => {
-      scrollToCenter();
+    // Wait for layout to complete
+    const initTimeout = setTimeout(() => {
+      initializeScroll();
       updateScrollState();
-    }, 300);
-    
-    // Also center on window resize
-    const handleResize = () => {
-      scrollToCenter();
-      updateScrollState();
-    };
+    }, 500);
     
     // Update on scroll
     container.addEventListener('scroll', updateScrollState);
     
-    // Update on resize with centering
-    window.addEventListener('resize', handleResize);
-    
     return () => {
-      clearTimeout(centerTimeout);
+      clearTimeout(initTimeout);
       container.removeEventListener('scroll', updateScrollState);
-      window.removeEventListener('resize', handleResize);
     };
   }, []);
 

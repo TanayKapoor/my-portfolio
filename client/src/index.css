@@ -1573,18 +1573,19 @@
 .timeline-line {
   position: absolute;
   top: 6rem;
-  left: 0;
-  right: 0;
-  height: 2px;
+  left: 40vw;
+  right: 40vw;
+  height: 3px;
   background: linear-gradient(
     90deg,
-    rgba(59, 130, 246, 0.3) 0%,
-    rgba(168, 85, 247, 0.5) 30%,
-    rgba(34, 197, 94, 0.8) 50%,
-    rgba(236, 72, 153, 0.3) 70%,
-    transparent 100%
+    rgba(59, 130, 246, 0.4) 0%,
+    rgba(168, 85, 247, 0.6) 30%,
+    rgba(34, 197, 94, 1) 75%,
+    rgba(34, 197, 94, 0.8) 85%,
+    rgba(236, 72, 153, 0.3) 100%
   );
   z-index: 1;
+  border-radius: 2px;
 }
 
 /* Timeline Item */
@@ -1598,41 +1599,44 @@
 /* Timeline Dot */
 .timeline-dot {
   position: absolute;
-  top: 5.5rem;
+  top: 5.4rem;
   left: 50%;
   transform: translateX(-50%);
-  width: 20px;
-  height: 20px;
-  background: rgba(0, 0, 0, 0.8);
-  border: 3px solid rgba(59, 130, 246, 0.8);
+  width: 18px;
+  height: 18px;
+  background: rgba(15, 23, 42, 0.95);
+  border: 2px solid rgba(59, 130, 246, 0.8);
   border-radius: 50%;
-  z-index: 2;
+  z-index: 3;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .timeline-item.current .timeline-dot {
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
   border-color: rgba(34, 197, 94, 1);
-  border-width: 4px;
+  border-width: 3px;
+  background: rgba(34, 197, 94, 0.2);
   box-shadow: 
-    0 0 30px rgba(34, 197, 94, 0.6),
-    0 0 60px rgba(34, 197, 94, 0.3),
-    inset 0 0 10px rgba(34, 197, 94, 0.2);
+    0 0 20px rgba(34, 197, 94, 0.8),
+    0 0 40px rgba(34, 197, 94, 0.4),
+    0 0 60px rgba(34, 197, 94, 0.2);
   animation: pulse-current 2s ease-in-out infinite;
 }
 
 .dot-inner {
-  width: 8px;
-  height: 8px;
-  background: rgba(59, 130, 246, 0.8);
+  width: 6px;
+  height: 6px;
+  background: rgba(59, 130, 246, 0.9);
   border-radius: 50%;
 }
 
 .timeline-item.current .dot-inner {
-  background: rgba(34, 197, 94, 0.8);
+  width: 8px;
+  height: 8px;
+  background: rgba(34, 197, 94, 1);
 }
 
 @keyframes pulse-current {
