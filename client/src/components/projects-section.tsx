@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { ExternalLink, Github, ChevronRight, Code2, Brain, FileSearch } from 'lucide-react';
 
 interface Project {
@@ -81,6 +81,50 @@ const projects: Project[] = [
 
 export default function ProjectsSection() {
   const [hoveredProject, setHoveredProject] = useState<number | null>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    const updateMask = () => {
+      const scrollLeft = container.scrollLeft;
+      const maxScroll = container.scrollWidth - container.clientWidth;
+      
+      let maskGradient = '';
+      
+      if (maxScroll === 0) {
+        // No scrolling needed
+        maskGradient = 'none';
+      } else if (scrollLeft === 0) {
+        // At start - blur right only
+        maskGradient = 'linear-gradient(90deg, black calc(100% - 40px), transparent 100%)';
+      } else if (scrollLeft >= maxScroll - 1) {
+        // At end - blur left only
+        maskGradient = 'linear-gradient(90deg, transparent 0px, black 40px)';
+      } else {
+        // Middle - blur both sides
+        maskGradient = 'linear-gradient(90deg, transparent 0px, black 40px, black calc(100% - 40px), transparent 100%)';
+      }
+      
+      container.style.mask = maskGradient;
+      container.style.webkitMask = maskGradient;
+    };
+
+    // Initial mask
+    updateMask();
+    
+    // Update on scroll
+    container.addEventListener('scroll', updateMask);
+    
+    // Update on resize
+    window.addEventListener('resize', updateMask);
+    
+    return () => {
+      container.removeEventListener('scroll', updateMask);
+      window.removeEventListener('resize', updateMask);
+    };
+  }, []);
   return (
     <section className="projects-section" id="projects">
       <div className="projects-container">
@@ -94,7 +138,7 @@ export default function ProjectsSection() {
           </div>
 
           {/* Projects Horizontal Scroll */}
-          <div className="projects-scroll-container">
+          <div className="projects-scroll-container" ref={scrollContainerRef}>
             {projects.map((project) => (
               <div
                 key={project.id}

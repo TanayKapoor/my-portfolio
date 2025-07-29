@@ -848,18 +848,6 @@
   scrollbar-width: none;
   -ms-overflow-style: none;
   position: relative;
-  mask: linear-gradient(90deg, 
-    transparent 0px, 
-    black 40px, 
-    black calc(100% - 40px), 
-    transparent 100%
-  );
-  -webkit-mask: linear-gradient(90deg, 
-    transparent 0px, 
-    black 40px, 
-    black calc(100% - 40px), 
-    transparent 100%
-  );
 }
 
 .projects-scroll-container::-webkit-scrollbar {
