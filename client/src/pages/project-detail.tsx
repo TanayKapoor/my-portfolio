@@ -1,6 +1,7 @@
 import { useParams, Link } from "wouter";
-import { ArrowLeft, ExternalLink, Github, Code2, Zap, Brain, Target, Package, Calendar, User } from "lucide-react";
+import { ArrowLeft, ExternalLink, Github, Code2, Zap, Brain, Target, Package, Calendar, User, Image, Terminal, Clock, Download, Play, Settings, GitBranch, CheckCircle, AlertCircle } from "lucide-react";
 import { motion } from "framer-motion";
+import { useState } from "react";
 
 // Project data - in a real app, this would come from an API or database
 const projectsData = {
@@ -65,6 +66,25 @@ const projectsData = {
       "30% decrease in food waste reported by users",
       "15K+ active monthly users",
     ],
+    screenshots: [
+      { title: "Dashboard", description: "Main meal planning interface" },
+      { title: "Recipe Details", description: "AI-powered recipe suggestions" },
+      { title: "Shopping List", description: "Auto-generated shopping lists" },
+      { title: "Analytics", description: "Nutritional tracking dashboard" },
+    ],
+    commands: [
+      { title: "Installation", command: "npm install smart-meal-planner", description: "Install the package via npm" },
+      { title: "Start Development", command: "npm run dev", description: "Start the development server" },
+      { title: "Build Production", command: "npm run build", description: "Build for production deployment" },
+      { title: "Run Tests", command: "npm test", description: "Execute the test suite" },
+      { title: "Database Setup", command: "npm run db:migrate", description: "Run database migrations" },
+    ],
+    versionHistory: [
+      { version: "v2.1.0", date: "2024-12-15", status: "latest", changes: ["Added meal prep scheduling", "Improved AI recommendations", "Bug fixes for mobile app"] },
+      { version: "v2.0.0", date: "2024-11-20", status: "stable", changes: ["Major UI overhaul", "New collaboration features", "Enhanced nutritional tracking"] },
+      { version: "v1.5.2", date: "2024-10-30", status: "stable", changes: ["Fixed shopping list sync issues", "Performance improvements", "Updated dietary restriction options"] },
+      { version: "v1.5.0", date: "2024-10-15", status: "stable", changes: ["Added family sharing", "Introduced meal planning templates", "API rate limiting improvements"] },
+    ],
   },
   2: {
     title: "Focus Timer Pro",
@@ -119,6 +139,23 @@ const projectsData = {
       "4.8/5 app store rating",
       "50K+ downloads in first month",
       "85% user retention after 3 months",
+    ],
+    screenshots: [
+      { title: "Timer Interface", description: "Clean Pomodoro timer design" },
+      { title: "Statistics", description: "Productivity analytics dashboard" },
+      { title: "Team Sessions", description: "Collaborative focus sessions" },
+      { title: "Sound Library", description: "Ambient soundscape collection" },
+    ],
+    commands: [
+      { title: "Installation", command: "npm install focus-timer-pro", description: "Install via npm" },
+      { title: "Start App", command: "npm start", description: "Launch the application" },
+      { title: "Build", command: "npm run build", description: "Create production build" },
+      { title: "Test", command: "npm run test", description: "Run unit tests" },
+    ],
+    versionHistory: [
+      { version: "v3.2.1", date: "2024-12-10", status: "latest", changes: ["Enhanced team sync features", "New ambient sounds", "iOS 18 compatibility"] },
+      { version: "v3.1.0", date: "2024-11-25", status: "stable", changes: ["Added team collaboration", "Improved battery optimization", "New productivity insights"] },
+      { version: "v3.0.0", date: "2024-11-01", status: "stable", changes: ["Complete UI redesign", "AI-powered break suggestions", "Cross-platform sync"] },
     ],
   },
   3: {
@@ -178,6 +215,23 @@ const projectsData = {
       "2TB+ weather data collected",
       "Featured in local maker community",
     ],
+    screenshots: [
+      { title: "Live Dashboard", description: "Real-time weather data display" },
+      { title: "Historical Charts", description: "Weather trend visualizations" },
+      { title: "Alert Configuration", description: "Customizable weather alerts" },
+      { title: "Data Export", description: "CSV and JSON data export tools" },
+    ],
+    commands: [
+      { title: "Setup Hardware", command: "python setup_sensors.py", description: "Configure Raspberry Pi sensors" },
+      { title: "Start Collection", command: "python weather_collector.py", description: "Begin data collection" },
+      { title: "Launch Dashboard", command: "python app.py", description: "Start web dashboard" },
+      { title: "Export Data", command: "python export_data.py --format csv", description: "Export collected data" },
+    ],
+    versionHistory: [
+      { version: "v2.3.0", date: "2024-12-01", status: "latest", changes: ["Added air quality monitoring", "Improved ML forecasting", "New mobile responsive design"] },
+      { version: "v2.2.1", date: "2024-11-15", status: "stable", changes: ["Fixed sensor calibration bug", "Enhanced data visualization", "Better error handling"] },
+      { version: "v2.1.0", date: "2024-10-20", status: "stable", changes: ["Added MQTT support", "Integrated with Grafana", "Predictive weather alerts"] },
+    ],
   },
   4: {
     title: "Expense Tracker",
@@ -234,6 +288,23 @@ const projectsData = {
       "4.7/5 user satisfaction rating",
       "10K+ active users",
     ],
+    screenshots: [
+      { title: "Expense Dashboard", description: "Overview of spending patterns" },
+      { title: "Budget Analytics", description: "AI-powered budget insights" },
+      { title: "Category Breakdown", description: "Smart expense categorization" },
+      { title: "Reports", description: "Monthly financial reports" },
+    ],
+    commands: [
+      { title: "Install", command: "npm install expense-tracker", description: "Install the application" },
+      { title: "Start Development", command: "npm run dev", description: "Launch development server" },
+      { title: "Build", command: "npm run build", description: "Create production build" },
+      { title: "Import Data", command: "npm run import-bank-data", description: "Import bank transaction data" },
+    ],
+    versionHistory: [
+      { version: "v1.8.2", date: "2024-12-05", status: "latest", changes: ["Enhanced AI categorization", "New budget alerts", "Improved mobile UI"] },
+      { version: "v1.7.0", date: "2024-11-18", status: "stable", changes: ["Added investment tracking", "Multi-currency support", "Better data visualization"] },
+      { version: "v1.6.1", date: "2024-10-25", status: "stable", changes: ["Fixed sync issues", "Performance improvements", "Security updates"] },
+    ],
   },
   5: {
     title: "Reading List",
@@ -288,6 +359,23 @@ const projectsData = {
       "50% increase in reading completion rate",
       "3000+ books tracked",
       "Featured on Product Hunt",
+    ],
+    screenshots: [
+      { title: "Book Library", description: "Personal reading collection" },
+      { title: "Reading Progress", description: "Track reading goals and progress" },
+      { title: "Notes & Highlights", description: "Capture thoughts while reading" },
+      { title: "Recommendations", description: "AI-powered book suggestions" },
+    ],
+    commands: [
+      { title: "Install Dependencies", command: "npm install", description: "Install required packages" },
+      { title: "Setup Database", command: "npx prisma db push", description: "Initialize database schema" },
+      { title: "Start Development", command: "npm run dev", description: "Launch development server" },
+      { title: "Import Books", command: "npm run import-goodreads", description: "Import from Goodreads CSV" },
+    ],
+    versionHistory: [
+      { version: "v1.4.1", date: "2024-11-28", status: "latest", changes: ["Added reading statistics", "Improved book search", "Social sharing features"] },
+      { version: "v1.3.0", date: "2024-11-10", status: "stable", changes: ["Book club integration", "Reading goals", "Enhanced recommendation engine"] },
+      { version: "v1.2.2", date: "2024-10-15", status: "stable", changes: ["Fixed sync issues", "Better mobile experience", "Performance optimizations"] },
     ],
   },
   6: {
@@ -345,6 +433,23 @@ const projectsData = {
       "15K+ beta users",
       "92% disease detection accuracy",
     ],
+    screenshots: [
+      { title: "Plant Collection", description: "Manage your indoor garden" },
+      { title: "Care Reminders", description: "Smart watering schedules" },
+      { title: "Disease Scanner", description: "AI-powered plant health check" },
+      { title: "Community", description: "Connect with plant enthusiasts" },
+    ],
+    commands: [
+      { title: "Install App", command: "npm install plant-care-assistant", description: "Install the mobile app" },
+      { title: "Setup Backend", command: "python manage.py migrate", description: "Initialize Django database" },
+      { title: "Start Server", command: "python manage.py runserver", description: "Launch development server" },
+      { title: "Train Model", command: "python train_disease_model.py", description: "Train plant disease detection model" },
+    ],
+    versionHistory: [
+      { version: "v0.9.3", date: "2024-12-12", status: "latest", changes: ["Enhanced disease detection", "New plant species support", "Community features beta"] },
+      { version: "v0.8.5", date: "2024-11-22", status: "stable", changes: ["Improved care recommendations", "Bug fixes", "Performance optimizations"] },
+      { version: "v0.7.0", date: "2024-11-01", status: "stable", changes: ["Initial beta release", "Core features implementation", "Basic AI integration"] },
+    ],
   },
 };
 
@@ -352,19 +457,24 @@ export default function ProjectDetail() {
   const { id } = useParams();
   const projectId = parseInt(id || "0", 10);
   const project = projectsData[projectId as keyof typeof projectsData];
+  const [activeTab, setActiveTab] = useState<'overview' | 'commands' | 'versions'>('overview');
 
   if (!project || !id) {
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-4">Project not found</h1>
-          <Link href="/">
-            <a className="text-blue-400 hover:text-blue-300">Return to home</a>
-          </Link>
+          <Link href="/" className="text-blue-400 hover:text-blue-300">Return to home</Link>
         </div>
       </div>
     );
   }
+
+  const tabs = [
+    { id: 'overview', label: 'Overview', icon: Target },
+    { id: 'commands', label: 'Commands', icon: Terminal },
+    { id: 'versions', label: 'Version History', icon: Clock },
+  ] as const;
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -375,11 +485,9 @@ export default function ProjectDetail() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
-          <Link href="/">
-            <a className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors">
-              <ArrowLeft size={20} />
-              <span className="font-['Courier_Prime']">Back to Projects</span>
-            </a>
+          <Link href="/" className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors">
+            <ArrowLeft size={20} />
+            <span className="font-['Courier_Prime']">Back to Projects</span>
           </Link>
         </motion.nav>
 
@@ -438,127 +546,311 @@ export default function ProjectDetail() {
           </div>
         </motion.header>
 
-        {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left Column - Main Content */}
-          <div className="lg:col-span-2 space-y-8">
-            {/* Overview */}
-            <motion.section
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="bg-gray-900/50 backdrop-blur-sm rounded-xl p-6 border border-gray-800"
-            >
-              <h2 className="text-2xl font-bold mb-4 font-['Courier_Prime']">Overview</h2>
-              <p className="text-gray-300 leading-relaxed">{project.description}</p>
-            </motion.section>
-
-            {/* Key Features */}
-            <motion.section
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="bg-gray-900/50 backdrop-blur-sm rounded-xl p-6 border border-gray-800"
-            >
-              <h2 className="text-2xl font-bold mb-6 font-['Courier_Prime']">Key Features</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                {project.features.map((feature, index) => (
-                  <div key={index} className="space-y-3">
-                    <div className="flex items-start gap-3">
-                      <div className="p-2 bg-blue-500/20 rounded-lg">
-                        <feature.icon size={20} className="text-blue-400" />
-                      </div>
-                      <div>
-                        <h3 className="font-semibold text-white">{feature.title}</h3>
-                        <p className="text-sm text-gray-400 mt-1">{feature.description}</p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </motion.section>
-
-            {/* Challenges & Solutions */}
-            <motion.section
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="bg-gray-900/50 backdrop-blur-sm rounded-xl p-6 border border-gray-800"
-            >
-              <h2 className="text-2xl font-bold mb-6 font-['Courier_Prime']">Challenges & Solutions</h2>
-              <div className="space-y-6">
-                {project.challenges.map((challenge, index) => (
-                  <div key={index} className="space-y-2">
-                    <h3 className="font-semibold text-red-400">Challenge:</h3>
-                    <p className="text-gray-300 pl-4">{challenge.problem}</p>
-                    <h3 className="font-semibold text-green-400 mt-3">Solution:</h3>
-                    <p className="text-gray-300 pl-4">{challenge.solution}</p>
-                  </div>
-                ))}
-              </div>
-            </motion.section>
-          </div>
-
-          {/* Right Column - Sidebar */}
-          <div className="space-y-6">
-            {/* Technologies */}
-            <motion.section
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.3 }}
-              className="bg-gray-900/50 backdrop-blur-sm rounded-xl p-6 border border-gray-800"
-            >
-              <h3 className="text-xl font-bold mb-4 font-['Courier_Prime']">Technologies</h3>
-              <div className="flex flex-wrap gap-2">
-                {project.technologies.map((tech, index) => (
-                  <span
-                    key={index}
-                    className={`px-3 py-1 text-xs rounded-full border ${
-                      tech.category === 'frontend' ? 'border-blue-500/50 text-blue-400' :
-                      tech.category === 'backend' ? 'border-green-500/50 text-green-400' :
-                      tech.category === 'database' ? 'border-purple-500/50 text-purple-400' :
-                      tech.category === 'ai' ? 'border-yellow-500/50 text-yellow-400' :
-                      'border-gray-600 text-gray-400'
-                    }`}
-                  >
-                    {tech.name}
-                  </span>
-                ))}
-              </div>
-            </motion.section>
-
-            {/* Results */}
-            {project.results && (
-              <motion.section
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.4 }}
-                className="bg-gray-900/50 backdrop-blur-sm rounded-xl p-6 border border-gray-800"
+        {/* Tab Navigation */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="mb-8"
+        >
+          <div className="flex space-x-1 bg-gray-900/50 backdrop-blur-sm rounded-xl p-1 border border-gray-800">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all font-['Courier_Prime'] ${
+                  activeTab === tab.id
+                    ? 'bg-white text-black shadow-lg'
+                    : 'text-gray-400 hover:text-white hover:bg-gray-800/50'
+                }`}
               >
-                <h3 className="text-xl font-bold mb-4 font-['Courier_Prime']">Results</h3>
-                <ul className="space-y-3">
-                  {project.results.map((result, index) => (
-                    <li key={index} className="flex items-start gap-2">
-                      <div className="w-1.5 h-1.5 rounded-full bg-green-500 mt-1.5 flex-shrink-0" />
-                      <span className="text-gray-300 text-sm">{result}</span>
-                    </li>
-                  ))}
-                </ul>
-              </motion.section>
-            )}
-
-            {/* Project Visual */}
-            <motion.section
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.5 }}
-              className="bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-xl p-8 border border-gray-800 flex items-center justify-center min-h-[200px]"
-            >
-              <Code2 size={48} className="text-gray-600" />
-            </motion.section>
+                <tab.icon size={16} />
+                <span className="text-sm">{tab.label}</span>
+              </button>
+            ))}
           </div>
-        </div>
+        </motion.div>
+
+        {/* Tab Content */}
+        <motion.div
+          key={activeTab}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          {activeTab === 'overview' && <OverviewTab project={project} />}
+          {activeTab === 'commands' && <CommandsTab project={project} />}
+          {activeTab === 'versions' && <VersionsTab project={project} />}
+        </motion.div>
       </div>
+    </div>
+  );
+}
+
+// Overview Tab Component
+function OverviewTab({ project }: { project: any }) {
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      {/* Left Column - Main Content */}
+      <div className="lg:col-span-2 space-y-8">
+        {/* Screenshots Section */}
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="bg-gray-900/50 backdrop-blur-sm rounded-xl p-6 border border-gray-800"
+        >
+          <h2 className="text-2xl font-bold mb-6 font-['Courier_Prime']">Screenshots</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {project.screenshots?.map((screenshot: any, index: number) => (
+              <div key={index} className="bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-lg p-6 border border-gray-700 flex flex-col items-center justify-center min-h-[160px]">
+                <Image size={32} className="text-gray-500 mb-3" />
+                <h3 className="font-semibold text-white text-sm text-center">{screenshot.title}</h3>
+                <p className="text-xs text-gray-400 text-center mt-1">{screenshot.description}</p>
+              </div>
+            ))}
+          </div>
+        </motion.section>
+
+        {/* Description */}
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="bg-gray-900/50 backdrop-blur-sm rounded-xl p-6 border border-gray-800"
+        >
+          <h2 className="text-2xl font-bold mb-4 font-['Courier_Prime']">Project Overview</h2>
+          <p className="text-gray-300 leading-relaxed">{project.description}</p>
+        </motion.section>
+
+        {/* Key Features */}
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="bg-gray-900/50 backdrop-blur-sm rounded-xl p-6 border border-gray-800"
+        >
+          <h2 className="text-2xl font-bold mb-6 font-['Courier_Prime']">Key Features</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {project.features.map((feature: any, index: number) => (
+              <div key={index} className="space-y-3">
+                <div className="flex items-start gap-3">
+                  <div className="p-2 bg-blue-500/20 rounded-lg">
+                    <feature.icon size={20} className="text-blue-400" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-white">{feature.title}</h3>
+                    <p className="text-sm text-gray-400 mt-1">{feature.description}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </motion.section>
+
+        {/* Challenges & Solutions */}
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="bg-gray-900/50 backdrop-blur-sm rounded-xl p-6 border border-gray-800"
+        >
+          <h2 className="text-2xl font-bold mb-6 font-['Courier_Prime']">Challenges & Solutions</h2>
+          <div className="space-y-6">
+            {project.challenges.map((challenge: any, index: number) => (
+              <div key={index} className="space-y-2">
+                <h3 className="font-semibold text-red-400">Challenge:</h3>
+                <p className="text-gray-300 pl-4">{challenge.problem}</p>
+                <h3 className="font-semibold text-green-400 mt-3">Solution:</h3>
+                <p className="text-gray-300 pl-4">{challenge.solution}</p>
+              </div>
+            ))}
+          </div>
+        </motion.section>
+      </div>
+
+      {/* Right Column - Sidebar */}
+      <div className="space-y-6">
+        {/* Technologies */}
+        <motion.section
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.3 }}
+          className="bg-gray-900/50 backdrop-blur-sm rounded-xl p-6 border border-gray-800"
+        >
+          <h3 className="text-xl font-bold mb-4 font-['Courier_Prime']">Technologies</h3>
+          <div className="flex flex-wrap gap-2">
+            {project.technologies.map((tech: any, index: number) => (
+              <span
+                key={index}
+                className={`px-3 py-1 text-xs rounded-full border ${
+                  tech.category === 'frontend' ? 'border-blue-500/50 text-blue-400' :
+                  tech.category === 'backend' ? 'border-green-500/50 text-green-400' :
+                  tech.category === 'database' ? 'border-purple-500/50 text-purple-400' :
+                  tech.category === 'ai' ? 'border-yellow-500/50 text-yellow-400' :
+                  'border-gray-600 text-gray-400'
+                }`}
+              >
+                {tech.name}
+              </span>
+            ))}
+          </div>
+        </motion.section>
+
+        {/* Results */}
+        {project.results && (
+          <motion.section
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.4 }}
+            className="bg-gray-900/50 backdrop-blur-sm rounded-xl p-6 border border-gray-800"
+          >
+            <h3 className="text-xl font-bold mb-4 font-['Courier_Prime']">Results</h3>
+            <ul className="space-y-3">
+              {project.results.map((result: string, index: number) => (
+                <li key={index} className="flex items-start gap-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-green-500 mt-1.5 flex-shrink-0" />
+                  <span className="text-gray-300 text-sm">{result}</span>
+                </li>
+              ))}
+            </ul>
+          </motion.section>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// Commands Tab Component
+function CommandsTab({ project }: { project: any }) {
+  const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
+
+  const copyToClipboard = async (text: string, index: number) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedIndex(index);
+      setTimeout(() => setCopiedIndex(null), 2000);
+    } catch (err) {
+      console.error('Failed to copy: ', err);
+    }
+  };
+
+  return (
+    <div className="max-w-4xl">
+      <motion.section
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-gray-900/50 backdrop-blur-sm rounded-xl p-6 border border-gray-800"
+      >
+        <h2 className="text-2xl font-bold mb-6 font-['Courier_Prime'] flex items-center gap-2">
+          <Terminal size={24} />
+          Commands Guide
+        </h2>
+        <p className="text-gray-400 mb-8">Follow these commands to get started with {project.title}:</p>
+        
+        <div className="space-y-6">
+          {project.commands?.map((command: any, index: number) => (
+            <div key={index} className="border border-gray-700 rounded-lg p-4 hover:border-gray-600 transition-colors">
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex-1">
+                  <h3 className="font-semibold text-white mb-2 flex items-center gap-2">
+                    <Settings size={16} className="text-blue-400" />
+                    {command.title}
+                  </h3>
+                  <p className="text-gray-400 text-sm mb-3">{command.description}</p>
+                  <div className="bg-black rounded-lg p-3 border border-gray-800">
+                    <code className="text-green-400 font-['Courier_Prime'] text-sm">{command.command}</code>
+                  </div>
+                </div>
+                <button
+                  onClick={() => copyToClipboard(command.command, index)}
+                  className="flex items-center gap-1 px-3 py-1 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors text-sm"
+                >
+                  {copiedIndex === index ? (
+                    <>
+                      <CheckCircle size={14} className="text-green-400" />
+                      <span className="text-green-400">Copied</span>
+                    </>
+                  ) : (
+                    <>
+                      <Download size={14} />
+                      <span>Copy</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </motion.section>
+    </div>
+  );
+}
+
+// Versions Tab Component
+function VersionsTab({ project }: { project: any }) {
+  return (
+    <div className="max-w-4xl">
+      <motion.section
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-gray-900/50 backdrop-blur-sm rounded-xl p-6 border border-gray-800"
+      >
+        <h2 className="text-2xl font-bold mb-6 font-['Courier_Prime'] flex items-center gap-2">
+          <Clock size={24} />
+          Version History
+        </h2>
+        <p className="text-gray-400 mb-8">Track the evolution of {project.title} through its version releases:</p>
+        
+        <div className="space-y-6">
+          {project.versionHistory?.map((version: any, index: number) => (
+            <div key={index} className="relative">
+              {/* Timeline Line */}
+              {index < project.versionHistory.length - 1 && (
+                <div className="absolute left-6 top-12 w-0.5 h-16 bg-gray-700"></div>
+              )}
+              
+              <div className="flex items-start gap-4">
+                {/* Version Badge */}
+                <div className={`flex items-center justify-center w-12 h-12 rounded-full border-2 ${
+                  version.status === 'latest' 
+                    ? 'border-green-500 bg-green-500/20' 
+                    : 'border-gray-600 bg-gray-800'
+                }`}>
+                  <GitBranch size={16} className={version.status === 'latest' ? 'text-green-400' : 'text-gray-400'} />
+                </div>
+                
+                {/* Version Details */}
+                <div className="flex-1 border border-gray-700 rounded-lg p-4 hover:border-gray-600 transition-colors">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-3">
+                      <h3 className="font-bold text-white font-['Courier_Prime']">{version.version}</h3>
+                      {version.status === 'latest' && (
+                        <span className="px-2 py-1 bg-green-500/20 text-green-400 rounded-full text-xs border border-green-500/50">
+                          Latest
+                        </span>
+                      )}
+                    </div>
+                    <span className="text-gray-400 text-sm">{version.date}</span>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <h4 className="text-sm font-semibold text-gray-300">Changes:</h4>
+                    <ul className="space-y-1">
+                      {version.changes.map((change: string, changeIndex: number) => (
+                        <li key={changeIndex} className="flex items-start gap-2">
+                          <div className="w-1.5 h-1.5 rounded-full bg-blue-400 mt-1.5 flex-shrink-0" />
+                          <span className="text-gray-400 text-sm">{change}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </motion.section>
     </div>
   );
 }
