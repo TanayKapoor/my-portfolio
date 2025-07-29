@@ -123,7 +123,7 @@ export default function TimelineSection() {
       const currentIndex = workExperiences.length - 1; // Last item is current
       
       // Get actual card width based on screen size
-      let cardWidth = 260; // Mobile default
+      let cardWidth = Math.min(window.innerWidth - 48, 240); // Dynamic mobile width
       if (window.innerWidth >= 1024) {
         cardWidth = 400;
       } else if (window.innerWidth >= 768) {
@@ -131,7 +131,9 @@ export default function TimelineSection() {
       } else if (window.innerWidth >= 640) {
         cardWidth = 350;
       } else if (window.innerWidth >= 480) {
-        cardWidth = 320;
+        cardWidth = Math.min(300, window.innerWidth - 64);
+      } else if (window.innerWidth >= 375) {
+        cardWidth = Math.min(280, window.innerWidth - 64);
       }
       
       // Get actual gap based on screen size
@@ -200,7 +202,7 @@ export default function TimelineSection() {
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
       // Get dynamic card width based on screen size
-      let scrollAmount = 260;
+      let scrollAmount = Math.min(window.innerWidth - 48, 240);
       if (window.innerWidth >= 1024) {
         scrollAmount = 400;
       } else if (window.innerWidth >= 768) {
@@ -208,7 +210,9 @@ export default function TimelineSection() {
       } else if (window.innerWidth >= 640) {
         scrollAmount = 350;
       } else if (window.innerWidth >= 480) {
-        scrollAmount = 320;
+        scrollAmount = Math.min(300, window.innerWidth - 64);
+      } else if (window.innerWidth >= 375) {
+        scrollAmount = Math.min(280, window.innerWidth - 64);
       }
       scrollContainerRef.current.scrollBy({ left: -scrollAmount, behavior: "smooth" });
     }
@@ -217,7 +221,7 @@ export default function TimelineSection() {
   const scrollRight = () => {
     if (scrollContainerRef.current) {
       // Get dynamic card width based on screen size
-      let scrollAmount = 260;
+      let scrollAmount = Math.min(window.innerWidth - 48, 240);
       if (window.innerWidth >= 1024) {
         scrollAmount = 400;
       } else if (window.innerWidth >= 768) {
@@ -225,7 +229,9 @@ export default function TimelineSection() {
       } else if (window.innerWidth >= 640) {
         scrollAmount = 350;
       } else if (window.innerWidth >= 480) {
-        scrollAmount = 320;
+        scrollAmount = Math.min(300, window.innerWidth - 64);
+      } else if (window.innerWidth >= 375) {
+        scrollAmount = Math.min(280, window.innerWidth - 64);
       }
       scrollContainerRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
     }
