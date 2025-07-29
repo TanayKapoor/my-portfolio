@@ -553,19 +553,18 @@ export default function ProjectDetail() {
           transition={{ delay: 0.2 }}
           className="mb-8"
         >
-          <div className="flex space-x-1 bg-gray-900/50 backdrop-blur-sm rounded-xl p-1 border border-gray-800">
+          <div className="inline-flex bg-gray-800/80 backdrop-blur-sm rounded-full p-1 border border-gray-700/50">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all font-['Courier_Prime'] ${
+                className={`relative px-4 py-2 rounded-full transition-all duration-200 text-sm font-medium ${
                   activeTab === tab.id
-                    ? 'bg-white text-black shadow-lg'
-                    : 'text-gray-400 hover:text-white hover:bg-gray-800/50'
+                    ? 'bg-gray-600 text-white shadow-sm'
+                    : 'text-gray-400 hover:text-gray-300'
                 }`}
               >
-                <tab.icon size={16} />
-                <span className="text-sm">{tab.label}</span>
+                <span className="relative z-10">{tab.label}</span>
               </button>
             ))}
           </div>
