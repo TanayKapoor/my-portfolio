@@ -89,10 +89,10 @@ export default function Home() {
                     Get in touch
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-80 p-4 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800">
+                <DropdownMenuContent className="w-80 p-4 bg-slate-900 border border-white/20 backdrop-blur-xl">
                   {/* Send email option */}
                   <DropdownMenuItem 
-                    className="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 p-3 rounded-lg"
+                    className="cursor-pointer hover:bg-white/10 p-3 rounded-lg transition-colors text-white"
                     onClick={() => window.location.href = 'mailto:tanay_kapoor@icloud.com'}
                   >
                     <Mail className="mr-3 h-5 w-5" />
@@ -100,11 +100,11 @@ export default function Home() {
                   </DropdownMenuItem>
                   
                   {/* Divider */}
-                  <DropdownMenuSeparator className="my-4 bg-gray-200 dark:bg-gray-700" />
+                  <DropdownMenuSeparator className="my-4 bg-white/20" />
                   
                   {/* Email input form */}
                   <div className="px-2">
-                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                    <p className="text-sm text-gray-400 mb-3">
                       Or share your email and I'll reach out to you
                     </p>
                     <form onSubmit={handleEmailSubmit} className="space-y-3">
@@ -113,12 +113,12 @@ export default function Home() {
                         placeholder="your@email.com"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="w-full"
+                        className="w-full bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-white/40"
                         disabled={isConnecting}
                       />
                       <Button 
                         type="submit" 
-                        className="w-full"
+                        className="w-full bg-white text-slate-900 hover:bg-gray-200 font-medium transition-all"
                         disabled={isConnecting}
                       >
                         {isConnecting ? (
