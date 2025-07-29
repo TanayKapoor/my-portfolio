@@ -127,8 +127,8 @@ export default function TimelineSection() {
       // Therefore: scroll = currentCardCenter + containerPadding - viewportCenter
       const scrollNeeded = currentCardCenter + containerPadding - viewportCenter;
       
-      // Apply the scroll with slight additional offset to ensure nothing appears to the right
-      const finalScroll = scrollNeeded + 50; // Add 50px to ensure current is truly rightmost visible
+      // Apply the scroll with additional offset to ensure nothing appears to the right
+      const finalScroll = scrollNeeded + 150; // Add 150px to move current card more to the left
       container.scrollLeft = Math.max(0, finalScroll);
       console.log(`Centering current position. Final scroll: ${finalScroll}, card center: ${currentCardCenter}, viewport center: ${viewportCenter}`);
     };
