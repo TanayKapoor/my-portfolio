@@ -1642,6 +1642,7 @@
     0 0 40px rgba(34, 197, 94, 0.4),
     0 0 60px rgba(34, 197, 94, 0.2);
   animation: pulse-current 2s ease-in-out infinite;
+  top: calc(5rem - 50px - 3px);
 }
 
 .timeline-dot.current .dot-inner {
