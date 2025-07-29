@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import { ExternalLink, Github, ChevronRight, Code2, Brain, FileSearch } from 'lucide-react';
 
 interface Project {
@@ -81,37 +81,6 @@ const projects: Project[] = [
 
 export default function ProjectsSection() {
   const [hoveredProject, setHoveredProject] = useState<number | null>(null);
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-
-  useEffect(() => {
-    const container = scrollContainerRef.current;
-    if (!container) return;
-
-    const handleScroll = () => {
-      // Add scrolling class
-      container.classList.add('scrolling');
-      
-      // Clear previous timeout
-      if (scrollTimeoutRef.current) {
-        clearTimeout(scrollTimeoutRef.current);
-      }
-      
-      // Remove scrolling class after scroll ends
-      scrollTimeoutRef.current = setTimeout(() => {
-        container.classList.remove('scrolling');
-      }, 150);
-    };
-
-    container.addEventListener('scroll', handleScroll);
-    
-    return () => {
-      container.removeEventListener('scroll', handleScroll);
-      if (scrollTimeoutRef.current) {
-        clearTimeout(scrollTimeoutRef.current);
-      }
-    };
-  }, []);
   return (
     <section className="projects-section" id="projects">
       <div className="projects-container">
@@ -125,7 +94,7 @@ export default function ProjectsSection() {
           </div>
 
           {/* Projects Horizontal Scroll */}
-          <div className="projects-scroll-container" ref={scrollContainerRef}>
+          <div className="projects-scroll-container">
             {projects.map((project) => (
               <div
                 key={project.id}
