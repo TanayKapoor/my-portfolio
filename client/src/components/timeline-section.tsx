@@ -171,10 +171,10 @@ export default function TimelineSection() {
 
           {/* Timeline Scroll Container */}
           <div className="timeline-scroll-wrapper">
+            {/* Timeline Line - Outside scroll container */}
+            <div className="timeline-line"></div>
+            
             <div className="timeline-scroll-container" ref={scrollContainerRef}>
-              
-              {/* Timeline Line */}
-              <div className="timeline-line"></div>
               
               {/* Experience Cards */}
               {workExperiences.map((experience, index) => (

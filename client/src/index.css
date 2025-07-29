@@ -1573,10 +1573,9 @@
 /* Timeline Line */
 .timeline-line {
   position: absolute;
-  top: calc(5rem - 30px + 9px);
-  left: 0;
-  right: 0;
-  width: 100vw;
+  top: calc(2rem + 5rem - 30px + 9px);
+  left: -50vw;
+  width: 200vw;
   height: 2px;
   background: linear-gradient(
     90deg,
