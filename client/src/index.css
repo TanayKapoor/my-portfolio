@@ -1572,7 +1572,7 @@
 /* Timeline Line */
 .timeline-line {
   position: absolute;
-  top: 6rem;
+  top: calc(5rem - 21px);
   left: calc(50vw - 200px);
   right: calc(50vw - 200px);
   height: 3px;
@@ -1598,7 +1598,7 @@
 /* Timeline Dot */
 .timeline-dot {
   position: absolute;
-  top: calc(5rem - 9px);
+  top: calc(5rem - 30px);
   left: 50%;
   transform: translateX(-50%);
   width: 18px;
