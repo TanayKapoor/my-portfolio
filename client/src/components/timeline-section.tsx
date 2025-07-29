@@ -1,10 +1,12 @@
 import { useState, useEffect, useRef } from "react";
+import { motion, useScroll, useTransform, useInView } from "framer-motion";
 import {
   Calendar,
   MapPin,
   ExternalLink,
   ChevronLeft,
   ChevronRight,
+  Sparkles,
 } from "lucide-react";
 
 interface WorkExperience {
@@ -208,26 +210,71 @@ export default function TimelineSection() {
             <div className="timeline-scroll-container" ref={scrollContainerRef}>
               {/* Experience Cards */}
               {workExperiences.map((experience, index) => (
-                <div
+                <motion.div
                   key={experience.id}
                   className={`timeline-item ${experience.type}`}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ 
+                    delay: index * 0.1,
+                    duration: 0.5,
+                    ease: "easeOut"
+                  }}
                 >
                   {/* Timeline Dot */}
-                  <div
+                  <motion.div
                     className={`timeline-dot ${index === workExperiences.length - 1 ? "current" : ""}`}
+                    animate={experience.type === "current" ? {
+                      scale: [1, 1.2, 1],
+                    } : {}}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "easeInOut"
+                    }}
                   >
                     <div className="dot-inner"></div>
-                  </div>
+                  </motion.div>
 
                   {/* Experience Card */}
-                  <div className="experience-card">
+                  <motion.div 
+                    className="experience-card"
+                    whileHover={{ 
+                      scale: 1.02,
+                      transition: { duration: 0.2 }
+                    }}
+                    animate={experience.type === "current" ? {
+                      boxShadow: [
+                        "0 0 20px rgba(34, 197, 94, 0.3)",
+                        "0 0 40px rgba(34, 197, 94, 0.5)",
+                        "0 0 20px rgba(34, 197, 94, 0.3)"
+                      ]
+                    } : {}}
+                    transition={{
+                      boxShadow: {
+                        duration: 3,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                      }
+                    }}
+                  >
                     {/* Card Header */}
                     <div className="card-header">
                       <div className="position-info">
-                        <h3 className="position-title">
+                        <motion.h3 
+                          className="position-title"
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: 0.2 + index * 0.1 }}
+                        >
                           {experience.position}
-                        </h3>
-                        <div className="company-info">
+                        </motion.h3>
+                        <motion.div 
+                          className="company-info"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ delay: 0.3 + index * 0.1 }}
+                        >
                           <span className="company-name">
                             {experience.company}
                           </span>
@@ -237,33 +284,79 @@ export default function TimelineSection() {
                             <Calendar size={14} />
                             <span>{experience.duration}</span>
                           </div>
-                        </div>
+                        </motion.div>
                       </div>
                       {experience.type === "current" && (
-                        <div className="current-badge">Current</div>
+                        <motion.div 
+                          className="current-badge"
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          transition={{ 
+                            delay: 0.5,
+                            type: "spring",
+                            stiffness: 200
+                          }}
+                        >
+                          <Sparkles size={14} className="inline mr-1" />
+                          Current
+                        </motion.div>
                       )}
                     </div>
 
                     {/* Description */}
-                    <div className="experience-description">
+                    <motion.div 
+                      className="experience-description"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.4 + index * 0.1 }}
+                    >
                       {experience.description.map((item, i) => (
-                        <div key={i} className="description-item">
+                        <motion.div 
+                          key={i} 
+                          className="description-item"
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ 
+                            delay: 0.5 + index * 0.1 + i * 0.05,
+                            duration: 0.3
+                          }}
+                          whileHover={{ x: 5 }}
+                        >
                           <span className="bullet">•</span>
                           <span>{item}</span>
-                        </div>
+                        </motion.div>
                       ))}
-                    </div>
+                    </motion.div>
 
                     {/* Technologies */}
-                    <div className="technologies">
+                    <motion.div 
+                      className="technologies"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.6 + index * 0.1 }}
+                    >
                       {experience.technologies.map((tech, i) => (
-                        <span key={i} className="tech-tag">
+                        <motion.span 
+                          key={i} 
+                          className="tech-tag"
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ 
+                            delay: 0.7 + index * 0.1 + i * 0.05,
+                            duration: 0.2
+                          }}
+                          whileHover={{ 
+                            scale: 1.1,
+                            backgroundColor: "rgba(59, 130, 246, 0.2)",
+                            transition: { duration: 0.1 }
+                          }}
+                        >
                           {tech}
-                        </span>
+                        </motion.span>
                       ))}
-                    </div>
-                  </div>
-                </div>
+                    </motion.div>
+                  </motion.div>
+                </motion.div>
               ))}
             </div>
           </div>
