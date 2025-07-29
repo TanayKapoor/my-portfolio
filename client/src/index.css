@@ -1587,6 +1587,16 @@
   );
   z-index: 1;
   border-radius: 1px;
+  mask: 
+    radial-gradient(circle at calc(50vw - 200px + 2rem + 200px), transparent 12px, black 15px),
+    radial-gradient(circle at calc(50vw - 200px + 2rem + 200px + 400px + 3rem), transparent 12px, black 15px),
+    radial-gradient(circle at calc(50vw - 200px + 2rem + 200px + 2*(400px + 3rem)), transparent 12px, black 15px),
+    radial-gradient(circle at calc(50vw - 200px + 2rem + 200px + 3*(400px + 3rem)), transparent 12px, black 15px);
+  -webkit-mask: 
+    radial-gradient(circle at calc(50vw - 200px + 2rem + 200px), transparent 12px, black 15px),
+    radial-gradient(circle at calc(50vw - 200px + 2rem + 200px + 400px + 3rem), transparent 12px, black 15px),
+    radial-gradient(circle at calc(50vw - 200px + 2rem + 200px + 2*(400px + 3rem)), transparent 12px, black 15px),
+    radial-gradient(circle at calc(50vw - 200px + 2rem + 200px + 3*(400px + 3rem)), transparent 12px, black 15px);
 }
 
 /* Timeline Item */
@@ -1605,12 +1615,20 @@
   width: 18px;
   height: 18px;
   background: rgba(15, 23, 42, 0.95);
-  border: 2px solid rgba(59, 130, 246, 0.8);
+  border: 2px solid rgba(100, 116, 139, 0.6);
   border-radius: 50%;
   z-index: 100;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* Timeline Dot - Inactive (Grey) */
+.dot-inner {
+  width: 6px;
+  height: 6px;
+  background: rgba(100, 116, 139, 0.8);
+  border-radius: 50%;
 }
 
 .timeline-dot.current {
@@ -1624,13 +1642,6 @@
     0 0 40px rgba(34, 197, 94, 0.4),
     0 0 60px rgba(34, 197, 94, 0.2);
   animation: pulse-current 2s ease-in-out infinite;
-}
-
-.dot-inner {
-  width: 6px;
-  height: 6px;
-  background: rgba(59, 130, 246, 0.9);
-  border-radius: 50%;
 }
 
 .timeline-dot.current .dot-inner {
