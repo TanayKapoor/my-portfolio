@@ -126,8 +126,6 @@ export default function ProjectsSection() {
 
           {/* Projects Horizontal Scroll */}
           <div className="projects-scroll-container" ref={scrollContainerRef}>
-            <div className="scroll-fade-left"></div>
-            <div className="scroll-fade-right"></div>
             {projects.map((project) => (
               <div
                 key={project.id}

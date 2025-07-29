@@ -848,38 +848,26 @@
   scrollbar-width: none;
   -ms-overflow-style: none;
   position: relative;
+  transition: mask 0.3s ease, -webkit-mask 0.3s ease;
 }
 
 .projects-scroll-container::-webkit-scrollbar {
   display: none;
 }
 
-.projects-scroll-container .scroll-fade-left,
-.projects-scroll-container .scroll-fade-right {
-  position: absolute;
-  top: 0;
-  width: 60px;
-  height: 100%;
-  background: linear-gradient(90deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.4) 50%, transparent 100%);
-  filter: blur(8px);
-  pointer-events: none;
-  z-index: 10;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.projects-scroll-container .scroll-fade-right {
-  right: 0;
-  background: linear-gradient(-90deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.4) 50%, transparent 100%);
-}
-
-.projects-scroll-container .scroll-fade-left {
-  left: 0;
-}
-
-.projects-scroll-container.scrolling .scroll-fade-left,
-.projects-scroll-container.scrolling .scroll-fade-right {
-  opacity: 1;
+.projects-scroll-container.scrolling {
+  mask: linear-gradient(90deg, 
+    transparent 0px, 
+    black 40px, 
+    black calc(100% - 40px), 
+    transparent 100%
+  );
+  -webkit-mask: linear-gradient(90deg, 
+    transparent 0px, 
+    black 40px, 
+    black calc(100% - 40px), 
+    transparent 100%
+  );
 }
 
 /* Project Card - Raycast Style */
