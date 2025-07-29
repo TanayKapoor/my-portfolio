@@ -138,7 +138,7 @@ export default function ProjectsSection() {
           </div>
 
           {/* Projects Horizontal Scroll */}
-          <div className="projects-scroll-container" ref={scrollContainerRef}>
+          <div className="projects-scroll-container pl-[0px] pr-[0px] mt-[23px] mb-[23px]" ref={scrollContainerRef}>
             {projects.map((project) => (
               <div
                 key={project.id}
