@@ -172,7 +172,7 @@ export default function ProjectsSection() {
       'Reading List Manager': 5,
       'Plant Care Assistant': 6
     };
-    return titleMap[project.title] || (index + 1);
+    return project?.title ? (titleMap[project.title] || (index + 1)) : (index + 1);
   };
 
   const scrollLeft = () => {
@@ -261,6 +261,13 @@ export default function ProjectsSection() {
             <p className="projects-subtitle">
               A collection of my recent work and side projects
             </p>
+            <div className="mt-6">
+              <Link href="/projects">
+                <button className="px-6 py-3 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 rounded-lg text-white transition-all duration-300 hover:scale-105">
+                  View All Projects
+                </button>
+              </Link>
+            </div>
           </div>
 
           {/* Projects Horizontal Scroll */}
