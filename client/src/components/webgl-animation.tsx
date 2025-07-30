@@ -10,6 +10,8 @@ class WebGLRenderer {
   private startTime: number = Date.now();
   private mouseMove: [number, number] = [0, 0];
   private scale: number = 1;
+  private lastRenderTime: number = 0;
+  private targetFPS: number = 30; // Limit to 30 FPS to reduce power consumption
 
   private vertexSource = `#version 300 es
 precision highp float;
@@ -21,8 +23,9 @@ void main(){
   private fragmentSource = `#version 300 es
 /*********
 * made by Matthias Hurrle (@atzedent)
+* Optimized for lower power consumption
 */
-precision highp float;
+precision mediump float;
 out vec4 O;
 uniform float time;
 uniform vec2 resolution;
@@ -43,7 +46,8 @@ float rnd(vec3 p) {
 float swirls(in vec3 p) {
   float d=.0;
   vec3 c=p;
-  for(float i=min(.0,time); i<9.; i++) {
+  // Reduced from 9 to 5 iterations
+  for(float i=min(.0,time); i<5.; i++) {
     p=.7*abs(p)/dot(p,p)-.7;
     p.yz=csqr(p.yz);
     p=p.zxy;
@@ -52,14 +56,15 @@ float swirls(in vec3 p) {
   return d;
 }
 vec3 march(in vec3 p, vec3 rd) {
-  float d=.2, t=.0, c=.0, k=mix(.9,1.,rnd(rd)),
+  float d=.3, t=.0, c=.0, k=mix(.9,1.,rnd(rd)),
   maxd=length(p)-1.;
   vec3 col=vec3(0);
-  for(float i=min(.0,time); i<120.; i++) {
+  // Reduced from 120 to 60 iterations for better performance
+  for(float i=min(.0,time); i<60.; i++) {
     t+=d*exp(-2.*c)*k;
     c=swirls(p+rd*t);
-    if (t<5e-2 || t>maxd) break;
-    col+=vec3(c*c,c/1.05,c)*8e-3;
+    if (t<8e-2 || t>maxd) break;
+    col+=vec3(c*c,c/1.05,c)*1.2e-2;
   }
   return col;
 }
@@ -70,15 +75,15 @@ float rnd(vec2 p) {
 }
 vec3 sky(vec2 p, bool anim) {
   p.x-=.17-(anim?2e-4*T:.0);
-  p*=500.;
+  p*=300.; // Reduced detail
   vec2 id=floor(p), gv=fract(p)-.5;
   float n=rnd(id), d=length(gv);
-  if (n<.975) return vec3(0);
-  return vec3(S(3e-2*n,1e-3*n,d*d));
+  if (n<.98) return vec3(0); // Less dense stars
+  return vec3(S(4e-2*n,2e-3*n,d*d));
 }
 void cam(inout vec3 p) {
-  p.yz*=rot(move.y*6.3/MN-T*.05);
-  p.xz*=rot(-move.x*6.3/MN+T*.025);
+  p.yz*=rot(move.y*6.3/MN-T*.03); // Slower rotation
+  p.xz*=rot(-move.x*6.3/MN+T*.02);
 }
 void main() {
   vec2 uv=(FC-.5*R)/MN;
@@ -89,7 +94,7 @@ void main() {
   col=march(p,rd);
   col=S(-.2,.9,col);
   vec2 sn=.5+vec2(atan(rdd.x,rdd.z),atan(length(rdd.xz),rdd.y))/6.28318;
-  col=max(col,vec3(sky(sn,true)+sky(2.+sn*2.,true)));
+  col=max(col,vec3(sky(sn,true)*0.7)); // Simplified sky calculation
   float t=min((time-.5)*.3,1.);
   uv=FC/R*2.-1.;
   uv*=.7;
@@ -109,7 +114,8 @@ void main() {
       throw new Error('WebGL2 not supported');
     }
     this.gl = gl;
-    this.scale = Math.max(1, 0.5 * window.devicePixelRatio);
+    // Reduce rendering scale for better performance
+    this.scale = Math.min(0.75, 0.5 * window.devicePixelRatio);
     this.resize();
   }
 
@@ -183,6 +189,17 @@ void main() {
   public render(): void {
     if (!this.program) return;
     
+    const currentTime = performance.now();
+    const deltaTime = currentTime - this.lastRenderTime;
+    const targetFrameTime = 1000 / this.targetFPS;
+    
+    // Frame rate limiting for power efficiency
+    if (deltaTime < targetFrameTime) {
+      this.animationId = requestAnimationFrame(() => this.render());
+      return;
+    }
+    
+    this.lastRenderTime = currentTime;
     const now = (Date.now() - this.startTime) * 0.001;
     
     this.gl.clearColor(0, 0, 0, 1);
