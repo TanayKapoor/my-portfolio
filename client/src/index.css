@@ -117,19 +117,7 @@
   animation: 
     i0 2.5s linear infinite, 
     j0 3.5s linear infinite, 
-    k0 5s linear infinite,
-    halftoneTypingPulse 3s ease-in-out infinite;
-}
-
-@keyframes halftoneTypingPulse {
-  0%, 100% {
-    --pulse-intensity: 0.8;
-    filter: contrast(21) brightness(1);
-  }
-  50% {
-    --pulse-intensity: 1.2;
-    filter: contrast(25) brightness(1.1);
-  }
+    k0 5s linear infinite;
 }
 
 .halftone-section *, 
@@ -165,8 +153,8 @@
     var(--map, 
       linear-gradient(calc(var(--k0)*360deg), hsl(0, 0%, 46.7%) 9%, hsl(0, 0%, 0%))), 
     radial-gradient(circle at 50% 50%, 
-      rgba(255, 255, 255, 0.1) 0%, 
-      rgba(255, 255, 255, 0.05) 30%, 
+      rgba(255, 255, 255, 0.08) 0%, 
+      rgba(255, 255, 255, 0.04) 30%, 
       rgba(0, 0, 0, 0) 70%),
     var(--pattern, 
       radial-gradient(closest-side, hsl(0, 0%, 53.3%), hsl(0, 0%, 0%)) 0/ 1em 1em space);
@@ -175,11 +163,9 @@
 
 @keyframes halftoneBackgroundPulse {
   0%, 100% {
-    filter: contrast(21) brightness(1);
     background-size: auto, 200% 200%, 1em 1em;
   }
   50% {
-    filter: contrast(25) brightness(1.15);
     background-size: auto, 300% 300%, 1em 1em;
   }
 }
