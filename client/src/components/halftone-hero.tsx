@@ -21,7 +21,7 @@ export default function HalftoneHero() {
   };
 
   return (
-    <section className="halftone-section">
+    <section className={`halftone-section ${isTyping ? 'typing-active' : ''}`}>
       <div className="halftone"></div>
       {/* Profile Picture - Absolute center of pulse animation */}
       <div className="profile-picture-center">
@@ -45,8 +45,8 @@ export default function HalftoneHero() {
         <div className="w-full max-w-7xl px-4">
           <Typewriter 
             messages={greetingMessages} 
-            typingSpeed={50}
-            backspaceSpeed={30}
+            typingSpeed={100}
+            backspaceSpeed={50}
             pauseBetweenMessages={2000}
             onTypingStateChange={setIsTyping}
           />

@@ -99,7 +99,7 @@
   --i0: 0;
   --j0: 0;
   --k0: 0;
-  --map: repeating-radial-gradient(circle at 50% 60%, 
+  --map: repeating-radial-gradient(circle at 50% 50%, 
     hsl(0, 0%, 46.7%) calc((var(--k0) - 1)*20%), hsl(0, 0%, 0%), hsl(0, 0%, 46.7%) calc(var(--k0)*20%));
   animation: 
     i0 3.2591s linear infinite, 
@@ -108,6 +108,28 @@
   display: grid;
   min-height: 100vh;
   position: relative;
+}
+
+/* Enhanced halftone when typing is active */
+.halftone-section.typing-active {
+  --map: repeating-radial-gradient(circle at 50% 50%, 
+    hsl(0, 0%, 46.7%) calc((var(--k0) - 1)*15%), hsl(0, 0%, 0%), hsl(0, 0%, 46.7%) calc(var(--k0)*15%));
+  animation: 
+    i0 2.5s linear infinite, 
+    j0 3.5s linear infinite, 
+    k0 5s linear infinite,
+    halftoneTypingPulse 3s ease-in-out infinite;
+}
+
+@keyframes halftoneTypingPulse {
+  0%, 100% {
+    --pulse-intensity: 0.8;
+    filter: contrast(21) brightness(1);
+  }
+  50% {
+    --pulse-intensity: 1.2;
+    filter: contrast(25) brightness(1.1);
+  }
 }
 
 .halftone-section *, 
@@ -135,6 +157,31 @@
   background-blend-mode: screen;
   mix-blend-mode: multiply;
   filter: contrast(21);
+}
+
+/* Enhanced halftone pattern when typing is active */
+.typing-active .halftone {
+  background: 
+    var(--map, 
+      linear-gradient(calc(var(--k0)*360deg), hsl(0, 0%, 46.7%) 9%, hsl(0, 0%, 0%))), 
+    radial-gradient(circle at 50% 50%, 
+      rgba(255, 255, 255, 0.1) 0%, 
+      rgba(255, 255, 255, 0.05) 30%, 
+      rgba(0, 0, 0, 0) 70%),
+    var(--pattern, 
+      radial-gradient(closest-side, hsl(0, 0%, 53.3%), hsl(0, 0%, 0%)) 0/ 1em 1em space);
+  animation: halftoneBackgroundPulse 3s ease-in-out infinite;
+}
+
+@keyframes halftoneBackgroundPulse {
+  0%, 100% {
+    filter: contrast(21) brightness(1);
+    background-size: auto, 200% 200%, 1em 1em;
+  }
+  50% {
+    filter: contrast(25) brightness(1.15);
+    background-size: auto, 300% 300%, 1em 1em;
+  }
 }
 
 /* Profile picture center container - absolute center of screen */

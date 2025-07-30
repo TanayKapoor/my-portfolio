@@ -10,8 +10,8 @@ interface TypewriterProps {
 
 export default function Typewriter({ 
   messages, 
-  typingSpeed = 50, 
-  backspaceSpeed = 30, 
+  typingSpeed = 100, 
+  backspaceSpeed = 50, 
   pauseBetweenMessages = 2000,
   onTypingStateChange
 }: TypewriterProps) {
