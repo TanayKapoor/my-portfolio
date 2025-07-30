@@ -10,8 +10,8 @@ interface TypewriterProps {
 
 export default function Typewriter({ 
   messages, 
-  typingSpeed = 150, 
-  backspaceSpeed = 75, 
+  typingSpeed = 50, 
+  backspaceSpeed = 30, 
   pauseBetweenMessages = 2000,
   onTypingStateChange
 }: TypewriterProps) {
@@ -88,9 +88,11 @@ export default function Typewriter({
   }, []);
 
   return (
-    <span className="greeting-text" style={{ fontSize, transition: 'font-size 0.3s ease' }}>
-      {currentText}
-      <span className={`cursor ${showCursor ? 'visible' : ''}`}>|</span>
-    </span>
+    <div className="greeting-text-container" style={{ fontSize, transition: 'font-size 0.3s ease' }}>
+      <span className="greeting-text">
+        {currentText}
+        <span className={`cursor ${showCursor ? 'visible' : ''}`}>|</span>
+      </span>
+    </div>
   );
 }

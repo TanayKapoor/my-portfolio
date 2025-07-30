@@ -208,6 +208,7 @@
       0 0 clamp(40px, 8vw, 60px) rgba(255, 255, 255, 0.15),
       0 0 clamp(60px, 12vw, 90px) rgba(255, 255, 255, 0.08),
       inset 0 0 clamp(15px, 3vw, 20px) rgba(255, 255, 255, 0.1);
+    transform: scale(1);
   }
   50% {
     box-shadow: 
@@ -216,6 +217,68 @@
       0 0 clamp(90px, 18vw, 135px) rgba(255, 255, 255, 0.12),
       0 0 clamp(120px, 24vw, 180px) rgba(255, 255, 255, 0.06),
       inset 0 0 clamp(18px, 3.5vw, 25px) rgba(255, 255, 255, 0.15);
+    transform: scale(1.02);
+  }
+}
+
+/* Add pseudo element for additional pulse rings */
+.profile-picture.typing-active::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: transparent;
+  transform: translate(-50%, -50%);
+  animation: pulsePrimaryRing 3s ease-in-out infinite;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.profile-picture.typing-active::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: transparent;
+  transform: translate(-50%, -50%);
+  animation: pulseSecondaryRing 3s ease-in-out infinite 1.5s;
+  pointer-events: none;
+  z-index: -2;
+}
+
+@keyframes pulsePrimaryRing {
+  0% {
+    width: 100%;
+    height: 100%;
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+    opacity: 1;
+  }
+  100% {
+    width: 300%;
+    height: 300%;
+    box-shadow: 0 0 0 clamp(10px, 2vw, 15px) rgba(255, 255, 255, 0);
+    opacity: 0;
+  }
+}
+
+@keyframes pulseSecondaryRing {
+  0% {
+    width: 100%;
+    height: 100%;
+    box-shadow: 0 0 0 0 rgba(250, 182, 127, 0.5);
+    opacity: 1;
+  }
+  100% {
+    width: 400%;
+    height: 400%;
+    box-shadow: 0 0 0 clamp(15px, 3vw, 20px) rgba(250, 182, 127, 0);
+    opacity: 0;
   }
 }
 
@@ -228,6 +291,11 @@
     0 0 clamp(105px, 21vw, 150px) rgba(250, 182, 127, 0.4),
     0 0 clamp(140px, 28vw, 200px) rgba(250, 182, 127, 0.2),
     inset 0 0 clamp(20px, 4vw, 30px) rgba(255, 255, 255, 0.2);
+}
+
+.profile-picture:hover::before,
+.profile-picture:hover::after {
+  animation-play-state: paused;
 }
 
 .profile-img {
@@ -292,10 +360,9 @@
   }
 }
 
-/* Greeting text styling */
-.greeting-text {
+/* Greeting text container styling */
+.greeting-text-container {
   font-family: 'Courier Prime', monospace;
-  /* Font size is now dynamically set by the component */
   color: hsl(0, 0%, 100%);
   text-shadow: 
     -1px -1px 0 hsl(0, 0%, 0%),
@@ -310,7 +377,7 @@
   transition: all 0.3s ease;
   line-height: 1.3;
   min-height: 1.56rem; /* Adjusted for better line height */
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
@@ -319,6 +386,13 @@
   overflow-wrap: break-word;
   position: relative;
   z-index: 2;
+}
+
+/* Greeting text styling */
+.greeting-text {
+  display: inline;
+  word-break: break-word;
+  hyphens: auto;
 }
 
 .greeting-text:hover {
@@ -333,10 +407,32 @@
     0 0 10px rgba(250, 182, 127, 0.3);
   opacity: 0;
   transition: opacity 0.1s ease-in-out;
+  display: inline;
+  position: relative;
+  vertical-align: baseline;
+  white-space: nowrap;
 }
 
 .cursor.visible {
   opacity: 1;
+}
+
+/* Responsive cursor adjustments */
+@media (max-width: 768px) {
+  .greeting-text-container {
+    line-height: 1.4;
+    max-width: 95vw;
+  }
+  
+  .greeting-text {
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+  
+  .cursor {
+    position: relative;
+    display: inline;
+  }
 }
 
 /* About Section */

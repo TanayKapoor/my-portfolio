@@ -45,8 +45,8 @@ export default function HalftoneHero() {
         <div className="w-full max-w-7xl px-4">
           <Typewriter 
             messages={greetingMessages} 
-            typingSpeed={150}
-            backspaceSpeed={75}
+            typingSpeed={50}
+            backspaceSpeed={30}
             pauseBetweenMessages={2000}
             onTypingStateChange={setIsTyping}
           />
