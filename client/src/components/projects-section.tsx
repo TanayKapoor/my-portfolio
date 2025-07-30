@@ -125,7 +125,7 @@ export default function ProjectsSection() {
   };
 
   // Helper function to trim description
-  const trimDescription = (description: string, maxLength: number = 120) => {
+  const trimDescription = (description: string, maxLength: number = 100) => {
     if (description.length <= maxLength) return description;
     const trimmed = description.substring(0, maxLength);
     const lastSpace = trimmed.lastIndexOf(' ');
@@ -261,13 +261,7 @@ export default function ProjectsSection() {
             <p className="projects-subtitle">
               A collection of my recent work and side projects
             </p>
-            <div className="mt-6">
-              <Link href="/projects">
-                <button className="px-6 py-3 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 rounded-lg text-white transition-all duration-300 hover:scale-105">
-                  View All Projects
-                </button>
-              </Link>
-            </div>
+
           </div>
 
           {/* Projects Horizontal Scroll */}
@@ -388,10 +382,14 @@ export default function ProjectsSection() {
             })}
           </div>
           
-          {/* View More Text with Scroll Controls */}
+          {/* View All Projects Button with Scroll Controls */}
           <div className="view-more-container">
             <div className="view-more-text">
-              <span>View more →</span>
+              <Link href="/projects">
+                <button className="px-6 py-3 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 rounded-lg text-white transition-all duration-300 hover:scale-105">
+                  View All Projects
+                </button>
+              </Link>
             </div>
             <div className="scroll-controls">
               <button 
