@@ -10,7 +10,7 @@ class WebGLRenderer {
   private startTime: number = Date.now();
   private mouseMove: [number, number] = [0, 0];
   private targetMouse: [number, number] = [0, 0];
-  private mouseSmoothness: number = 0.05; // Smooth mouse interpolation
+  private mouseSmoothness: number = 0.08; // Smoother mouse interpolation
   private scale: number = 1;
   private lastRenderTime: number = 0;
   private targetFPS: number = 60; // Higher FPS for smoother animation
@@ -41,66 +41,66 @@ uniform vec2 move;
 #define rot(a) mat2(cos((a)-vec4(0,11,33,0)))
 #define csqr(a) vec2(a.x*a.x-a.y*a.y,2.*a.x*a.y)
 
-// Enhanced random function with better distribution
+// Cleaner random function with reduced noise
 float rnd(vec3 p) {
-  p=fract(p*vec3(443.897,478.233,267.34));
-  p+=dot(p,p.yzx+19.34);
+  p=fract(p*vec3(12.9898,78.233,156.34));
+  p+=dot(p,p.yzx+34.56);
   return fract((p.x+p.y)*p.z);
 }
 
-// Improved swirls function with more iterations for quality
+// Smoother swirls function with controlled noise
 float swirls(in vec3 p) {
   float d=.0;
   vec3 c=p;
-  // Increased iterations for better quality
-  for(float i=min(.0,time); i<8.; i++) {
-    p=.7*abs(p)/dot(p,p)-.7;
+  // Reduced iterations for cleaner look
+  for(float i=min(.0,time); i<6.; i++) {
+    p=.8*abs(p)/dot(p,p)-.8;
     p.yz=csqr(p.yz);
     p=p.zxy;
-    d+=exp(-19.*abs(dot(p,c)));
+    d+=exp(-16.*abs(dot(p,c)));
   }
   return d;
 }
 
-// Enhanced marching function with better quality
+// Cleaner marching function with reduced noise
 vec3 march(in vec3 p, vec3 rd) {
-  float d=.2, t=.0, c=.0, k=mix(.85,1.1,rnd(rd)),
-  maxd=length(p)-0.8;
+  float d=.25, t=.0, c=.0, k=mix(.9,1.05,rnd(rd)),
+  maxd=length(p)-1.2;
   vec3 col=vec3(0);
-  // Increased iterations for smoother raymarching
-  for(float i=min(.0,time); i<80.; i++) {
-    t+=d*exp(-2.2*c)*k;
+  // Balanced iterations for clean, smooth result
+  for(float i=min(.0,time); i<50.; i++) {
+    t+=d*exp(-1.8*c)*k;
     c=swirls(p+rd*t);
-    if (t<6e-2 || t>maxd) break;
-    // Enhanced color mixing with more vibrant results
-    col+=vec3(c*c*1.2,c/0.95,c*0.9)*1.8e-2;
+    if (t<8e-2 || t>maxd) break;
+    // Smoother color mixing with less noise
+    col+=vec3(c*c*0.8,c/1.1,c*0.7)*2.2e-2;
   }
   return col;
 }
 
 float rnd(vec2 p) {
-  p=fract(p*vec2(443.897,478.233));
-  p+=dot(p,p.yx+19.34);
+  p=fract(p*vec2(12.9898,78.233));
+  p+=dot(p,p.yx+34.56);
   return fract(p.x*p.y);
 }
 
-// Enhanced sky with more detailed stars
+// Cleaner sky with subtle stars
 vec3 sky(vec2 p, bool anim) {
-  p.x-=.17-(anim?3e-4*T:.0);
-  p*=420.; // Increased detail
+  p.x-=.17-(anim?1e-4*T:.0);
+  p*=250.; // Reduced detail for cleaner look
   vec2 id=floor(p), gv=fract(p)-.5;
   float n=rnd(id), d=length(gv);
-  if (n<.96) return vec3(0); // More stars
-  float brightness = S(6e-2*n,1e-3*n,d*d);
-  return vec3(brightness * (0.8 + 0.4*sin(T*2.0 + n*20.0))); // Twinkling effect
+  if (n<.985) return vec3(0); // Fewer, cleaner stars
+  float brightness = S(3e-2*n,5e-4*n,d*d);
+  return vec3(brightness * (0.6 + 0.2*sin(T*1.5 + n*15.0))); // Subtle twinkling
 }
 
-// Enhanced camera movement with smooth mouse interaction
+// Smooth camera movement with controlled mouse interaction
 void cam(inout vec3 p) {
-  float mouseInfluence = 0.8;
-  float autoRotation = T * 0.02;
-  p.yz*=rot(move.y*8.0*mouseInfluence/MN + autoRotation*0.7);
-  p.xz*=rot(-move.x*8.0*mouseInfluence/MN + autoRotation);
+  float mouseInfluence = 0.6;
+  float autoRotation = T * 0.015;
+  p.yz*=rot(move.y*6.0*mouseInfluence/MN + autoRotation*0.5);
+  p.xz*=rot(-move.x*6.0*mouseInfluence/MN + autoRotation);
 }
 
 void main() {
@@ -109,38 +109,39 @@ void main() {
   p=vec3(0,0,-16),
   rd=N(vec3(uv,1)), rdd=rd;
   
-  // Apply enhanced camera movement
+  // Apply smooth camera movement
   cam(p); cam(rd);
   
-  // Get the main fractal color
+  // Get the main fractal color with smoothing
   col=march(p,rd);
-  col=S(-.15,.95,col); // Improved contrast
+  col=S(-.1,.8,col); // Smoother contrast transition
   
-  // Enhanced sky rendering
+  // Add subtle sky background
   vec2 sn=.5+vec2(atan(rdd.x,rdd.z),atan(length(rdd.xz),rdd.y))/6.28318;
   vec3 skyColor = sky(sn,true);
-  col=max(col, skyColor * 0.9);
+  col=max(col, skyColor * 0.5);
   
   // Smooth fade-in effect
-  float t=min((time-.3)*.4,1.);
+  float t=min((time-.2)*.5,1.);
   
-  // Enhanced vignette effect
+  // Cleaner vignette effect
   uv=FC/R*2.-1.;
-  uv*=.65;
-  float v=pow(dot(uv,uv),1.5);
-  col=mix(col,vec3(0),v);
+  uv*=.7;
+  float v=pow(dot(uv,uv),1.2);
+  col=mix(col,vec3(0),v*0.8);
   
   // Apply fade-in
   col=mix(vec3(0),col,t);
-  col=max(col,.06);
+  col=max(col,.04);
   
-  // Enhanced bottom gradient for page blending
+  // Smooth bottom gradient for page blending
   float screenY = FC.y / R.y;
-  float bottomFade = S(0.0, 0.35, screenY);
+  float bottomFade = S(0.0, 0.4, screenY);
   col *= bottomFade;
   
-  // Subtle color enhancement
-  col = pow(col, vec3(0.9)); // Gamma correction for better contrast
+  // Clean color enhancement
+  col = pow(col, vec3(1.1)); // Subtle gamma for cleaner look
+  col = mix(col, S(0.0, 1.0, col), 0.3); // Additional smoothing
   
   O=vec4(col,1);
 }`;
