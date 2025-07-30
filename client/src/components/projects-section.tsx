@@ -191,7 +191,7 @@ export default function ProjectsSection() {
     }
   };
 
-  // 3D Parallax Effect Functions
+  // Enhanced 3D Corner Pop-out Effect
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>, projectId: string) => {
     const card = cardRefs.current.get(projectId);
     if (!card) return;
@@ -203,57 +203,82 @@ export default function ProjectsSection() {
     const mouseX = e.clientX - centerX;
     const mouseY = e.clientY - centerY;
     
-    // Calculate distance from center (0 to 1)
-    const distanceFromCenter = Math.sqrt(
-      Math.pow(mouseX / (rect.width / 2), 2) + 
-      Math.pow(mouseY / (rect.height / 2), 2)
-    );
+    // Update CSS custom properties for dynamic glow position
+    const mouseXPercent = ((e.clientX - rect.left) / rect.width) * 100;
+    const mouseYPercent = ((e.clientY - rect.top) / rect.height) * 100;
+    card.style.setProperty('--mouse-x', `${mouseXPercent}%`);
+    card.style.setProperty('--mouse-y', `${mouseYPercent}%`);
     
     // Normalize mouse position (-1 to 1)
     const normalizedX = mouseX / (rect.width / 2);
     const normalizedY = mouseY / (rect.height / 2);
     
-    // Calculate tilt angles - more aggressive at edges
-    const maxTilt = 15; // Maximum tilt in degrees
-    const edgeMultiplier = Math.min(distanceFromCenter * 1.5, 1); // Amplify at edges
+    // Calculate distance from center (0 to ~1.4 for corners)
+    const distanceFromCenter = Math.sqrt(normalizedX * normalizedX + normalizedY * normalizedY);
     
-    const tiltX = normalizedY * maxTilt * edgeMultiplier;
-    const tiltY = -normalizedX * maxTilt * edgeMultiplier;
+    // Enhanced corner detection - calculate which corner/edge is closest
+    const absX = Math.abs(normalizedX);
+    const absY = Math.abs(normalizedY);
+    const isNearEdge = absX > 0.6 || absY > 0.6; // Closer to edges
+    const isNearCorner = absX > 0.7 && absY > 0.7; // In corner regions
     
-    // Calculate zoom - minimal at center, more at edges
-    const minZoom = 1.02; // Minimal zoom at center
-    const maxZoom = 1.08; // Maximum zoom at edges
-    const zoom = minZoom + (maxZoom - minZoom) * Math.pow(distanceFromCenter, 2);
+    // Enhanced multipliers for dramatic corner effects
+    let intensityMultiplier = 1;
+    if (isNearCorner) {
+      intensityMultiplier = 2.5; // Much more dramatic at corners
+    } else if (isNearEdge) {
+      intensityMultiplier = 1.8; // Enhanced at edges
+    } else {
+      intensityMultiplier = Math.max(0.3, distanceFromCenter); // Minimal at center
+    }
     
-    // Calculate translation for parallax effect
-    const maxTranslate = 8;
-    const translateX = normalizedX * maxTranslate * edgeMultiplier;
-    const translateY = normalizedY * maxTranslate * edgeMultiplier;
+    // Calculate tilt angles with enhanced corner effects
+    const baseTilt = 20; // Increased base tilt
+    const tiltX = normalizedY * baseTilt * intensityMultiplier;
+    const tiltY = -normalizedX * baseTilt * intensityMultiplier;
     
-    // Apply transform
+    // Calculate zoom with corner emphasis
+    const baseZoom = 1.02;
+    const maxZoom = isNearCorner ? 1.15 : (isNearEdge ? 1.10 : 1.06);
+    const zoom = baseZoom + (maxZoom - baseZoom) * Math.pow(distanceFromCenter, 1.5);
+    
+    // Enhanced translation for pop-out effect
+    const maxTranslate = isNearCorner ? 16 : (isNearEdge ? 12 : 6);
+    const translateX = normalizedX * maxTranslate * intensityMultiplier;
+    const translateY = normalizedY * maxTranslate * intensityMultiplier;
+    
+    // Calculate Z-axis translation for pop-out effect
+    const popOutDistance = isNearCorner ? 25 : (isNearEdge ? 15 : 8);
+    const translateZ = distanceFromCenter * popOutDistance;
+    
+    // Apply enhanced transform with z-translation
     card.style.transform = `
-      perspective(1000px) 
+      perspective(1200px) 
       rotateX(${tiltX}deg) 
       rotateY(${tiltY}deg) 
       scale(${zoom}) 
-      translate3d(${translateX}px, ${translateY}px, 0)
+      translate3d(${translateX}px, ${translateY}px, ${translateZ}px)
     `;
 
-    // Apply parallax to inner elements for enhanced 3D effect
+    // Enhanced parallax for inner elements with corner awareness
     const icon = card.querySelector('.project-icon-wrapper') as HTMLElement;
     const arrow = card.querySelector('.project-arrow') as HTMLElement;
     const header = card.querySelector('.project-header') as HTMLElement;
     
+    const iconIntensity = isNearCorner ? 0.5 : 0.3;
+    const arrowIntensity = isNearCorner ? 0.6 : 0.4;
+    const headerIntensity = isNearCorner ? 0.2 : 0.1;
+    
     if (icon) {
-      icon.style.transform = `translate3d(${translateX * 0.3}px, ${translateY * 0.3}px, 15px)`;
+      icon.style.transform = `translate3d(${translateX * iconIntensity}px, ${translateY * iconIntensity}px, ${translateZ * 0.6}px)`;
     }
     
     if (arrow) {
-      arrow.style.transform = `translate3d(${translateX * 0.4}px, ${translateY * 0.4}px, 20px)`;
+      arrow.style.transform = `translate3d(${translateX * arrowIntensity}px, ${translateY * arrowIntensity}px, ${translateZ * 0.8}px)`;
     }
     
     if (header) {
-      header.style.transform = `translate3d(${translateX * 0.1}px, ${translateY * 0.1}px, 5px)`;
+      header.style.transform = `translate3d(${translateX * headerIntensity}px, ${translateY * headerIntensity}px, ${translateZ * 0.3}px)`;
     }
   };
 
@@ -271,6 +296,10 @@ export default function ProjectsSection() {
     if (card) {
       card.style.transition = 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
       card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1) translate3d(0, 0, 0)';
+      
+      // Reset mouse position for glow
+      card.style.setProperty('--mouse-x', '50%');
+      card.style.setProperty('--mouse-y', '50%');
       
       // Reset inner elements
       const icon = card.querySelector('.project-icon-wrapper') as HTMLElement;
