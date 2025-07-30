@@ -5,13 +5,15 @@ interface TypewriterProps {
   typingSpeed?: number;
   backspaceSpeed?: number;
   pauseBetweenMessages?: number;
+  onTypingStateChange?: (isTyping: boolean) => void;
 }
 
 export default function Typewriter({ 
   messages, 
   typingSpeed = 150, 
   backspaceSpeed = 75, 
-  pauseBetweenMessages = 2000 
+  pauseBetweenMessages = 2000,
+  onTypingStateChange
 }: TypewriterProps) {
   const [currentText, setCurrentText] = useState('');
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
@@ -19,6 +21,7 @@ export default function Typewriter({
   const [charIndex, setCharIndex] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
   const [fontSize, setFontSize] = useState('2.4rem');
+  const [isTypingActive, setIsTypingActive] = useState(true);
 
   // Calculate dynamic font size based on text length
   const calculateFontSize = (text: string) => {
@@ -44,10 +47,13 @@ export default function Typewriter({
         if (charIndex < currentMessage.length) {
           setCurrentText(currentMessage.substring(0, charIndex + 1));
           setCharIndex(charIndex + 1);
+          setIsTypingActive(true);
         } else {
           // Finished typing, pause then start deleting
+          setIsTypingActive(false);
           setTimeout(() => {
             setIsDeleting(true);
+            setIsTypingActive(true);
           }, pauseBetweenMessages);
         }
       } else {
@@ -55,16 +61,23 @@ export default function Typewriter({
         if (charIndex > 0) {
           setCurrentText(currentMessage.substring(0, charIndex - 1));
           setCharIndex(charIndex - 1);
+          setIsTypingActive(true);
         } else {
           // Finished deleting, move to next message
           setIsDeleting(false);
           setCurrentMessageIndex((prev) => (prev + 1) % messages.length);
+          setIsTypingActive(false);
         }
       }
     }, isDeleting ? backspaceSpeed : typingSpeed);
 
     return () => clearTimeout(typeTimeout);
   }, [charIndex, currentMessageIndex, isDeleting, messages, typingSpeed, backspaceSpeed, pauseBetweenMessages]);
+
+  // Notify parent component about typing state changes
+  useEffect(() => {
+    onTypingStateChange?.(isTypingActive);
+  }, [isTypingActive, onTypingStateChange]);
 
   useEffect(() => {
     const cursorInterval = setInterval(() => {

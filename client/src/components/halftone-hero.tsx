@@ -1,7 +1,10 @@
+import { useState } from 'react';
 import Typewriter from './typewriter';
 import profilePic from '@assets/pfp_1753712646611.png';
 
 export default function HalftoneHero() {
+  const [isTyping, setIsTyping] = useState(true);
+  
   const greetingMessages = [
     "Hi, the name's Tanay.",
     "i_like_to_code.py",
@@ -22,7 +25,7 @@ export default function HalftoneHero() {
       <div className="halftone"></div>
       {/* Profile Picture - Absolute center of pulse animation */}
       <div className="profile-picture-center">
-        <div className="profile-picture">
+        <div className={`profile-picture ${isTyping ? 'typing-active' : ''}`}>
           <img 
             src={profilePic} 
             alt="Tanay's pixel art avatar" 
@@ -45,6 +48,7 @@ export default function HalftoneHero() {
             typingSpeed={150}
             backspaceSpeed={75}
             pauseBetweenMessages={2000}
+            onTypingStateChange={setIsTyping}
           />
         </div>
       </div>
