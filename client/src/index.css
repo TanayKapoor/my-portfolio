@@ -902,6 +902,18 @@
   perspective-origin: center center;
 }
 
+.projects-scroll-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--overlay-gradient, none);
+  pointer-events: none;
+  z-index: 2;
+}
+
 .projects-scroll-container::-webkit-scrollbar {
   display: none;
 }

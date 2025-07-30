@@ -34,23 +34,31 @@ export default function ProjectsSection() {
       setCanScrollRight(scrollLeft < maxScroll - 1);
       
       let maskGradient = '';
+      let overlayGradient = '';
       
       if (maxScroll === 0) {
         // No scrolling needed
         maskGradient = 'none';
+        overlayGradient = 'none';
       } else if (scrollLeft === 0) {
-        // At start - blur right only
-        maskGradient = 'linear-gradient(90deg, black calc(100% - 40px), transparent 100%)';
+        // At start - blur right only with dark gradient
+        maskGradient = 'linear-gradient(90deg, black calc(100% - 60px), transparent 100%)';
+        overlayGradient = 'linear-gradient(90deg, transparent calc(100% - 60px), rgba(15, 23, 42, 0.8) 100%)';
       } else if (scrollLeft >= maxScroll - 1) {
-        // At end - blur left only
-        maskGradient = 'linear-gradient(90deg, transparent 0px, black 40px)';
+        // At end - blur left only with dark gradient
+        maskGradient = 'linear-gradient(90deg, transparent 0px, black 60px)';
+        overlayGradient = 'linear-gradient(90deg, rgba(15, 23, 42, 0.8) 0%, transparent 60px)';
       } else {
-        // Middle - blur both sides
-        maskGradient = 'linear-gradient(90deg, transparent 0px, black 40px, black calc(100% - 40px), transparent 100%)';
+        // Middle - blur both sides with dark gradients
+        maskGradient = 'linear-gradient(90deg, transparent 0px, black 60px, black calc(100% - 60px), transparent 100%)';
+        overlayGradient = 'linear-gradient(90deg, rgba(15, 23, 42, 0.8) 0%, transparent 60px, transparent calc(100% - 60px), rgba(15, 23, 42, 0.8) 100%)';
       }
       
       container.style.mask = maskGradient;
       container.style.webkitMask = maskGradient;
+      
+      // Apply overlay gradient using a pseudo-element style approach
+      container.style.setProperty('--overlay-gradient', overlayGradient);
     };
 
     // Initial mask
