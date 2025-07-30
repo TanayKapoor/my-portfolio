@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Plus, Edit2, Trash2, Save, X } from 'lucide-react';
+import { Plus, Edit2, Trash2, Save, X, Lock } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
 import type { Project, InsertProject } from '@shared/schema';
@@ -20,10 +20,24 @@ const colorThemes = [
 const statusOptions = ['planning', 'in-progress', 'completed', 'on-hold'] as const;
 
 export default function AdminPanel() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [password, setPassword] = useState('');
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Simple password check - in production, this should be server-side
+    if (password === 'admin123') {
+      setIsAuthenticated(true);
+      setPassword('');
+      toast({ title: 'Access granted' });
+    } else {
+      toast({ title: 'Access denied', description: 'Invalid password', variant: 'destructive' });
+    }
+  };
 
   // Fetch all projects
   const { data: projects = [], isLoading } = useQuery<Project[]>({
@@ -120,6 +134,44 @@ export default function AdminPanel() {
     }
   };
 
+  // Show login form if not authenticated
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
+        <Card className="w-full max-w-md bg-gray-800/50 border-gray-700">
+          <CardHeader className="text-center">
+            <CardTitle className="text-white flex items-center justify-center gap-2">
+              <Lock className="w-5 h-5" />
+              Admin Access
+            </CardTitle>
+            <CardDescription className="text-gray-400">
+              Enter password to access admin panel
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleLogin} className="space-y-4">
+              <div>
+                <Label htmlFor="password" className="text-white">Password</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="bg-gray-700 border-gray-600 text-white"
+                  placeholder="Enter admin password"
+                  required
+                />
+              </div>
+              <Button type="submit" className="w-full">
+                Access Admin Panel
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
@@ -131,9 +183,18 @@ export default function AdminPanel() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
       <div className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">Admin Panel</h1>
-          <p className="text-gray-400">Manage your portfolio projects</p>
+        <div className="mb-8 flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold text-white mb-2">Admin Panel</h1>
+            <p className="text-gray-400">Manage your portfolio projects</p>
+          </div>
+          <Button 
+            variant="outline" 
+            onClick={() => setIsAuthenticated(false)}
+            className="border-gray-600 text-gray-300 hover:bg-gray-700"
+          >
+            Logout
+          </Button>
         </div>
 
         <Tabs defaultValue="projects" className="w-full">
