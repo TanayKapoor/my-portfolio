@@ -861,7 +861,7 @@
   display: block;
 }
 
-/* Project Card - Raycast Style with 3D Effects */
+/* Project Card - Raycast Style */
 .project-card {
   background: linear-gradient(135deg, 
     rgba(30, 41, 59, 0.8) 0%,
@@ -870,9 +870,7 @@
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 24px;
   overflow: hidden;
-  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), 
-              border-color 0.3s ease, 
-              box-shadow 0.3s ease;
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
   backdrop-filter: blur(40px);
   position: relative;
   padding: 1.5rem;
@@ -883,8 +881,6 @@
   flex-direction: column;
   transform-origin: center;
   will-change: transform;
-  transform-style: preserve-3d;
-  perspective: 1000px;
 }
 
 .project-card.raycast-style {
@@ -971,8 +967,8 @@
   );
 }
 
-/* 3D Hover Effect - handled by JavaScript */
 .project-card:hover {
+  transform: translateY(-4px);
   border-color: rgba(255, 255, 255, 0.12);
 }
 
@@ -1017,7 +1013,7 @@
 
 
 
-/* Project Header with 3D Support */
+/* Project Header */
 .project-header {
   display: flex;
   align-items: center;
@@ -1025,8 +1021,6 @@
   margin-bottom: 1rem;
   position: relative;
   z-index: 2;
-  transform-style: preserve-3d;
-  transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .project-icon-wrapper {
@@ -1040,8 +1034,6 @@
   justify-content: center;
   flex-shrink: 0;
   overflow: hidden;
-  transform-style: preserve-3d;
-  transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .project-header .project-title {
@@ -1067,7 +1059,6 @@
   transition: all 0.2s ease;
   cursor: pointer;
   outline: none;
-  transform-style: preserve-3d;
 }
 
 .project-arrow:hover {
