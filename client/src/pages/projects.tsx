@@ -265,73 +265,71 @@ function ProjectCard({ project, viewMode, index }: ProjectCardProps) {
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.4, delay: index * 0.1 }}
       >
-        <Link href={`/project/${project.id}`}>
-          <div className="p-6 bg-black/30 backdrop-blur-sm border border-white/10 rounded-xl hover:bg-black/50 hover:border-white/20 transition-all duration-300 group">
-            <div className="flex items-start justify-between">
-              <div className="flex-1">
-                <h3 className="text-xl font-semibold mb-2 group-hover:text-blue-400 transition-colors">
+        <div className="p-6 bg-black/30 backdrop-blur-sm border border-white/10 rounded-xl hover:bg-black/50 hover:border-white/20 transition-all duration-300 group">
+          <div className="flex items-start justify-between">
+            <div className="flex-1">
+              <Link href={`/project/${project.id}`}>
+                <h3 className="text-xl font-semibold mb-2 group-hover:text-blue-400 transition-colors cursor-pointer">
                   {project.title}
                 </h3>
-                <p className="text-gray-400 mb-4 line-clamp-2">
-                  {project.description}
-                </p>
-                
-                {/* Tech Stack */}
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {project.technologies?.slice(0, 4).map((tech, i) => (
-                    <span
-                      key={i}
-                      className="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full text-sm"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                  {project.technologies && project.technologies.length > 4 && (
-                    <span className="px-3 py-1 bg-gray-500/20 text-gray-400 rounded-full text-sm">
-                      +{project.technologies.length - 4} more
-                    </span>
-                  )}
-                </div>
-
-                {/* Status and Links */}
-                <div className="flex items-center justify-between">
-                  <span className={`px-3 py-1 rounded-full text-sm ${
-                    project.status === 'Completed' ? 'bg-green-500/20 text-green-300' :
-                    project.status === 'In Progress' ? 'bg-yellow-500/20 text-yellow-300' :
-                    'bg-gray-500/20 text-gray-400'
-                  }`}>
-                    {project.status}
+              </Link>
+              <p className="text-gray-400 mb-4 line-clamp-2">
+                {project.description}
+              </p>
+              
+              {/* Tech Stack */}
+              <div className="flex flex-wrap gap-2 mb-4">
+                {project.technologies?.slice(0, 4).map((tech, i) => (
+                  <span
+                    key={i}
+                    className="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full text-sm"
+                  >
+                    {tech}
                   </span>
-                  
-                  <div className="flex items-center gap-3">
-                    {project.demoUrl && (
-                      <a
-                        href={project.demoUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={(e) => e.stopPropagation()}
-                        className="text-gray-400 hover:text-white transition-colors"
-                      >
-                        <ExternalLink size={18} />
-                      </a>
-                    )}
-                    {project.githubUrl && (
-                      <a
-                        href={project.githubUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={(e) => e.stopPropagation()}
-                        className="text-gray-400 hover:text-white transition-colors"
-                      >
-                        <Github size={18} />
-                      </a>
-                    )}
-                  </div>
+                ))}
+                {project.technologies && project.technologies.length > 4 && (
+                  <span className="px-3 py-1 bg-gray-500/20 text-gray-400 rounded-full text-sm">
+                    +{project.technologies.length - 4} more
+                  </span>
+                )}
+              </div>
+
+              {/* Status and Links */}
+              <div className="flex items-center justify-between">
+                <span className={`px-3 py-1 rounded-full text-sm ${
+                  project.status === 'Completed' ? 'bg-green-500/20 text-green-300' :
+                  project.status === 'In Progress' ? 'bg-yellow-500/20 text-yellow-300' :
+                  'bg-gray-500/20 text-gray-400'
+                }`}>
+                  {project.status}
+                </span>
+                
+                <div className="flex items-center gap-3">
+                  {project.demoUrl && (
+                    <a
+                      href={project.demoUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-gray-400 hover:text-white transition-colors"
+                    >
+                      <ExternalLink size={18} />
+                    </a>
+                  )}
+                  {project.githubUrl && (
+                    <a
+                      href={project.githubUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-gray-400 hover:text-white transition-colors"
+                    >
+                      <Github size={18} />
+                    </a>
+                  )}
                 </div>
               </div>
             </div>
           </div>
-        </Link>
+        </div>
       </motion.div>
     );
   }
@@ -344,70 +342,68 @@ function ProjectCard({ project, viewMode, index }: ProjectCardProps) {
       whileHover={{ y: -5 }}
       className="group"
     >
-      <Link href={`/project/${project.id}`}>
-        <div className="p-6 bg-black/30 backdrop-blur-sm border border-white/10 rounded-xl hover:bg-black/50 hover:border-white/20 transition-all duration-300 h-full">
-          <h3 className="text-xl font-semibold mb-3 group-hover:text-blue-400 transition-colors">
+      <div className="p-6 bg-black/30 backdrop-blur-sm border border-white/10 rounded-xl hover:bg-black/50 hover:border-white/20 transition-all duration-300 h-full">
+        <Link href={`/project/${project.id}`}>
+          <h3 className="text-xl font-semibold mb-3 group-hover:text-blue-400 transition-colors cursor-pointer">
             {project.title}
           </h3>
+        </Link>
+        
+        <p className="text-gray-400 mb-4 line-clamp-3">
+          {project.description}
+        </p>
+        
+        {/* Tech Stack */}
+        <div className="flex flex-wrap gap-2 mb-4">
+          {project.technologies?.slice(0, 3).map((tech, i) => (
+            <span
+              key={i}
+              className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded text-sm"
+            >
+              {tech}
+            </span>
+          ))}
+          {project.technologies && project.technologies.length > 3 && (
+            <span className="px-2 py-1 bg-gray-500/20 text-gray-400 rounded text-sm">
+              +{project.technologies.length - 3}
+            </span>
+          )}
+        </div>
+
+        {/* Status */}
+        <div className="flex items-center justify-between">
+          <span className={`px-3 py-1 rounded-full text-sm ${
+            project.status === 'Completed' ? 'bg-green-500/20 text-green-300' :
+            project.status === 'In Progress' ? 'bg-yellow-500/20 text-yellow-300' :
+            'bg-gray-500/20 text-gray-400'
+          }`}>
+            {project.status}
+          </span>
           
-          <p className="text-gray-400 mb-4 line-clamp-3">
-            {project.description}
-          </p>
-          
-          {/* Tech Stack */}
-          <div className="flex flex-wrap gap-2 mb-4">
-            {project.technologies?.slice(0, 3).map((tech, i) => (
-              <span
-                key={i}
-                className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded text-sm"
+          <div className="flex items-center gap-2">
+            {project.demoUrl && (
+              <a
+                href={project.demoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-400 hover:text-white transition-colors"
               >
-                {tech}
-              </span>
-            ))}
-            {project.technologies && project.technologies.length > 3 && (
-              <span className="px-2 py-1 bg-gray-500/20 text-gray-400 rounded text-sm">
-                +{project.technologies.length - 3}
-              </span>
+                <ExternalLink size={16} />
+              </a>
+            )}
+            {project.githubUrl && (
+              <a
+                href={project.githubUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-400 hover:text-white transition-colors"
+              >
+                <Github size={16} />
+              </a>
             )}
           </div>
-
-          {/* Status */}
-          <div className="flex items-center justify-between">
-            <span className={`px-3 py-1 rounded-full text-sm ${
-              project.status === 'Completed' ? 'bg-green-500/20 text-green-300' :
-              project.status === 'In Progress' ? 'bg-yellow-500/20 text-yellow-300' :
-              'bg-gray-500/20 text-gray-400'
-            }`}>
-              {project.status}
-            </span>
-            
-            <div className="flex items-center gap-2">
-              {project.demoUrl && (
-                <a
-                  href={project.demoUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={(e) => e.stopPropagation()}
-                  className="text-gray-400 hover:text-white transition-colors"
-                >
-                  <ExternalLink size={16} />
-                </a>
-              )}
-              {project.githubUrl && (
-                <a
-                  href={project.githubUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={(e) => e.stopPropagation()}
-                  className="text-gray-400 hover:text-white transition-colors"
-                >
-                  <Github size={16} />
-                </a>
-              )}
-            </div>
-          </div>
         </div>
-      </Link>
+      </div>
     </motion.div>
   );
 }
