@@ -10,6 +10,7 @@ export default function AboutSection() {
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const lastScrollY = useRef(0);
   const scrollDistance = useRef(0);
+  const isInitialMount = useRef(true);
 
   useEffect(() => {
     const setupScrollObserver = () => {
@@ -116,6 +117,12 @@ When not focusing on new features or making workflows better, I'm usually in a t
 I like making ideas come to life with smart, scalable systems, whether they are front-end or back-end.`;
 
   useEffect(() => {
+    // Skip animation on initial mount
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+
     if (showTldr) {
       // Start with current text and erase quickly
       const currentText = fullText;
@@ -175,11 +182,9 @@ I like making ideas come to life with smart, scalable systems, whether they are 
     }
   }, [showTldr]);
 
-  // Initialize with full text
+  // Initialize with full text immediately on component mount
   useEffect(() => {
-    if (!showTldr && displayText === '') {
-      setDisplayText(fullText);
-    }
+    setDisplayText(fullText);
   }, []);
 
   const calculateYearsOfExperience = () => {
