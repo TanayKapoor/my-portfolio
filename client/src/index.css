@@ -485,7 +485,7 @@
 }
 
 .about-text {
-  animation: slideInFromLeft 1s ease-out;
+  /* Remove initial animation - only animate with TL;DR toggle */
 }
 
 .tldr-toggle-container {
@@ -615,7 +615,7 @@
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 2rem;
   margin-top: 1rem; /* Reduced gap between toggle and cards */
-  animation: slideInFromRight 1s ease-out;
+  /* Remove initial animation - only animate with TL;DR toggle */
 }
 
 .stat-item {

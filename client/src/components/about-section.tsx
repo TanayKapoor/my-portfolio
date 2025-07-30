@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import type { Project } from '@shared/schema';
 
 export default function AboutSection() {
   const aboutContentRef = useRef<HTMLDivElement>(null);
@@ -81,7 +83,30 @@ export default function AboutSection() {
     };
   }, [showTldr, isTyping]);
 
-  const skills = ['Python', 'JavaScript', 'Machine Learning', 'React', 'Node.js', 'TensorFlow'];
+  // Fetch projects to get skills and count
+  const { data: projects = [] } = useQuery<Project[]>({
+    queryKey: ['/api/projects'],
+  });
+
+  // Calculate skills from database based on technology frequency
+  const getTopSkills = () => {
+    const techCount = new Map<string, number>();
+    projects.forEach(project => {
+      if (project.technologies) {
+        project.technologies.forEach(tech => {
+          techCount.set(tech, (techCount.get(tech) || 0) + 1);
+        });
+      }
+    });
+    
+    // Sort by frequency and return top skills
+    return Array.from(techCount.entries())
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 8) // Get top 8 skills
+      .map(([tech]) => tech);
+  };
+  
+  const skills = getTopSkills();
 
   const tldrText = "Full Stack ML Engineer from India. I build AI-powered products with Python, LLMs, and modern web tech. Love solving real-world problems with smart, scalable systems.";
   const fullText = `Hey, I'm Tanay, and I currently work as a Full Stack Machine Learning Engineer in India. I work on all parts of the stack, but my primary focus is on making smart, AI-powered products that truly make a difference. I studied engineering and slowly moved toward Python and LLMs. I've been making things with them ever since.
@@ -182,7 +207,7 @@ I like making ideas come to life with smart, scalable systems, whether they are 
 
   const stats = [
     { number: calculateYearsOfExperience(), label: 'Years of Experience' },
-    { number: '10+', label: 'Projects Completed' },
+    { number: projects.length.toString(), label: 'Projects Completed' },
     { number: '∞', label: 'Cups of Tea' }
   ];
 
