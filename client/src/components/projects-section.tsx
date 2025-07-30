@@ -10,7 +10,11 @@ export default function ProjectsSection() {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
-  const [cardTransforms, setCardTransforms] = useState<Record<string, { rotateX: number; rotateY: number; scale: number }>>({});
+  const [cardTransforms, setCardTransforms] = useState<Record<string, { 
+    transform: string; 
+    glow: string; 
+    transition: string;
+  }>>({});
 
   // Fetch projects from API
   const { data: projects = [], isLoading, error } = useQuery<Project[]>({
@@ -191,40 +195,65 @@ export default function ProjectsSection() {
     }
   };
 
-  // 3D card animation handlers
+  // Enhanced 3D card animation handlers with glow effect
   const handleCardMouseMove = (e: React.MouseEvent<HTMLDivElement>, projectId: string) => {
     const card = e.currentTarget;
     const rect = card.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
     const mouseX = e.clientX;
     const mouseY = e.clientY;
-
-    // Calculate relative position from center (-1 to 1)
-    const rotateX = ((mouseY - centerY) / (rect.height / 2)) * -12; // Reduced for more subtle effect
-    const rotateY = ((mouseX - centerX) / (rect.width / 2)) * 12;
-
-    // Calculate distance from center for scaling effect
-    const distance = Math.sqrt(
-      Math.pow((mouseX - centerX) / (rect.width / 2), 2) + 
-      Math.pow((mouseY - centerY) / (rect.height / 2), 2)
-    );
-    const scale = 1 + (distance * 0.03); // More subtle scale increase
+    const leftX = mouseX - rect.x;
+    const topY = mouseY - rect.y;
+    const center = {
+      x: leftX - rect.width / 2,
+      y: topY - rect.height / 2
+    };
+    const distance = Math.sqrt(center.x**2 + center.y**2);
+    
+    // Create the 3D transform similar to the reference
+    const transform = `
+      scale3d(1.05, 1.05, 1.05)
+      rotate3d(
+        ${center.y / 100},
+        ${-center.x / 100},
+        0,
+        ${Math.log(distance + 1) * 2}deg
+      )
+    `;
+    
+    // Create the glow effect that follows the mouse
+    const glow = `
+      radial-gradient(
+        circle at
+        ${center.x * 2 + rect.width/2}px
+        ${center.y * 2 + rect.height/2}px,
+        rgba(255, 255, 255, 0.25),
+        rgba(255, 255, 255, 0.05)
+      )
+    `;
 
     setCardTransforms(prev => ({
       ...prev,
       [projectId]: {
-        rotateX: Math.max(-15, Math.min(15, rotateX)),
-        rotateY: Math.max(-15, Math.min(15, rotateY)),
-        scale: Math.min(1.08, scale)
+        transform,
+        glow,
+        transition: '150ms'
       }
     }));
   };
 
+  const handleCardMouseEnter = (projectId: string) => {
+    setHoveredProject(projectId);
+  };
+
   const handleCardMouseLeave = (projectId: string) => {
+    setHoveredProject(null);
     setCardTransforms(prev => ({
       ...prev,
-      [projectId]: { rotateX: 0, rotateY: 0, scale: 1 }
+      [projectId]: {
+        transform: '',
+        glow: '',
+        transition: '300ms'
+      }
     }));
   };
 
@@ -254,18 +283,23 @@ export default function ProjectsSection() {
                     className="project-card raycast-style"
                     data-project-id={visualId}
                     style={{
-                      transform: cardTransforms[project.id] 
-                        ? `perspective(1000px) rotateX(${cardTransforms[project.id].rotateX}deg) rotateY(${cardTransforms[project.id].rotateY}deg) scale(${cardTransforms[project.id].scale})`
-                        : 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)',
-                      transition: cardTransforms[project.id] ? 'transform 0.1s ease-out' : 'transform 0.3s ease-out'
+                      transform: cardTransforms[project.id]?.transform || '',
+                      transitionDuration: cardTransforms[project.id]?.transition || '300ms',
+                      transitionProperty: 'transform, box-shadow',
+                      transitionTimingFunction: 'ease-out'
                     }}
-                    onMouseEnter={() => setHoveredProject(project.id)}
-                    onMouseLeave={() => {
-                      setHoveredProject(null);
-                      handleCardMouseLeave(project.id);
-                    }}
+                    onMouseEnter={() => handleCardMouseEnter(project.id)}
+                    onMouseLeave={() => handleCardMouseLeave(project.id)}
                     onMouseMove={(e) => handleCardMouseMove(e, project.id)}
                   >
+                    {/* Glow overlay */}
+                    <div 
+                      className="card-glow"
+                      style={{
+                        backgroundImage: cardTransforms[project.id]?.glow || 'radial-gradient(circle at 50% -20%, rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.05))'
+                      }}
+                    />
+                    
                     {/* Header with Icon and Title */}
                     <div className="project-header">
                       <div className="project-icon-wrapper">
