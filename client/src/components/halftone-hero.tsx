@@ -21,7 +21,7 @@ export default function HalftoneHero() {
   };
 
   return (
-    <section className={`halftone-section ${isTyping ? 'typing-active' : ''}`}>
+    <section className="halftone-section">
       <div className="halftone"></div>
       {/* Profile Picture - Absolute center of pulse animation */}
       <div className="profile-picture-center">

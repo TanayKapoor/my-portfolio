@@ -104,20 +104,21 @@
   animation: 
     i0 3.2591s linear infinite, 
     j0 4.6087s linear infinite, 
-    k0 7.5s linear infinite;
+    k0 7.5s linear infinite,
+    halftoneMainPulse 4s ease-in-out infinite;
   display: grid;
   min-height: 100vh;
   position: relative;
 }
 
-/* Enhanced halftone when typing is active */
-.halftone-section.typing-active {
-  --map: repeating-radial-gradient(circle at 50% 50%, 
-    hsl(0, 0%, 46.7%) calc((var(--k0) - 1)*15%), hsl(0, 0%, 0%), hsl(0, 0%, 46.7%) calc(var(--k0)*15%));
-  animation: 
-    i0 2.5s linear infinite, 
-    j0 3.5s linear infinite, 
-    k0 5s linear infinite;
+/* Main halftone pulse animation - independent of typing */
+@keyframes halftoneMainPulse {
+  0%, 100% {
+    --pulse-scale: 1;
+  }
+  50% {
+    --pulse-scale: 1.1;
+  }
 }
 
 .halftone-section *, 
@@ -140,33 +141,25 @@
   background: 
     var(--map, 
       linear-gradient(calc(var(--k0)*360deg), hsl(0, 0%, 46.7%) 9%, hsl(0, 0%, 0%))), 
+    radial-gradient(circle at 50% 50%, 
+      rgba(255, 255, 255, 0.06) 0%, 
+      rgba(255, 255, 255, 0.03) 40%, 
+      rgba(0, 0, 0, 0) 80%),
     var(--pattern, 
       radial-gradient(closest-side, hsl(0, 0%, 53.3%), hsl(0, 0%, 0%)) 0/ 1em 1em space);
   background-blend-mode: screen;
   mix-blend-mode: multiply;
   filter: contrast(21);
+  animation: halftoneBackgroundPulse 4s ease-in-out infinite;
 }
 
-/* Enhanced halftone pattern when typing is active */
-.typing-active .halftone {
-  background: 
-    var(--map, 
-      linear-gradient(calc(var(--k0)*360deg), hsl(0, 0%, 46.7%) 9%, hsl(0, 0%, 0%))), 
-    radial-gradient(circle at 50% 50%, 
-      rgba(255, 255, 255, 0.08) 0%, 
-      rgba(255, 255, 255, 0.04) 30%, 
-      rgba(0, 0, 0, 0) 70%),
-    var(--pattern, 
-      radial-gradient(closest-side, hsl(0, 0%, 53.3%), hsl(0, 0%, 0%)) 0/ 1em 1em space);
-  animation: halftoneBackgroundPulse 3s ease-in-out infinite;
-}
-
+/* Main halftone background pulse - always active */
 @keyframes halftoneBackgroundPulse {
   0%, 100% {
-    background-size: auto, 200% 200%, 1em 1em;
+    background-size: auto, 180% 180%, 1em 1em;
   }
   50% {
-    background-size: auto, 300% 300%, 1em 1em;
+    background-size: auto, 220% 220%, 1em 1em;
   }
 }
 
