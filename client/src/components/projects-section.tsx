@@ -207,25 +207,27 @@ export default function ProjectsSection() {
       x: leftX - rect.width / 2,
       y: topY - rect.height / 2
     };
+    
+    // Calculate rotation angles based on mouse position (more dramatic)
+    const rotateX = (center.y / rect.height) * -30; // Increased rotation range
+    const rotateY = (center.x / rect.width) * 30;   // Increased rotation range
     const distance = Math.sqrt(center.x**2 + center.y**2);
     
-    // Create the 3D transform similar to the reference
+    // Create the 3D transform with perspective and dramatic rotation
     const transform = `
+      perspective(1000px)
+      rotateX(${rotateX}deg)
+      rotateY(${rotateY}deg)
       scale3d(1.05, 1.05, 1.05)
-      rotate3d(
-        ${center.y / 100},
-        ${-center.x / 100},
-        0,
-        ${Math.log(distance + 1) * 2}deg
-      )
+      translateZ(20px)
     `;
     
     // Create the glow effect that follows the mouse
     const glow = `
       radial-gradient(
         circle at
-        ${center.x * 2 + rect.width/2}px
-        ${center.y * 2 + rect.height/2}px,
+        ${leftX}px
+        ${topY}px,
         rgba(255, 255, 255, 0.25),
         rgba(255, 255, 255, 0.05)
       )

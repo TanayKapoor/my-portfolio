@@ -845,7 +845,7 @@
   scrollbar-width: none;
   -ms-overflow-style: none;
   position: relative;
-  perspective: 1200px;
+  perspective: 2000px;
   perspective-origin: center center;
 }
 
@@ -881,7 +881,6 @@
   transform-origin: center;
   will-change: transform;
   transform-style: preserve-3d;
-  perspective: 1500px;
 }
 
 /* Glow overlay for enhanced 3D effect */
