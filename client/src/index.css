@@ -910,11 +910,11 @@
   left: 0;
   width: 50%;
   height: 50%;
-  background: linear-gradient(135deg, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.05) 50%, transparent 80%);
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.08) 0%, rgba(0, 0, 0, 0.03) 50%, transparent 80%);
   border-radius: 24px 0 0 0;
   pointer-events: none;
   z-index: 1;
-  mix-blend-mode: multiply;
+  mix-blend-mode: overlay;
 }
 
 .project-card.raycast-style::after {
@@ -924,11 +924,11 @@
   right: 0;
   width: 50%;
   height: 50%;
-  background: linear-gradient(-45deg, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.05) 50%, transparent 80%);
+  background: linear-gradient(-45deg, rgba(0, 0, 0, 0.08) 0%, rgba(0, 0, 0, 0.03) 50%, transparent 80%);
   border-radius: 0 0 24px 0;
   pointer-events: none;
   z-index: 1;
-  mix-blend-mode: multiply;
+  mix-blend-mode: overlay;
 }
 
 /* Individual project card colors based on icon colors */

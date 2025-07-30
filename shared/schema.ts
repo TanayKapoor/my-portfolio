@@ -24,6 +24,7 @@ export const projects = pgTable("projects", {
   demoUrl: text("demo_url"),
   githubUrl: text("github_url"),
   colorTheme: text("color_theme").notNull(),
+  iconName: text("icon_name"), // Store icon name for lucide-react icons
   order: integer("order").notNull(),
   featured: boolean("featured").default(false),
 });

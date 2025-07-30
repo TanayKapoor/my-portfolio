@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { ExternalLink, Github, ChevronRight, Code2, Brain, FileSearch, ChevronLeft } from 'lucide-react';
+import { ExternalLink, Github, ChevronRight, Code2, Brain, FileSearch, ChevronLeft, Utensils, Timer, Cloud, DollarSign, BookOpen, Sprout } from 'lucide-react';
 import { Link } from 'wouter';
 import { useQuery } from '@tanstack/react-query';
 import type { Project } from '@/types/project';
@@ -83,64 +83,56 @@ export default function ProjectsSection() {
     });
   };
 
-  // Helper function to get the project icon based on color theme
-  const getProjectIcon = (colorTheme: string) => {
-    const theme = (colorThemes as any)[colorTheme] || colorThemes.blue;
+  // Helper function to get the project icon from database or fallback
+  const getProjectIcon = (project: Project) => {
+    // Map of icon names to Lucide icons
+    const iconMap = {
+      'utensils': Utensils,
+      'timer': Timer,
+      'cloud': Cloud,
+      'dollar-sign': DollarSign,
+      'book-open': BookOpen,
+      'sprout': Sprout,
+      'code2': Code2,
+      'brain': Brain,
+      'file-search': FileSearch
+    };
+
+    // Get icon from database or fallback based on project title
+    let IconComponent = iconMap['code2']; // default
     
-    switch (colorTheme) {
-      case 'green':
-        return (
-          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-            <rect width="32" height="32" rx="8" fill={theme.background}/>
-            <path d="M16 8v8m-4-4h8M12 20h8a2 2 0 002-2v-4a2 2 0 00-2-2h-8a2 2 0 00-2 2v4a2 2 0 002 2z" stroke="rgba(255, 255, 255, 0.9)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        );
-      case 'blue':
-        return (
-          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-            <rect width="32" height="32" rx="8" fill={theme.background}/>
-            <circle cx="16" cy="16" r="8" stroke="rgba(255, 255, 255, 0.9)" strokeWidth="2"/>
-            <path d="M16 12v4l3 3" stroke="rgba(255, 255, 255, 0.9)" strokeWidth="2" strokeLinecap="round"/>
-          </svg>
-        );
-      case 'yellow':
-        return (
-          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-            <rect width="32" height="32" rx="8" fill={theme.background}/>
-            <path d="M8 20h16M8 12a4 4 0 018 0 4 4 0 014 4v0a4 4 0 01-4 4" stroke="rgba(255, 255, 255, 0.9)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M12 24v-4M20 24v-4" stroke="rgba(255, 255, 255, 0.9)" strokeWidth="2" strokeLinecap="round"/>
-          </svg>
-        );
-      case 'purple':
-        return (
-          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-            <rect width="32" height="32" rx="8" fill={theme.background}/>
-            <path d="M16 8v16M8 12h16l-2-2M8 20h16l-2 2" stroke="rgba(255, 255, 255, 0.9)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        );
-      case 'red':
-        return (
-          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-            <rect width="32" height="32" rx="8" fill={theme.background}/>
-            <path d="M8 6h16a2 2 0 012 2v16a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2zM12 12h8M12 16h6" stroke="rgba(255, 255, 255, 0.9)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        );
-      case 'teal':
-        return (
-          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-            <rect width="32" height="32" rx="8" fill={theme.background}/>
-            <path d="M16 26v-8M8 18s0-6 8-6 8 6 8 6M12 22c0-2 2-4 4-4s4 2 4 4" stroke="rgba(255, 255, 255, 0.9)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        );
-      default:
-        return (
-          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-            <rect width="32" height="32" rx="8" fill={theme.background}/>
-            <circle cx="16" cy="16" r="8" stroke="rgba(255, 255, 255, 0.9)" strokeWidth="2"/>
-            <path d="M16 12v4l3 3" stroke="rgba(255, 255, 255, 0.9)" strokeWidth="2" strokeLinecap="round"/>
-          </svg>
-        );
+    if (project.iconName && iconMap[project.iconName as keyof typeof iconMap]) {
+      IconComponent = iconMap[project.iconName as keyof typeof iconMap];
+    } else if (project.title) {
+      // Fallback based on project title
+      const titleLower = project.title.toLowerCase();
+      if (titleLower.includes('meal') || titleLower.includes('food')) {
+        IconComponent = Utensils;
+      } else if (titleLower.includes('timer') || titleLower.includes('focus')) {
+        IconComponent = Timer;
+      } else if (titleLower.includes('weather') || titleLower.includes('climate')) {
+        IconComponent = Cloud;
+      } else if (titleLower.includes('expense') || titleLower.includes('money') || titleLower.includes('budget')) {
+        IconComponent = DollarSign;
+      } else if (titleLower.includes('reading') || titleLower.includes('book')) {
+        IconComponent = BookOpen;
+      } else if (titleLower.includes('plant') || titleLower.includes('care')) {
+        IconComponent = Sprout;
+      }
     }
+
+    return <IconComponent size={32} className="text-white" />;
+  };
+
+  // Helper function to trim description
+  const trimDescription = (description: string, maxLength: number = 120) => {
+    if (description.length <= maxLength) return description;
+    const trimmed = description.substring(0, maxLength);
+    const lastSpace = trimmed.lastIndexOf(' ');
+    if (lastSpace > 0) {
+      return trimmed.substring(0, lastSpace) + '...';
+    }
+    return trimmed + '...';
   };
 
   if (isLoading) {
@@ -305,7 +297,7 @@ export default function ProjectsSection() {
                     {/* Header with Icon and Title */}
                     <div className="project-header">
                       <div className="project-icon-wrapper">
-                        {getProjectIcon(project.colorTheme)}
+                        {getProjectIcon(project)}
                       </div>
                       <h3 className="project-title">{project.title}</h3>
                       <button className="project-arrow">
@@ -314,7 +306,7 @@ export default function ProjectsSection() {
                     </div>
 
                     {/* Description */}
-                    <p className="project-description">{project.description}</p>
+                    <p className="project-description">{trimDescription(project.description)}</p>
 
                     {/* Divider */}
                     <div className="project-divider"></div>

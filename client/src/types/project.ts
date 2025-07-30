@@ -13,6 +13,7 @@ export interface Project {
   demoUrl?: string;
   githubUrl?: string;
   colorTheme: string;
+  iconName?: string;
   order: number;
   featured?: boolean;
 }
