@@ -10,6 +10,7 @@ export default function ProjectsSection() {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
+  const [cardTransforms, setCardTransforms] = useState<Record<string, { rotateX: number; rotateY: number; scale: number }>>({});
 
   // Fetch projects from API
   const { data: projects = [], isLoading, error } = useQuery<Project[]>({
@@ -190,6 +191,43 @@ export default function ProjectsSection() {
     }
   };
 
+  // 3D card animation handlers
+  const handleCardMouseMove = (e: React.MouseEvent<HTMLDivElement>, projectId: string) => {
+    const card = e.currentTarget;
+    const rect = card.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    const mouseX = e.clientX;
+    const mouseY = e.clientY;
+
+    // Calculate relative position from center (-1 to 1)
+    const rotateX = ((mouseY - centerY) / (rect.height / 2)) * -12; // Reduced for more subtle effect
+    const rotateY = ((mouseX - centerX) / (rect.width / 2)) * 12;
+
+    // Calculate distance from center for scaling effect
+    const distance = Math.sqrt(
+      Math.pow((mouseX - centerX) / (rect.width / 2), 2) + 
+      Math.pow((mouseY - centerY) / (rect.height / 2), 2)
+    );
+    const scale = 1 + (distance * 0.03); // More subtle scale increase
+
+    setCardTransforms(prev => ({
+      ...prev,
+      [projectId]: {
+        rotateX: Math.max(-15, Math.min(15, rotateX)),
+        rotateY: Math.max(-15, Math.min(15, rotateY)),
+        scale: Math.min(1.08, scale)
+      }
+    }));
+  };
+
+  const handleCardMouseLeave = (projectId: string) => {
+    setCardTransforms(prev => ({
+      ...prev,
+      [projectId]: { rotateX: 0, rotateY: 0, scale: 1 }
+    }));
+  };
+
   return (
     <section className="projects-section" id="projects">
       <div className="projects-container">
@@ -215,8 +253,18 @@ export default function ProjectsSection() {
                   <div
                     className="project-card raycast-style"
                     data-project-id={visualId}
+                    style={{
+                      transform: cardTransforms[project.id] 
+                        ? `perspective(1000px) rotateX(${cardTransforms[project.id].rotateX}deg) rotateY(${cardTransforms[project.id].rotateY}deg) scale(${cardTransforms[project.id].scale})`
+                        : 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)',
+                      transition: cardTransforms[project.id] ? 'transform 0.1s ease-out' : 'transform 0.3s ease-out'
+                    }}
                     onMouseEnter={() => setHoveredProject(project.id)}
-                    onMouseLeave={() => setHoveredProject(null)}
+                    onMouseLeave={() => {
+                      setHoveredProject(null);
+                      handleCardMouseLeave(project.id);
+                    }}
+                    onMouseMove={(e) => handleCardMouseMove(e, project.id)}
                   >
                     {/* Header with Icon and Title */}
                     <div className="project-header">
