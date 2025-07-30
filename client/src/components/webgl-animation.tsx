@@ -102,6 +102,12 @@ void main() {
   col=mix(col,vec3(0),v);
   col=mix(vec3(0),col,t);
   col=max(col,.08);
+  
+  // Add black gradient at bottom for seamless page blending
+  float screenY = FC.y / R.y;
+  float bottomFade = S(0.0, 0.3, screenY); // Fade from black at bottom to normal at 30% height
+  col *= bottomFade;
+  
   O=vec4(col,1);
 }`;
 
