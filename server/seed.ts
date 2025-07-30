@@ -1,5 +1,5 @@
 import { db } from "./db";
-import { projects } from "@shared/schema";
+import { projects, workExperiences } from "@shared/schema";
 
 const projectsData = [
   {
@@ -184,6 +184,77 @@ const projectsData = [
   }
 ];
 
+const workExperiencesData = [
+  {
+    position: "Intern - Software Development",
+    company: "InnovateLabs",
+    location: "Remote",
+    duration: "2019 - 2020",
+    startDate: "2019",
+    endDate: "2020",
+    description: [
+      "Assisted in developing mobile applications using React Native",
+      "Learned fundamentals of software engineering and testing",
+      "Participated in code reviews and documentation",
+      "Built personal projects to strengthen programming skills"
+    ],
+    technologies: ["React Native", "JavaScript", "Firebase", "Git"],
+    type: "past",
+    order: 1
+  },
+  {
+    position: "Junior Developer",
+    company: "StartupHub India",
+    location: "Delhi, India",
+    duration: "2020 - 2021",
+    startDate: "2020",
+    endDate: "2021",
+    description: [
+      "Worked on full-stack web applications using MERN stack",
+      "Contributed to open-source projects and internal tools",
+      "Participated in agile development processes",
+      "Gained experience in deployment and DevOps practices"
+    ],
+    technologies: ["MongoDB", "Express.js", "React", "Node.js", "Git", "Linux"],
+    type: "past",
+    order: 2
+  },
+  {
+    position: "Software Engineer",
+    company: "DataBridge Analytics",
+    location: "Bangalore, India",
+    duration: "2021 - 2023",
+    startDate: "2021",
+    endDate: "2023",
+    description: [
+      "Developed data visualization dashboards using React and D3.js",
+      "Built ETL pipelines for processing large-scale datasets",
+      "Implemented machine learning models for predictive analytics",
+      "Collaborated with cross-functional teams on product roadmap"
+    ],
+    technologies: ["JavaScript", "Python", "React", "Django", "PostgreSQL", "Redis"],
+    type: "past",
+    order: 3
+  },
+  {
+    position: "Full Stack Machine Learning Engineer",
+    company: "TechFlow Solutions",
+    location: "Mumbai, India",
+    duration: "2023 - Present",
+    startDate: "2023",
+    endDate: "Present",
+    description: [
+      "Leading development of AI-powered products using modern ML frameworks",
+      "Building scalable web applications with React, Node.js, and Python",
+      "Implementing LLM integrations and prompt engineering solutions",
+      "Architecting cloud-native solutions for production ML workflows"
+    ],
+    technologies: ["Python", "React", "Node.js", "TensorFlow", "AWS", "Docker"],
+    type: "current",
+    order: 4
+  }
+];
+
 export async function seedProjects() {
   try {
     console.log("Starting to seed projects...");
@@ -204,9 +275,40 @@ export async function seedProjects() {
   }
 }
 
+export async function seedWorkExperiences() {
+  try {
+    console.log("Starting to seed work experiences...");
+    
+    // Clear existing work experiences (optional)
+    await db.delete(workExperiences);
+    
+    // Insert new work experiences
+    for (const workExperience of workExperiencesData) {
+      await db.insert(workExperiences).values(workExperience);
+      console.log(`Inserted work experience: ${workExperience.position} at ${workExperience.company}`);
+    }
+    
+    console.log("Work experiences seeded successfully!");
+  } catch (error) {
+    console.error("Error seeding work experiences:", error);
+    throw error;
+  }
+}
+
+export async function seedAll() {
+  try {
+    await seedProjects();
+    await seedWorkExperiences();
+    console.log("All data seeded successfully!");
+  } catch (error) {
+    console.error("Error seeding data:", error);
+    throw error;
+  }
+}
+
 // Run if called directly
 if (import.meta.url === `file://${process.argv[1]}`) {
-  seedProjects()
+  seedAll()
     .then(() => process.exit(0))
     .catch(() => process.exit(1));
 }

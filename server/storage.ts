@@ -1,4 +1,4 @@
-import { users, projects, type User, type InsertUser, type Project, type InsertProject } from "@shared/schema";
+import { users, projects, workExperiences, type User, type InsertUser, type Project, type InsertProject, type WorkExperience, type InsertWorkExperience } from "@shared/schema";
 import { db } from "./db";
 import { eq, asc } from "drizzle-orm";
 
@@ -13,6 +13,13 @@ export interface IStorage {
   createProject(project: InsertProject): Promise<Project>;
   updateProject(id: string, project: Partial<InsertProject>): Promise<Project | undefined>;
   deleteProject(id: string): Promise<boolean>;
+  
+  // Work Experience methods
+  getAllWorkExperiences(): Promise<WorkExperience[]>;
+  getWorkExperience(id: string): Promise<WorkExperience | undefined>;
+  createWorkExperience(workExperience: InsertWorkExperience): Promise<WorkExperience>;
+  updateWorkExperience(id: string, workExperience: Partial<InsertWorkExperience>): Promise<WorkExperience | undefined>;
+  deleteWorkExperience(id: string): Promise<boolean>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -62,6 +69,37 @@ export class DatabaseStorage implements IStorage {
 
   async deleteProject(id: string): Promise<boolean> {
     const result = await db.delete(projects).where(eq(projects.id, id));
+    return (result.rowCount ?? 0) > 0;
+  }
+
+  async getAllWorkExperiences(): Promise<WorkExperience[]> {
+    return await db.select().from(workExperiences).orderBy(asc(workExperiences.order));
+  }
+
+  async getWorkExperience(id: string): Promise<WorkExperience | undefined> {
+    const [workExperience] = await db.select().from(workExperiences).where(eq(workExperiences.id, id));
+    return workExperience || undefined;
+  }
+
+  async createWorkExperience(insertWorkExperience: InsertWorkExperience): Promise<WorkExperience> {
+    const [workExperience] = await db
+      .insert(workExperiences)
+      .values(insertWorkExperience)
+      .returning();
+    return workExperience;
+  }
+
+  async updateWorkExperience(id: string, updateData: Partial<InsertWorkExperience>): Promise<WorkExperience | undefined> {
+    const [workExperience] = await db
+      .update(workExperiences)
+      .set(updateData)
+      .where(eq(workExperiences.id, id))
+      .returning();
+    return workExperience || undefined;
+  }
+
+  async deleteWorkExperience(id: string): Promise<boolean> {
+    const result = await db.delete(workExperiences).where(eq(workExperiences.id, id));
     return (result.rowCount ?? 0) > 0;
   }
 }

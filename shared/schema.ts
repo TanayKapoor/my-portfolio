@@ -29,6 +29,20 @@ export const projects = pgTable("projects", {
   featured: boolean("featured").default(false),
 });
 
+export const workExperiences = pgTable("work_experiences", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  position: text("position").notNull(),
+  company: text("company").notNull(),
+  location: text("location").notNull(),
+  duration: text("duration").notNull(),
+  startDate: text("start_date").notNull(),
+  endDate: text("end_date").notNull(),
+  description: text("description").array().notNull(),
+  technologies: text("technologies").array().notNull(),
+  type: text("type").notNull(), // "current" or "past"
+  order: integer("order").notNull(),
+});
+
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
   password: true,
@@ -38,7 +52,13 @@ export const insertProjectSchema = createInsertSchema(projects).omit({
   id: true,
 });
 
+export const insertWorkExperienceSchema = createInsertSchema(workExperiences).omit({
+  id: true,
+});
+
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
 export type InsertProject = z.infer<typeof insertProjectSchema>;
 export type Project = typeof projects.$inferSelect;
+export type InsertWorkExperience = z.infer<typeof insertWorkExperienceSchema>;
+export type WorkExperience = typeof workExperiences.$inferSelect;

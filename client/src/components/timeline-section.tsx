@@ -8,102 +8,20 @@ import {
   ChevronRight,
   Sparkles,
 } from "lucide-react";
+import { useQuery } from '@tanstack/react-query';
+import type { WorkExperience } from '@shared/schema';
 
-interface WorkExperience {
-  id: number;
-  position: string;
-  company: string;
-  location: string;
-  duration: string;
-  startDate: string;
-  endDate: string;
-  description: string[];
-  technologies: string[];
-  type: "current" | "past";
-}
-
-const workExperiences: WorkExperience[] = [
-  {
-    id: 4,
-    position: "Intern - Software Development",
-    company: "InnovateLabs",
-    location: "Remote",
-    duration: "2019 - 2020",
-    startDate: "2019",
-    endDate: "2020",
-    description: [
-      "Assisted in developing mobile applications using React Native",
-      "Learned fundamentals of software engineering and testing",
-      "Participated in code reviews and documentation",
-      "Built personal projects to strengthen programming skills",
-    ],
-    technologies: ["React Native", "JavaScript", "Firebase", "Git"],
-    type: "past",
-  },
-  {
-    id: 3,
-    position: "Junior Developer",
-    company: "StartupHub India",
-    location: "Delhi, India",
-    duration: "2020 - 2021",
-    startDate: "2020",
-    endDate: "2021",
-    description: [
-      "Worked on full-stack web applications using MERN stack",
-      "Contributed to open-source projects and internal tools",
-      "Participated in agile development processes",
-      "Gained experience in deployment and DevOps practices",
-    ],
-    technologies: ["MongoDB", "Express.js", "React", "Node.js", "Git", "Linux"],
-    type: "past",
-  },
-  {
-    id: 2,
-    position: "Software Engineer",
-    company: "DataBridge Analytics",
-    location: "Bangalore, India",
-    duration: "2021 - 2023",
-    startDate: "2021",
-    endDate: "2023",
-    description: [
-      "Developed data visualization dashboards using React and D3.js",
-      "Built ETL pipelines for processing large-scale datasets",
-      "Implemented machine learning models for predictive analytics",
-      "Collaborated with cross-functional teams on product roadmap",
-    ],
-    technologies: [
-      "JavaScript",
-      "Python",
-      "React",
-      "Django",
-      "PostgreSQL",
-      "Redis",
-    ],
-    type: "past",
-  },
-  {
-    id: 1,
-    position: "Full Stack Machine Learning Engineer",
-    company: "TechFlow Solutions",
-    location: "Mumbai, India",
-    duration: "2023 - Present",
-    startDate: "2023",
-    endDate: "Present",
-    description: [
-      "Leading development of AI-powered products using modern ML frameworks",
-      "Building scalable web applications with React, Node.js, and Python",
-      "Implementing LLM integrations and prompt engineering solutions",
-      "Architecting cloud-native solutions for production ML workflows",
-    ],
-    technologies: ["Python", "React", "Node.js", "TensorFlow", "AWS", "Docker"],
-    type: "current",
-  },
-];
+// Now using database data instead of hardcoded array
 
 export default function TimelineSection() {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
+
+  // Fetch work experiences from API
+  const { data: workExperiences = [], isLoading, error } = useQuery<WorkExperience[]>({
+    queryKey: ['/api/work-experiences'],
+  });
 
   useEffect(() => {
     const container = scrollContainerRef.current;
@@ -119,6 +37,7 @@ export default function TimelineSection() {
 
     // Initialize scroll to show current position in center
     const initializeScroll = () => {
+      if (workExperiences.length === 0) return;
       // Current position is at index 3 (last item - current position)
       const currentIndex = workExperiences.length - 1; // Last item is current
       
@@ -197,7 +116,7 @@ export default function TimelineSection() {
       clearTimeout(initTimeout3);
       container.removeEventListener("scroll", updateScrollState);
     };
-  }, []);
+  }, [workExperiences]);
 
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
@@ -236,6 +155,36 @@ export default function TimelineSection() {
       scrollContainerRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
     }
   };
+
+  if (isLoading) {
+    return (
+      <section className="timeline-section" id="timeline">
+        <div className="timeline-container">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="timeline-header">
+              <h2 className="timeline-title">Work Experience</h2>
+              <p className="timeline-subtitle">Loading work experiences...</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className="timeline-section" id="timeline">
+        <div className="timeline-container">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="timeline-header">
+              <h2 className="timeline-title">Work Experience</h2>
+              <p className="timeline-subtitle">Failed to load work experiences. Please try again later.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="timeline-section" id="timeline">
