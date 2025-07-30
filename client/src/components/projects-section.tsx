@@ -10,6 +10,7 @@ export default function ProjectsSection() {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
+  const cardRefs = useRef<Map<string, HTMLDivElement>>(new Map());
 
   // Fetch projects from API
   const { data: projects = [], isLoading, error } = useQuery<Project[]>({
@@ -190,6 +191,109 @@ export default function ProjectsSection() {
     }
   };
 
+  // 3D Parallax Effect Functions
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>, projectId: string) => {
+    const card = cardRefs.current.get(projectId);
+    if (!card) return;
+
+    const rect = card.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    
+    const mouseX = e.clientX - centerX;
+    const mouseY = e.clientY - centerY;
+    
+    // Calculate distance from center (0 to 1)
+    const distanceFromCenter = Math.sqrt(
+      Math.pow(mouseX / (rect.width / 2), 2) + 
+      Math.pow(mouseY / (rect.height / 2), 2)
+    );
+    
+    // Normalize mouse position (-1 to 1)
+    const normalizedX = mouseX / (rect.width / 2);
+    const normalizedY = mouseY / (rect.height / 2);
+    
+    // Calculate tilt angles - more aggressive at edges
+    const maxTilt = 15; // Maximum tilt in degrees
+    const edgeMultiplier = Math.min(distanceFromCenter * 1.5, 1); // Amplify at edges
+    
+    const tiltX = normalizedY * maxTilt * edgeMultiplier;
+    const tiltY = -normalizedX * maxTilt * edgeMultiplier;
+    
+    // Calculate zoom - minimal at center, more at edges
+    const minZoom = 1.02; // Minimal zoom at center
+    const maxZoom = 1.08; // Maximum zoom at edges
+    const zoom = minZoom + (maxZoom - minZoom) * Math.pow(distanceFromCenter, 2);
+    
+    // Calculate translation for parallax effect
+    const maxTranslate = 8;
+    const translateX = normalizedX * maxTranslate * edgeMultiplier;
+    const translateY = normalizedY * maxTranslate * edgeMultiplier;
+    
+    // Apply transform
+    card.style.transform = `
+      perspective(1000px) 
+      rotateX(${tiltX}deg) 
+      rotateY(${tiltY}deg) 
+      scale(${zoom}) 
+      translate3d(${translateX}px, ${translateY}px, 0)
+    `;
+
+    // Apply parallax to inner elements for enhanced 3D effect
+    const icon = card.querySelector('.project-icon-wrapper') as HTMLElement;
+    const arrow = card.querySelector('.project-arrow') as HTMLElement;
+    const header = card.querySelector('.project-header') as HTMLElement;
+    
+    if (icon) {
+      icon.style.transform = `translate3d(${translateX * 0.3}px, ${translateY * 0.3}px, 15px)`;
+    }
+    
+    if (arrow) {
+      arrow.style.transform = `translate3d(${translateX * 0.4}px, ${translateY * 0.4}px, 20px)`;
+    }
+    
+    if (header) {
+      header.style.transform = `translate3d(${translateX * 0.1}px, ${translateY * 0.1}px, 5px)`;
+    }
+  };
+
+  const handleMouseEnter = (projectId: string) => {
+    setHoveredProject(projectId);
+    const card = cardRefs.current.get(projectId);
+    if (card) {
+      card.style.transition = 'transform 0.1s cubic-bezier(0.4, 0, 0.2, 1)';
+    }
+  };
+
+  const handleMouseLeave = (projectId: string) => {
+    setHoveredProject(null);
+    const card = cardRefs.current.get(projectId);
+    if (card) {
+      card.style.transition = 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+      card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1) translate3d(0, 0, 0)';
+      
+      // Reset inner elements
+      const icon = card.querySelector('.project-icon-wrapper') as HTMLElement;
+      const arrow = card.querySelector('.project-arrow') as HTMLElement;
+      const header = card.querySelector('.project-header') as HTMLElement;
+      
+      if (icon) {
+        icon.style.transition = 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+        icon.style.transform = 'translate3d(0, 0, 0)';
+      }
+      
+      if (arrow) {
+        arrow.style.transition = 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+        arrow.style.transform = 'translate3d(0, 0, 0)';
+      }
+      
+      if (header) {
+        header.style.transition = 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+        header.style.transform = 'translate3d(0, 0, 0)';
+      }
+    }
+  };
+
   return (
     <section className="projects-section" id="projects">
       <div className="projects-container">
@@ -213,10 +317,18 @@ export default function ProjectsSection() {
                   className="project-card-link"
                 >
                   <div
+                    ref={(el) => {
+                      if (el) {
+                        cardRefs.current.set(project.id, el);
+                      } else {
+                        cardRefs.current.delete(project.id);
+                      }
+                    }}
                     className="project-card raycast-style"
                     data-project-id={visualId}
-                    onMouseEnter={() => setHoveredProject(project.id)}
-                    onMouseLeave={() => setHoveredProject(null)}
+                    onMouseEnter={() => handleMouseEnter(project.id)}
+                    onMouseLeave={() => handleMouseLeave(project.id)}
+                    onMouseMove={(e) => handleMouseMove(e, project.id)}
                   >
                     {/* Header with Icon and Title */}
                     <div className="project-header">
