@@ -9,9 +9,11 @@ class WebGLRenderer {
   private animationId: number | null = null;
   private startTime: number = Date.now();
   private mouseMove: [number, number] = [0, 0];
+  private targetMouse: [number, number] = [0, 0];
+  private mouseSmoothness: number = 0.05; // Smooth mouse interpolation
   private scale: number = 1;
   private lastRenderTime: number = 0;
-  private targetFPS: number = 30; // Limit to 30 FPS to reduce power consumption
+  private targetFPS: number = 60; // Higher FPS for smoother animation
 
   private vertexSource = `#version 300 es
 precision highp float;
@@ -23,9 +25,9 @@ void main(){
   private fragmentSource = `#version 300 es
 /*********
 * made by Matthias Hurrle (@atzedent)
-* Optimized for lower power consumption
+* Enhanced quality with improved mouse interaction
 */
-precision mediump float;
+precision highp float;
 out vec4 O;
 uniform float time;
 uniform vec2 resolution;
@@ -38,16 +40,20 @@ uniform vec2 move;
 #define MN min(R.x,R.y)
 #define rot(a) mat2(cos((a)-vec4(0,11,33,0)))
 #define csqr(a) vec2(a.x*a.x-a.y*a.y,2.*a.x*a.y)
+
+// Enhanced random function with better distribution
 float rnd(vec3 p) {
-  p=fract(p*vec3(12.9898,78.233,156.34));
-  p+=dot(p,p+34.56);
-  return fract(p.x*p.y*p.z);
+  p=fract(p*vec3(443.897,478.233,267.34));
+  p+=dot(p,p.yzx+19.34);
+  return fract((p.x+p.y)*p.z);
 }
+
+// Improved swirls function with more iterations for quality
 float swirls(in vec3 p) {
   float d=.0;
   vec3 c=p;
-  // Reduced from 9 to 5 iterations
-  for(float i=min(.0,time); i<5.; i++) {
+  // Increased iterations for better quality
+  for(float i=min(.0,time); i<8.; i++) {
     p=.7*abs(p)/dot(p,p)-.7;
     p.yz=csqr(p.yz);
     p=p.zxy;
@@ -55,58 +61,86 @@ float swirls(in vec3 p) {
   }
   return d;
 }
+
+// Enhanced marching function with better quality
 vec3 march(in vec3 p, vec3 rd) {
-  float d=.3, t=.0, c=.0, k=mix(.9,1.,rnd(rd)),
-  maxd=length(p)-1.;
+  float d=.2, t=.0, c=.0, k=mix(.85,1.1,rnd(rd)),
+  maxd=length(p)-0.8;
   vec3 col=vec3(0);
-  // Reduced from 120 to 60 iterations for better performance
-  for(float i=min(.0,time); i<60.; i++) {
-    t+=d*exp(-2.*c)*k;
+  // Increased iterations for smoother raymarching
+  for(float i=min(.0,time); i<80.; i++) {
+    t+=d*exp(-2.2*c)*k;
     c=swirls(p+rd*t);
-    if (t<8e-2 || t>maxd) break;
-    col+=vec3(c*c,c/1.05,c)*1.2e-2;
+    if (t<6e-2 || t>maxd) break;
+    // Enhanced color mixing with more vibrant results
+    col+=vec3(c*c*1.2,c/0.95,c*0.9)*1.8e-2;
   }
   return col;
 }
+
 float rnd(vec2 p) {
-  p=fract(p*vec2(12.9898,78.233));
-  p+=dot(p,p+34.56);
+  p=fract(p*vec2(443.897,478.233));
+  p+=dot(p,p.yx+19.34);
   return fract(p.x*p.y);
 }
+
+// Enhanced sky with more detailed stars
 vec3 sky(vec2 p, bool anim) {
-  p.x-=.17-(anim?2e-4*T:.0);
-  p*=300.; // Reduced detail
+  p.x-=.17-(anim?3e-4*T:.0);
+  p*=420.; // Increased detail
   vec2 id=floor(p), gv=fract(p)-.5;
   float n=rnd(id), d=length(gv);
-  if (n<.98) return vec3(0); // Less dense stars
-  return vec3(S(4e-2*n,2e-3*n,d*d));
+  if (n<.96) return vec3(0); // More stars
+  float brightness = S(6e-2*n,1e-3*n,d*d);
+  return vec3(brightness * (0.8 + 0.4*sin(T*2.0 + n*20.0))); // Twinkling effect
 }
+
+// Enhanced camera movement with smooth mouse interaction
 void cam(inout vec3 p) {
-  p.yz*=rot(move.y*6.3/MN-T*.03); // Slower rotation
-  p.xz*=rot(-move.x*6.3/MN+T*.02);
+  float mouseInfluence = 0.8;
+  float autoRotation = T * 0.02;
+  p.yz*=rot(move.y*8.0*mouseInfluence/MN + autoRotation*0.7);
+  p.xz*=rot(-move.x*8.0*mouseInfluence/MN + autoRotation);
 }
+
 void main() {
   vec2 uv=(FC-.5*R)/MN;
   vec3 col=vec3(0),
   p=vec3(0,0,-16),
   rd=N(vec3(uv,1)), rdd=rd;
-  cam(p); cam(rd);
-  col=march(p,rd);
-  col=S(-.2,.9,col);
-  vec2 sn=.5+vec2(atan(rdd.x,rdd.z),atan(length(rdd.xz),rdd.y))/6.28318;
-  col=max(col,vec3(sky(sn,true)*0.7)); // Simplified sky calculation
-  float t=min((time-.5)*.3,1.);
-  uv=FC/R*2.-1.;
-  uv*=.7;
-  float v=pow(dot(uv,uv),1.8);
-  col=mix(col,vec3(0),v);
-  col=mix(vec3(0),col,t);
-  col=max(col,.08);
   
-  // Add black gradient at bottom for seamless page blending
+  // Apply enhanced camera movement
+  cam(p); cam(rd);
+  
+  // Get the main fractal color
+  col=march(p,rd);
+  col=S(-.15,.95,col); // Improved contrast
+  
+  // Enhanced sky rendering
+  vec2 sn=.5+vec2(atan(rdd.x,rdd.z),atan(length(rdd.xz),rdd.y))/6.28318;
+  vec3 skyColor = sky(sn,true);
+  col=max(col, skyColor * 0.9);
+  
+  // Smooth fade-in effect
+  float t=min((time-.3)*.4,1.);
+  
+  // Enhanced vignette effect
+  uv=FC/R*2.-1.;
+  uv*=.65;
+  float v=pow(dot(uv,uv),1.5);
+  col=mix(col,vec3(0),v);
+  
+  // Apply fade-in
+  col=mix(vec3(0),col,t);
+  col=max(col,.06);
+  
+  // Enhanced bottom gradient for page blending
   float screenY = FC.y / R.y;
-  float bottomFade = S(0.0, 0.3, screenY); // Fade from black at bottom to normal at 30% height
+  float bottomFade = S(0.0, 0.35, screenY);
   col *= bottomFade;
+  
+  // Subtle color enhancement
+  col = pow(col, vec3(0.9)); // Gamma correction for better contrast
   
   O=vec4(col,1);
 }`;
@@ -120,8 +154,8 @@ void main() {
       throw new Error('WebGL2 not supported');
     }
     this.gl = gl;
-    // Reduce rendering scale for better performance
-    this.scale = Math.min(0.75, 0.5 * window.devicePixelRatio);
+    // Enhanced rendering scale for better quality
+    this.scale = Math.min(1.0, 0.8 * window.devicePixelRatio);
     this.resize();
   }
 
@@ -189,7 +223,7 @@ void main() {
   }
 
   public updateMouse(x: number, y: number): void {
-    this.mouseMove = [x, y];
+    this.targetMouse = [x, y];
   }
 
   public render(): void {
@@ -199,7 +233,7 @@ void main() {
     const deltaTime = currentTime - this.lastRenderTime;
     const targetFrameTime = 1000 / this.targetFPS;
     
-    // Frame rate limiting for power efficiency
+    // Frame rate limiting for smooth animation
     if (deltaTime < targetFrameTime) {
       this.animationId = requestAnimationFrame(() => this.render());
       return;
@@ -207,6 +241,10 @@ void main() {
     
     this.lastRenderTime = currentTime;
     const now = (Date.now() - this.startTime) * 0.001;
+    
+    // Smooth mouse interpolation for fluid movement
+    this.mouseMove[0] += (this.targetMouse[0] - this.mouseMove[0]) * this.mouseSmoothness;
+    this.mouseMove[1] += (this.targetMouse[1] - this.mouseMove[1]) * this.mouseSmoothness;
     
     this.gl.clearColor(0, 0, 0, 1);
     this.gl.clear(this.gl.COLOR_BUFFER_BIT);
@@ -279,12 +317,32 @@ export default function WebGLAnimation({ className = '' }: WebGLAnimationProps) 
         renderer.updateMouse(x, -y);
       };
 
+      const handleTouchMove = (e: TouchEvent) => {
+        e.preventDefault();
+        if (e.touches.length > 0) {
+          const rect = canvas.getBoundingClientRect();
+          const touch = e.touches[0];
+          const x = ((touch.clientX - rect.left) / rect.width) * 2 - 1;
+          const y = ((touch.clientY - rect.top) / rect.height) * 2 - 1;
+          renderer.updateMouse(x, -y);
+        }
+      };
+
+      const handleMouseLeave = () => {
+        // Smoothly return to center when mouse leaves
+        renderer.updateMouse(0, 0);
+      };
+
       window.addEventListener('resize', handleResize);
       canvas.addEventListener('mousemove', handleMouseMove);
+      canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
+      canvas.addEventListener('mouseleave', handleMouseLeave);
 
       return () => {
         window.removeEventListener('resize', handleResize);
         canvas.removeEventListener('mousemove', handleMouseMove);
+        canvas.removeEventListener('touchmove', handleTouchMove);
+        canvas.removeEventListener('mouseleave', handleMouseLeave);
         renderer.destroy();
         rendererRef.current = null;
       };
