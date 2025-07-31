@@ -108,6 +108,15 @@ The application is structured as a monorepo with shared TypeScript types and sch
 
 ## Recent Changes (July 31, 2025)
 
+### Authentication Bug Fix (July 31, 2025)
+- **Issue Resolved**: Fixed database constraint error in user authentication system
+- **Root Cause**: The `upsertUser` function was using wrong conflict target (users.id instead of users.email)
+- **Resolution**: Updated storage.ts to use proper email-based conflict resolution for user upserts
+- **Authentication Flow**: Replit Auth integration now working properly with PostgreSQL session storage
+- **Note**: Authentication only works through the official Replit domain, not localhost during development
+
+## Recent Changes (July 31, 2025)
+
 ### Replit Auth Integration (July 31, 2025)
 - **Authentication System**: Replaced hard-coded password authentication with secure Replit Auth
 - **Database Schema**: Updated user table to support Replit Auth with proper session management
