@@ -43,6 +43,24 @@ export default function AdminPanel() {
     }
   }, [isAuthenticated, isLoading, toast]);
 
+  // Early return for loading state - prevents flash of content
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
+        <div className="text-white">Loading...</div>
+      </div>
+    );
+  }
+
+  // Early return for authentication redirect - prevents flash of content
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
+        <div className="text-white">Redirecting to login...</div>
+      </div>
+    );
+  }
+
   // Show access denied if authenticated but not admin
   if (!isLoading && isAuthenticated && !isAdmin) {
     return (
@@ -183,14 +201,7 @@ export default function AdminPanel() {
     }
   };
 
-  // Show loading state
-  if (isLoading || projectsLoading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
-        <div className="text-white">Loading...</div>
-      </div>
-    );
-  }
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
@@ -220,50 +231,54 @@ export default function AdminPanel() {
             </div>
 
             <div className="grid gap-4">
-              {projects.map((project) => (
-                <Card key={project.id} className="bg-gray-800/50 border-gray-700">
-                  <CardHeader>
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <CardTitle className="text-white">{project.title}</CardTitle>
-                        <CardDescription className="text-gray-400">
-                          {project.description}
-                        </CardDescription>
+              {projectsLoading ? (
+                <div className="text-white text-center py-8">Loading projects...</div>
+              ) : (
+                projects.map((project) => (
+                  <Card key={project.id} className="bg-gray-800/50 border-gray-700">
+                    <CardHeader>
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <CardTitle className="text-white">{project.title}</CardTitle>
+                          <CardDescription className="text-gray-400">
+                            {project.description}
+                          </CardDescription>
+                        </div>
+                        <div className="flex gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setEditingProject(project)}
+                          >
+                            <Edit2 className="w-4 h-4" />
+                          </Button>
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => deleteProjectMutation.mutate(project.id)}
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
                       </div>
-                      <div className="flex gap-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => setEditingProject(project)}
-                        >
-                          <Edit2 className="w-4 h-4" />
-                        </Button>
-                        <Button
-                          variant="destructive"
-                          size="sm"
-                          onClick={() => deleteProjectMutation.mutate(project.id)}
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        {project.technologies.map((tech) => (
+                          <Badge key={tech} variant="secondary">
+                            {tech}
+                          </Badge>
+                        ))}
                       </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {project.technologies.map((tech) => (
-                        <Badge key={tech} variant="secondary">
-                          {tech}
-                        </Badge>
-                      ))}
-                    </div>
-                    <div className="flex gap-4 text-sm text-gray-400">
-                      <span>Status: {project.status}</span>
-                      <span>Duration: {project.duration}</span>
-                      <span>Role: {project.role}</span>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+                      <div className="flex gap-4 text-sm text-gray-400">
+                        <span>Status: {project.status}</span>
+                        <span>Duration: {project.duration}</span>
+                        <span>Role: {project.role}</span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))
+              )}
             </div>
         </div>
 

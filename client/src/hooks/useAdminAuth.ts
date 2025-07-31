@@ -6,17 +6,23 @@ interface AdminStatusResponse {
 }
 
 export function useAdminAuth() {
-  const { isAuthenticated, isLoading: authLoading } = useAuth();
+  const { isAuthenticated, isLoading: authLoading, user } = useAuth();
   
-  const { data: adminStatus, isLoading: adminLoading } = useQuery<AdminStatusResponse>({
+  const { data: adminStatus, isLoading: adminLoading, error: adminError } = useQuery<AdminStatusResponse>({
     queryKey: ["/api/auth/admin-status"],
     enabled: isAuthenticated,
     retry: false,
   });
 
+  // We're loading if:
+  // 1. Auth is still loading, OR
+  // 2. Auth succeeded and admin status is still loading
+  const isLoading = authLoading || (isAuthenticated && adminLoading);
+
   return {
     isAuthenticated,
     isAdmin: adminStatus?.isAdmin || false,
-    isLoading: authLoading || (isAuthenticated && adminLoading),
+    isLoading,
+    user,
   };
 }
