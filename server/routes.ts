@@ -1,5 +1,9 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
+import express from "express";
+import multer from "multer";
+import path from "path";
+import fs from "fs";
 import { storage } from "./storage";
 import { insertProjectSchema, insertWorkExperienceSchema } from "@shared/schema";
 import { z } from "zod";
@@ -158,6 +162,138 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ error: "Failed to delete work experience" });
     }
   });
+
+  // Configure multer for file uploads
+  const uploadsDir = path.join(process.cwd(), 'uploads');
+  if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+  }
+
+  const storage_config = multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, uploadsDir);
+    },
+    filename: (req, file, cb) => {
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+      const ext = path.extname(file.originalname);
+      cb(null, file.fieldname + '-' + uniqueSuffix + ext);
+    }
+  });
+
+  const upload = multer({
+    storage: storage_config,
+    limits: {
+      fileSize: 10 * 1024 * 1024, // 10MB limit
+    },
+    fileFilter: (req, file, cb) => {
+      const allowedTypes = /jpeg|jpg|png|gif|svg|webp/;
+      const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+      const mimetype = allowedTypes.test(file.mimetype);
+
+      if (mimetype && extname) {
+        return cb(null, true);
+      } else {
+        cb(new Error('Only image files are allowed!'));
+      }
+    }
+  });
+
+  // File upload routes
+  app.post("/api/projects/:id/upload-icon", upload.single('icon'), async (req, res) => {
+    try {
+      const { id } = req.params;
+      
+      if (!req.file) {
+        return res.status(400).json({ error: "No icon file provided" });
+      }
+
+      const iconUrl = `/uploads/${req.file.filename}`;
+      const project = await storage.updateProject(id, { iconUrl });
+      
+      if (!project) {
+        // Clean up uploaded file if project not found
+        fs.unlinkSync(req.file.path);
+        return res.status(404).json({ error: "Project not found" });
+      }
+      
+      res.json({ iconUrl, project });
+    } catch (error) {
+      console.error("Error uploading project icon:", error);
+      if (req.file) {
+        fs.unlinkSync(req.file.path);
+      }
+      res.status(500).json({ error: "Failed to upload project icon" });
+    }
+  });
+
+  app.post("/api/projects/:id/upload-screenshots", upload.array('screenshots', 10), async (req, res) => {
+    try {
+      const { id } = req.params;
+      
+      if (!req.files || !Array.isArray(req.files) || req.files.length === 0) {
+        return res.status(400).json({ error: "No screenshot files provided" });
+      }
+
+      const screenshotUrls = req.files.map(file => `/uploads/${file.filename}`);
+      
+      // Get current project to append to existing screenshots
+      const currentProject = await storage.getProject(id);
+      if (!currentProject) {
+        // Clean up uploaded files if project not found
+        req.files.forEach(file => fs.unlinkSync(file.path));
+        return res.status(404).json({ error: "Project not found" });
+      }
+
+      const existingScreenshots = currentProject.screenshotUrls || [];
+      const updatedScreenshots = [...existingScreenshots, ...screenshotUrls];
+      
+      const project = await storage.updateProject(id, { screenshotUrls: updatedScreenshots });
+      
+      res.json({ screenshotUrls, project });
+    } catch (error) {
+      console.error("Error uploading project screenshots:", error);
+      if (req.files && Array.isArray(req.files)) {
+        req.files.forEach(file => fs.unlinkSync(file.path));
+      }
+      res.status(500).json({ error: "Failed to upload project screenshots" });
+    }
+  });
+
+  app.delete("/api/projects/:id/screenshots/:screenshotIndex", async (req, res) => {
+    try {
+      const { id, screenshotIndex } = req.params;
+      const index = parseInt(screenshotIndex);
+      
+      const project = await storage.getProject(id);
+      if (!project) {
+        return res.status(404).json({ error: "Project not found" });
+      }
+
+      const screenshots = project.screenshotUrls || [];
+      if (index < 0 || index >= screenshots.length) {
+        return res.status(400).json({ error: "Invalid screenshot index" });
+      }
+
+      // Delete file from disk
+      const screenshotUrl = screenshots[index];
+      const filePath = path.join(process.cwd(), screenshotUrl);
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
+
+      // Remove from array
+      const updatedScreenshots = screenshots.filter((_, i) => i !== index);
+      const updatedProject = await storage.updateProject(id, { screenshotUrls: updatedScreenshots });
+      
+      res.json({ project: updatedProject });
+    } catch (error) {
+      console.error("Error deleting project screenshot:", error);
+      res.status(500).json({ error: "Failed to delete project screenshot" });
+    }
+  });
+
+  // Serve uploaded files statically
+  app.use('/uploads', express.static(uploadsDir));
 
   const httpServer = createServer(app);
 

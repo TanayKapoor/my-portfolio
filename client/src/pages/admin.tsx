@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Plus, Edit2, Trash2, Save, X, Lock } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
+import FileUpload from '@/components/FileUpload';
 import type { Project, InsertProject } from '@shared/schema';
 
 const colorThemes = [
@@ -389,7 +390,7 @@ function ProjectForm({
               <Input
                 id="duration"
                 name="duration"
-                defaultValue={project?.duration}
+                defaultValue={project?.duration || ""}
                 className="bg-gray-700 border-gray-600 text-white"
               />
             </div>
@@ -398,7 +399,7 @@ function ProjectForm({
               <Input
                 id="role"
                 name="role"
-                defaultValue={project?.role}
+                defaultValue={project?.role || ""}
                 className="bg-gray-700 border-gray-600 text-white"
               />
             </div>
@@ -407,7 +408,7 @@ function ProjectForm({
           <div className="grid grid-cols-2 gap-4">
             <div>
               <Label htmlFor="status" className="text-white">Status</Label>
-              <Select name="status" defaultValue={project?.status}>
+              <Select name="status" defaultValue={project?.status || undefined}>
                 <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
                   <SelectValue />
                 </SelectTrigger>
@@ -459,6 +460,24 @@ function ProjectForm({
               />
             </div>
           </div>
+
+          {/* File Upload Sections - Only show for existing projects */}
+          {project && (
+            <div className="space-y-6 pt-6 border-t border-gray-700">
+              <h3 className="text-lg font-semibold text-white">Project Media</h3>
+              
+              <div className="grid md:grid-cols-2 gap-6">
+                <FileUpload 
+                  project={project} 
+                  type="icon"
+                />
+                <FileUpload 
+                  project={project} 
+                  type="screenshots"
+                />
+              </div>
+            </div>
+          )}
 
           <div className="flex gap-2 pt-4">
             <Button type="submit" disabled={isSubmitting}>
