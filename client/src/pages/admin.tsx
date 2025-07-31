@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -6,11 +6,12 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Plus, Edit2, Trash2, Save, X, Lock } from 'lucide-react';
+import { Plus, Edit2, Trash2, Save, X, Lock, LogOut, Shield } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
+import { useAdminAuth } from '@/hooks/useAdminAuth';
+import { isUnauthorizedError } from '@/lib/authUtils';
 import FileUpload from '@/components/FileUpload';
 import type { Project, InsertProject } from '@shared/schema';
 
@@ -21,41 +22,65 @@ const colorThemes = [
 const statusOptions = ['planning', 'in-progress', 'completed', 'on-hold'] as const;
 
 export default function AdminPanel() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [password, setPassword] = useState('');
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { isAuthenticated, isAdmin, isLoading } = useAdminAuth();
 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Simple password check - in production, this should be server-side
-    if (password === 'jump6bladder*dias0youse') {
-      setIsAuthenticated(true);
-      setPassword('');
-      toast({ title: 'Access granted' });
-    } else {
-      toast({ title: 'Access denied', description: 'Invalid password', variant: 'destructive' });
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      toast({
+        title: "Authentication Required",
+        description: "Please log in to access the admin panel",
+        variant: "destructive",
+      });
+      setTimeout(() => {
+        window.location.href = "/api/login";
+      }, 1000);
+      return;
     }
-  };
+  }, [isAuthenticated, isLoading, toast]);
+
+  // Show access denied if authenticated but not admin
+  if (!isLoading && isAuthenticated && !isAdmin) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
+        <Card className="w-full max-w-md bg-gray-800/50 border-gray-700">
+          <CardHeader className="text-center">
+            <CardTitle className="text-white flex items-center justify-center gap-2">
+              <Shield className="w-5 h-5 text-red-400" />
+              Access Denied
+            </CardTitle>
+            <CardDescription className="text-gray-400">
+              You don't have admin privileges to access this panel
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="text-center">
+            <Button 
+              onClick={() => window.location.href = "/api/logout"} 
+              variant="outline" 
+              className="w-full"
+            >
+              <LogOut className="w-4 h-4 mr-2" />
+              Log Out
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   // Fetch all projects
-  const { data: projects = [], isLoading } = useQuery<Project[]>({
+  const { data: projects = [], isLoading: projectsLoading } = useQuery<Project[]>({
     queryKey: ['/api/projects'],
   });
 
   // Create project mutation
   const createProjectMutation = useMutation({
     mutationFn: async (data: InsertProject) => {
-      const response = await fetch('/api/projects', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-      if (!response.ok) throw new Error('Failed to create project');
+      const response = await apiRequest('POST', '/api/projects', data);
       return response.json();
     },
     onSuccess: () => {
@@ -63,7 +88,18 @@ export default function AdminPanel() {
       setIsCreating(false);
       toast({ title: 'Project created successfully!' });
     },
-    onError: () => {
+    onError: (error: Error) => {
+      if (isUnauthorizedError(error)) {
+        toast({
+          title: "Unauthorized",
+          description: "Please log in again to continue",
+          variant: "destructive",
+        });
+        setTimeout(() => {
+          window.location.href = "/api/login";
+        }, 1000);
+        return;
+      }
       toast({ title: 'Failed to create project', variant: 'destructive' });
     },
   });
@@ -71,14 +107,7 @@ export default function AdminPanel() {
   // Update project mutation
   const updateProjectMutation = useMutation({
     mutationFn: async ({ id, data }: { id: string; data: Partial<InsertProject> }) => {
-      const response = await fetch(`/api/projects/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-      if (!response.ok) throw new Error('Failed to update project');
+      const response = await apiRequest('PUT', `/api/projects/${id}`, data);
       return response.json();
     },
     onSuccess: () => {
@@ -86,7 +115,18 @@ export default function AdminPanel() {
       setEditingProject(null);
       toast({ title: 'Project updated successfully!' });
     },
-    onError: () => {
+    onError: (error: Error) => {
+      if (isUnauthorizedError(error)) {
+        toast({
+          title: "Unauthorized",
+          description: "Please log in again to continue",
+          variant: "destructive",
+        });
+        setTimeout(() => {
+          window.location.href = "/api/login";
+        }, 1000);
+        return;
+      }
       toast({ title: 'Failed to update project', variant: 'destructive' });
     },
   });
@@ -94,16 +134,24 @@ export default function AdminPanel() {
   // Delete project mutation
   const deleteProjectMutation = useMutation({
     mutationFn: async (id: string) => {
-      const response = await fetch(`/api/projects/${id}`, {
-        method: 'DELETE',
-      });
-      if (!response.ok) throw new Error('Failed to delete project');
+      await apiRequest('DELETE', `/api/projects/${id}`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/projects'] });
       toast({ title: 'Project deleted successfully!' });
     },
-    onError: () => {
+    onError: (error: Error) => {
+      if (isUnauthorizedError(error)) {
+        toast({
+          title: "Unauthorized",
+          description: "Please log in again to continue",
+          variant: "destructive",
+        });
+        setTimeout(() => {
+          window.location.href = "/api/login";
+        }, 1000);
+        return;
+      }
       toast({ title: 'Failed to delete project', variant: 'destructive' });
     },
   });
@@ -135,45 +183,8 @@ export default function AdminPanel() {
     }
   };
 
-  // Show login form if not authenticated
-  if (!isAuthenticated) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
-        <Card className="w-full max-w-md bg-gray-800/50 border-gray-700">
-          <CardHeader className="text-center">
-            <CardTitle className="text-white flex items-center justify-center gap-2">
-              <Lock className="w-5 h-5" />
-              Admin Access
-            </CardTitle>
-            <CardDescription className="text-gray-400">
-              Enter password to access admin panel
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleLogin} className="space-y-4">
-              <div>
-                <Label htmlFor="password" className="text-white">Password</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="bg-gray-700 border-gray-600 text-white"
-                  placeholder="Enter admin password"
-                  required
-                />
-              </div>
-              <Button type="submit" className="w-full">
-                Access Admin Panel
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  if (isLoading) {
+  // Show loading state
+  if (isLoading || projectsLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
         <div className="text-white">Loading...</div>
@@ -191,9 +202,10 @@ export default function AdminPanel() {
           </div>
           <Button 
             variant="outline" 
-            onClick={() => setIsAuthenticated(false)}
+            onClick={() => window.location.href = "/api/logout"}
             className="border-gray-600 text-gray-300 hover:bg-gray-700"
           >
+            <LogOut className="w-4 h-4 mr-2" />
             Logout
           </Button>
         </div>
