@@ -31,7 +31,7 @@ export default function AdminPanel() {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     // Simple password check - in production, this should be server-side
-    if (password === 'admin123') {
+    if (password === 'jump6bladder*dias0youse') {
       setIsAuthenticated(true);
       setPassword('');
       toast({ title: 'Access granted' });
