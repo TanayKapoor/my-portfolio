@@ -106,7 +106,27 @@ Preferred communication style: Simple, everyday language.
 
 The application is structured as a monorepo with shared TypeScript types and schemas, making it easy to maintain consistency between frontend and backend while supporting rapid development and deployment.
 
-## Recent Changes (July 30, 2025)
+## Recent Changes (July 31, 2025)
+
+### File Upload System Implementation
+- **Database Schema**: Added iconUrl and screenshotUrls fields to projects table for storing uploaded media
+- **API Endpoints**: Created comprehensive file upload endpoints with proper validation and error handling
+  - POST /api/projects/:id/upload-icon - Upload single project icon
+  - POST /api/projects/:id/upload-screenshots - Upload multiple project screenshots 
+  - DELETE /api/projects/:id/screenshots/:index - Delete specific screenshot
+  - Static file serving at /uploads route
+- **Admin Panel Integration**: Added dedicated "Project Media" section with drag-and-drop file upload interface
+- **File Management**: Supports JPG, PNG, GIF, SVG, WebP formats with 10MB size limits and proper file cleanup
+- **User Experience**: Intuitive upload interface with progress indicators and visual feedback for existing media
+
+### Technical Implementation Details
+- Multer middleware for handling multipart form data and file storage
+- Automatic file naming with timestamps to prevent conflicts
+- File validation for type, size, and security
+- Error handling with proper cleanup of failed uploads
+- React Query integration for real-time UI updates after uploads
+
+## Previous Changes (July 30, 2025)
 
 ### Comprehensive Projects Page Implementation
 - **New Dedicated Page**: Created `/projects` route with complete project showcase and WebGL background

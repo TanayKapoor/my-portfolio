@@ -461,8 +461,8 @@ function ProjectForm({
             </div>
           </div>
 
-          {/* File Upload Sections - Only show for existing projects */}
-          {project && (
+          {/* File Upload Sections - Show for existing projects or provide info for new ones */}
+          {project ? (
             <div className="space-y-6 pt-6 border-t border-gray-700">
               <h3 className="text-lg font-semibold text-white">Project Media</h3>
               
@@ -475,6 +475,15 @@ function ProjectForm({
                   project={project} 
                   type="screenshots"
                 />
+              </div>
+            </div>
+          ) : (
+            <div className="pt-6 border-t border-gray-700">
+              <div className="bg-blue-900/20 border border-blue-800/50 rounded-lg p-4">
+                <h3 className="text-lg font-semibold text-blue-300 mb-2">Project Media</h3>
+                <p className="text-blue-200 text-sm">
+                  After creating this project, you'll be able to upload a project icon and screenshots in the edit form.
+                </p>
               </div>
             </div>
           )}
