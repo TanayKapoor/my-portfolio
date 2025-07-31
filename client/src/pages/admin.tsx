@@ -26,10 +26,51 @@ export default function AdminPanel() {
   const [isCreating, setIsCreating] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  // Temporarily disable auth for testing - will re-enable once Replit Auth is fully configured
-  const isAuthenticated = true;
-  const isAdmin = true;
-  const isLoading = false;
+  const { isAuthenticated, isAdmin, isLoading } = useAdminAuth();
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      toast({
+        title: "Authentication Required",
+        description: "Please log in to access the admin panel",
+        variant: "destructive",
+      });
+      setTimeout(() => {
+        window.location.href = "/api/login";
+      }, 1000);
+      return;
+    }
+  }, [isAuthenticated, isLoading, toast]);
+
+  // Show access denied if authenticated but not admin
+  if (!isLoading && isAuthenticated && !isAdmin) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
+        <Card className="w-full max-w-md bg-gray-800/50 border-gray-700">
+          <CardHeader className="text-center">
+            <CardTitle className="text-white flex items-center justify-center gap-2">
+              <Shield className="w-5 h-5 text-red-400" />
+              Access Denied
+            </CardTitle>
+            <CardDescription className="text-gray-400">
+              You don't have admin privileges to access this panel
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="text-center">
+            <Button 
+              onClick={() => window.location.href = "/api/logout"} 
+              variant="outline" 
+              className="w-full"
+            >
+              <LogOut className="w-4 h-4 mr-2" />
+              Log Out
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   // Fetch all projects
   const { data: projects = [], isLoading: projectsLoading } = useQuery<Project[]>({
