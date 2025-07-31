@@ -6,7 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Plus, Edit2, Trash2, Save, X, Lock } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
@@ -198,13 +198,7 @@ export default function AdminPanel() {
           </Button>
         </div>
 
-        <Tabs defaultValue="projects" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="projects">Projects</TabsTrigger>
-            <TabsTrigger value="create">Create New</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="projects" className="space-y-4">
+        <div className="space-y-4">
             <div className="flex justify-between items-center">
               <h2 className="text-xl font-semibold text-white">All Projects</h2>
               <Button onClick={() => setIsCreating(true)}>
@@ -259,17 +253,7 @@ export default function AdminPanel() {
                 </Card>
               ))}
             </div>
-          </TabsContent>
-
-          <TabsContent value="create">
-            <ProjectForm
-              project={null}
-              onSubmit={handleSubmit}
-              onCancel={() => setIsCreating(false)}
-              isSubmitting={createProjectMutation.isPending}
-            />
-          </TabsContent>
-        </Tabs>
+        </div>
 
         {/* Edit Modal */}
         {editingProject && (
@@ -281,6 +265,21 @@ export default function AdminPanel() {
                 onSubmit={handleSubmit}
                 onCancel={() => setEditingProject(null)}
                 isSubmitting={updateProjectMutation.isPending}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Create Modal */}
+        {isCreating && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+            <div className="bg-gray-800 rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+              <h2 className="text-xl font-semibold text-white mb-4">Create New Project</h2>
+              <ProjectForm
+                project={null}
+                onSubmit={handleSubmit}
+                onCancel={() => setIsCreating(false)}
+                isSubmitting={createProjectMutation.isPending}
               />
             </div>
           </div>
