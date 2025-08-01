@@ -20,7 +20,7 @@ export default function ConnectThreeAnimation({
     
     if (!largeHeader || !canvas) return;
 
-    let width: number, height: number, ctx: CanvasRenderingContext2D | null, points: any[], target: { x: number; y: number }, animateHeader = true;
+    let width: number, height: number, ctx: CanvasRenderingContext2D | null, points: any[], stars: any[], shootingStars: any[], meteorites: any[], target: { x: number; y: number }, animateHeader = true;
 
     // Initialize the animation
     function initHeader() {
@@ -48,6 +48,24 @@ export default function ConnectThreeAnimation({
           points.push(p);
         }
       }
+
+      // Create stars
+      stars = [];
+      for (let i = 0; i < 150; i++) {
+        stars.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          size: Math.random() * 2 + 0.5,
+          opacity: Math.random() * 0.8 + 0.2,
+          twinkleSpeed: Math.random() * 0.02 + 0.01
+        });
+      }
+
+      // Create shooting stars
+      shootingStars = [];
+      
+      // Create meteorites
+      meteorites = [];
 
       // For each point find the 5 closest points
       for (let i = 0; i < points.length; i++) {
@@ -84,6 +102,13 @@ export default function ConnectThreeAnimation({
         const c = Circle(points[i], 2 + Math.random() * 2, 'rgba(255,255,255,0.3)');
         points[i].circle = c;
       }
+      
+      // Initialize meteorites after functions are defined
+      setTimeout(() => {
+        for (let i = 0; i < 3; i++) {
+          createMeteorite();
+        }
+      }, 100);
     }
 
     // Event handling
@@ -134,6 +159,19 @@ export default function ConnectThreeAnimation({
     function animate() {
       if (animateHeader && ctx) {
         ctx.clearRect(0, 0, width, height);
+        
+        // Draw stars
+        drawStars();
+        
+        // Draw shooting stars
+        updateShootingStars();
+        drawShootingStars();
+        
+        // Draw meteorites
+        updateMeteorites();
+        drawMeteorites();
+        
+        // Draw connection points
         for (let i in points) {
           // Detect points in range
           if (Math.abs(getDistance(target, points[i])) < 4000) {
@@ -221,6 +259,120 @@ export default function ConnectThreeAnimation({
     // Utility
     function getDistance(p1: any, p2: any) {
       return Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2);
+    }
+
+    // Galaxy elements functions
+    function createMeteorite() {
+      meteorites.push({
+        x: -50,
+        y: Math.random() * height * 0.3,
+        vx: 2 + Math.random() * 3,
+        vy: 1 + Math.random() * 2,
+        size: 3 + Math.random() * 4,
+        opacity: 0.8 + Math.random() * 0.2,
+        trail: []
+      });
+    }
+
+    function createShootingStar() {
+      shootingStars.push({
+        x: Math.random() * width,
+        y: -50,
+        vx: (Math.random() - 0.5) * 6,
+        vy: 3 + Math.random() * 5,
+        length: 30 + Math.random() * 40,
+        opacity: 1,
+        life: 100
+      });
+    }
+
+    function drawStars() {
+      if (!ctx) return;
+      stars.forEach(star => {
+        star.opacity += Math.sin(Date.now() * star.twinkleSpeed) * 0.1;
+        star.opacity = Math.max(0.2, Math.min(1, star.opacity));
+        
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.size, 0, 2 * Math.PI);
+        ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
+        ctx.fill();
+      });
+    }
+
+    function updateShootingStars() {
+      // Randomly create shooting stars
+      if (Math.random() < 0.005) {
+        createShootingStar();
+      }
+      
+      shootingStars.forEach((star, index) => {
+        star.x += star.vx;
+        star.y += star.vy;
+        star.life--;
+        star.opacity = star.life / 100;
+        
+        if (star.life <= 0 || star.y > height + 50) {
+          shootingStars.splice(index, 1);
+        }
+      });
+    }
+
+    function drawShootingStars() {
+      if (!ctx) return;
+      shootingStars.forEach(star => {
+        const gradient = ctx.createLinearGradient(
+          star.x, star.y,
+          star.x - star.vx * star.length / 5, star.y - star.vy * star.length / 5
+        );
+        gradient.addColorStop(0, `rgba(255, 255, 255, ${star.opacity})`);
+        gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+        
+        ctx.beginPath();
+        ctx.moveTo(star.x, star.y);
+        ctx.lineTo(star.x - star.vx * star.length / 5, star.y - star.vy * star.length / 5);
+        ctx.strokeStyle = gradient;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      });
+    }
+
+    function updateMeteorites() {
+      meteorites.forEach((meteorite, index) => {
+        meteorite.x += meteorite.vx;
+        meteorite.y += meteorite.vy;
+        
+        // Add to trail
+        meteorite.trail.push({ x: meteorite.x, y: meteorite.y });
+        if (meteorite.trail.length > 15) {
+          meteorite.trail.shift();
+        }
+        
+        if (meteorite.x > width + 50) {
+          meteorites.splice(index, 1);
+          // Create a new one to maintain count
+          setTimeout(() => createMeteorite(), Math.random() * 5000);
+        }
+      });
+    }
+
+    function drawMeteorites() {
+      if (!ctx) return;
+      meteorites.forEach(meteorite => {
+        // Draw trail
+        meteorite.trail.forEach((point: any, index: number) => {
+          const trailOpacity = (index / meteorite.trail.length) * meteorite.opacity * 0.5;
+          ctx.beginPath();
+          ctx.arc(point.x, point.y, meteorite.size * (index / meteorite.trail.length), 0, 2 * Math.PI);
+          ctx.fillStyle = `rgba(255, 200, 100, ${trailOpacity})`;
+          ctx.fill();
+        });
+        
+        // Draw meteorite
+        ctx.beginPath();
+        ctx.arc(meteorite.x, meteorite.y, meteorite.size, 0, 2 * Math.PI);
+        ctx.fillStyle = `rgba(255, 220, 150, ${meteorite.opacity})`;
+        ctx.fill();
+      });
     }
 
     // Initialize everything
