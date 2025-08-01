@@ -3,7 +3,7 @@ import { Link } from 'wouter';
 import { useQuery } from '@tanstack/react-query';
 import { ExternalLink, Github, ArrowLeft, Filter, Grid, List } from 'lucide-react';
 import type { Project } from '@/types/project';
-import WebGLAnimation from '@/components/webgl-animation';
+import ConnectThreeAnimation from '@/components/connect-three-animation';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // Technology filter options
@@ -61,46 +61,31 @@ export default function ProjectsPage() {
   });
 
   return (
-    <div className="min-h-screen bg-black text-white relative overflow-hidden">
-      {/* Animated Background */}
+    <div className="min-h-screen text-white relative overflow-hidden">
+      {/* Connect Three Animation Background */}
       <div className="absolute inset-0 z-0">
-        <WebGLAnimation />
+        <ConnectThreeAnimation 
+          title="Projects" 
+          subtitle="A showcase of my latest work, side projects, and technical experiments"
+        />
       </div>
 
+      {/* Back to Home Link */}
+      <Link href="/" className="absolute top-8 left-8 z-30">
+        <motion.button
+          className="flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-lg text-white hover:bg-white/20 transition-all duration-300"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <ArrowLeft size={20} />
+          <span>Back to Home</span>
+        </motion.button>
+      </Link>
+
       {/* Content Overlay */}
-      <div className="relative z-10 min-h-screen">
-        {/* Hero Section with Animation Background */}
-        <section className="relative h-[60vh] flex items-center justify-center">
-          <div className="text-center z-20 px-4">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-            >
-              <h1 className="text-6xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-white via-blue-200 to-purple-300 bg-clip-text text-transparent">
-                Projects
-              </h1>
-              <p className="text-xl md:text-2xl text-gray-300 max-w-2xl mx-auto">
-                A showcase of my latest work, side projects, and technical experiments
-              </p>
-            </motion.div>
-          </div>
-
-          {/* Back to Home Link */}
-          <Link href="/" className="absolute top-8 left-8 z-30">
-            <motion.button
-              className="flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-lg text-white hover:bg-white/20 transition-all duration-300"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <ArrowLeft size={20} />
-              <span>Back to Home</span>
-            </motion.button>
-          </Link>
-        </section>
-
+      <div className="relative z-10 min-h-screen pt-[100vh]">
         {/* Projects Section */}
-        <section className="relative z-20 pb-20">
+        <section className="relative z-20 pb-20 bg-black/80 backdrop-blur-sm">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             {/* Filters and Controls */}
             <motion.div
