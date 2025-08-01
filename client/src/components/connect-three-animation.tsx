@@ -146,8 +146,9 @@ export default function ConnectThreeAnimation({
             points[i].active = 0.02;
             points[i].circle.active = 0.1;
           } else {
+            // Always show dots with minimal opacity when not hovering
             points[i].active = 0;
-            points[i].circle.active = 0;
+            points[i].circle.active = 0.15;
           }
 
           drawLines(points[i]);
