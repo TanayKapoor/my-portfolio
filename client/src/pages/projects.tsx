@@ -65,10 +65,28 @@ export default function ProjectsPage() {
       {/* Connect Three Animation Background - Full Page */}
       <div className="fixed inset-0 z-0">
         <ConnectThreeAnimation 
-          title="Projects" 
-          subtitle="A showcase of my latest work, side projects, and technical experiments"
+          title="" 
+          subtitle=""
         />
       </div>
+
+      {/* Hero Section with Title */}
+      <section className="relative z-10 h-[100vh] flex items-center justify-center">
+        <div className="text-center z-20 px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
+            <h1 className="text-6xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-white via-blue-200 to-purple-300 bg-clip-text text-transparent">
+              Projects
+            </h1>
+            <p className="text-xl md:text-2xl text-gray-300 max-w-2xl mx-auto">
+              A showcase of my latest work, side projects, and technical experiments
+            </p>
+          </motion.div>
+        </div>
+      </section>
 
       {/* Back to Home Link */}
       <Link href="/" className="absolute top-8 left-8 z-30">
@@ -82,14 +100,9 @@ export default function ProjectsPage() {
         </motion.button>
       </Link>
 
-      {/* Content Overlay */}
-      <div className="relative z-10 min-h-screen">
-        {/* Hero spacer to push content down */}
-        <div className="h-[100vh]"></div>
-        
-        {/* Projects Section */}
-        <section className="relative z-20 pb-20 bg-gradient-to-b from-black/60 via-black/80 to-black/90 backdrop-blur-sm -mt-[200px] pt-[50px]">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Projects Section */}
+      <section className="relative z-10 pb-20 bg-gradient-to-b from-black/60 via-black/80 to-black/90 backdrop-blur-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             {/* Filters and Controls */}
             <motion.div
               className="mb-12 p-6 bg-black/50 backdrop-blur-md rounded-2xl border border-white/10"
@@ -237,9 +250,8 @@ export default function ProjectsPage() {
                 </button>
               </motion.div>
             )}
-          </div>
-        </section>
-      </div>
+        </div>
+      </section>
     </div>
   );
 }
