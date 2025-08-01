@@ -62,8 +62,8 @@ export default function ProjectsPage() {
 
   return (
     <div className="min-h-screen text-white relative overflow-hidden">
-      {/* Connect Three Animation Background */}
-      <div className="absolute inset-0 z-0">
+      {/* Connect Three Animation Background - Full Page */}
+      <div className="fixed inset-0 z-0">
         <ConnectThreeAnimation 
           title="Projects" 
           subtitle="A showcase of my latest work, side projects, and technical experiments"
@@ -88,7 +88,7 @@ export default function ProjectsPage() {
         <div className="h-[100vh]"></div>
         
         {/* Projects Section */}
-        <section className="relative z-20 pb-20 bg-black -mt-[200px] pt-[50px]">
+        <section className="relative z-20 pb-20 bg-gradient-to-b from-black/60 via-black/80 to-black/90 backdrop-blur-sm -mt-[200px] pt-[50px]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             {/* Filters and Controls */}
             <motion.div

@@ -27,7 +27,7 @@ export default function ConnectThreeAnimation({
       if (!largeHeader || !canvas) return;
       
       width = window.innerWidth;
-      height = window.innerHeight;
+      height = Math.max(window.innerHeight, document.documentElement.scrollHeight);
       target = { x: width / 2, y: height / 2 };
 
       largeHeader.style.height = height + 'px';
@@ -117,7 +117,7 @@ export default function ConnectThreeAnimation({
       if (!largeHeader || !canvas) return;
       
       width = window.innerWidth;
-      height = window.innerHeight;
+      height = Math.max(window.innerHeight, document.documentElement.scrollHeight);
       largeHeader.style.height = height + 'px';
       canvas.width = width;
       canvas.height = height;
@@ -250,19 +250,6 @@ export default function ConnectThreeAnimation({
         backgroundImage: 'url("https://www.marcoguglie.it/Codepen/AnimatedHeaderBg/demo-1/img/demo-1-bg.jpg")'
       }}
     >
-      {/* Black gradient overlay at bottom */}
-      <div 
-        style={{
-          position: 'absolute',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          height: '400px',
-          background: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 10%, rgba(0,0,0,0.95) 25%, rgba(0,0,0,0.7) 50%, rgba(0,0,0,0.3) 75%, rgba(0,0,0,0) 100%)',
-          zIndex: 10,
-          pointerEvents: 'none'
-        }}
-      />
       <canvas 
         ref={canvasRef}
         style={{ 
