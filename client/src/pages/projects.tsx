@@ -71,7 +71,7 @@ export default function ProjectsPage() {
       </div>
 
       {/* Hero Section with Title */}
-      <section className="relative z-10 h-[70vh] flex items-center justify-center">
+      <section className="relative z-10 h-[50vh] flex items-center justify-center">
         <div className="text-center z-20 px-4">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
