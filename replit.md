@@ -35,6 +35,39 @@ Preferred communication style: Simple, everyday language.
 - **Project Showcase**: Raycast-inspired design with dynamic scroll masking, individual project pages, filtering by technology and status, and different view modes.
 - **Timeline Section**: Horizontal scrolling timeline for work experience, highlighting current position with dynamic centering and visual indicators.
 
+## Deployment Configuration
+
+### Production Build Process
+- **Build Command**: `npm run build` - Creates optimized production build in `dist/` directory
+- **Start Command**: `npm start` - Runs production server with static file serving
+- **Build Output**: 
+  - Frontend assets: `dist/public/` (served by Express in production)
+  - Backend bundle: `dist/index.js` (ES module format)
+
+### Deployment Fix Required
+The `.replit` file needs manual adjustment for successful deployment:
+
+**Current Issue**: Main run command uses development mode
+```
+run = "npm run dev"  # ← This causes deployment failure
+```
+
+**Required Fix**: Change to production mode
+```
+run = "npm start"    # ← Change this manually in .replit file
+```
+
+**Note**: The deployment section already has correct configuration:
+- `build = "npm run build"`
+- `run = "npm start"`
+
+But the main `run` command needs to match for deployment success.
+
+### Port Configuration
+- Development: Port 5000 (Express + Vite dev server)
+- Production: Port 5000 (Express serving static files)
+- Environment: `PORT=5000` (required for Replit hosting)
+
 ## External Dependencies
 
 ### Frontend Dependencies
