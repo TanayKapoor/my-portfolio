@@ -14,25 +14,33 @@ import { useAdminAuth } from '@/hooks/useAdminAuth';
 import { isUnauthorizedError } from '@/lib/authUtils';
 import { useLocation } from 'wouter';
 import FileUpload from '@/components/FileUpload';
-import type { Project, InsertProject } from '@shared/schema';
+import type { Project, InsertProject, WorkExperience, InsertWorkExperience } from '@shared/schema';
 
 const colorThemes = [
   'blue', 'green', 'purple', 'orange', 'red', 'yellow', 'pink', 'indigo', 'cyan', 'emerald'
 ] as const;
 
 const statusOptions = ['planning', 'in-progress', 'completed', 'on-hold'] as const;
+const workExperienceTypes = ['current', 'past'] as const;
 
 export default function AdminPanel() {
   const [editingProject, setEditingProject] = useState<Project | null>(null);
+  const [editingWorkExperience, setEditingWorkExperience] = useState<WorkExperience | null>(null);
   const [isCreating, setIsCreating] = useState(false);
+  const [isCreatingWorkExperience, setIsCreatingWorkExperience] = useState(false);
+  const [activeTab, setActiveTab] = useState<'projects' | 'work-experience'>('projects');
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { isAuthenticated, isAdmin, isLoading } = useAdminAuth();
   const [, setLocation] = useLocation();
 
-  // Fetch all projects - must be declared before any conditional returns
+  // Fetch all projects and work experiences - must be declared before any conditional returns
   const { data: projects = [], isLoading: projectsLoading } = useQuery<Project[]>({
     queryKey: ['/api/projects'],
+  });
+
+  const { data: workExperiences = [], isLoading: workExperiencesLoading } = useQuery<WorkExperience[]>({
+    queryKey: ['/api/work-experiences'],
   });
 
   // Create project mutation
@@ -59,6 +67,85 @@ export default function AdminPanel() {
         return;
       }
       toast({ title: 'Failed to create project', variant: 'destructive' });
+    },
+  });
+
+  // Create work experience mutation
+  const createWorkExperienceMutation = useMutation({
+    mutationFn: async (data: InsertWorkExperience) => {
+      const response = await apiRequest('POST', '/api/work-experiences', data);
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/work-experiences'] });
+      setIsCreatingWorkExperience(false);
+      toast({ title: 'Work experience created successfully!' });
+    },
+    onError: (error: Error) => {
+      if (isUnauthorizedError(error)) {
+        toast({
+          title: "Unauthorized",
+          description: "Please log in again to continue",
+          variant: "destructive",
+        });
+        setTimeout(() => {
+          setLocation("/auth");
+        }, 1000);
+        return;
+      }
+      toast({ title: 'Failed to create work experience', variant: 'destructive' });
+    },
+  });
+
+  // Update work experience mutation
+  const updateWorkExperienceMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: Partial<InsertWorkExperience> }) => {
+      const response = await apiRequest('PUT', `/api/work-experiences/${id}`, data);
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/work-experiences'] });
+      setEditingWorkExperience(null);
+      toast({ title: 'Work experience updated successfully!' });
+    },
+    onError: (error: Error) => {
+      if (isUnauthorizedError(error)) {
+        toast({
+          title: "Unauthorized",
+          description: "Please log in again to continue",
+          variant: "destructive",
+        });
+        setTimeout(() => {
+          setLocation("/auth");
+        }, 1000);
+        return;
+      }
+      toast({ title: 'Failed to update work experience', variant: 'destructive' });
+    },
+  });
+
+  // Delete work experience mutation
+  const deleteWorkExperienceMutation = useMutation({
+    mutationFn: async (id: string) => {
+      await apiRequest('DELETE', `/api/work-experiences/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/work-experiences'] });
+      toast({ title: 'Work experience deleted successfully!' });
+    },
+    onError: (error: Error) => {
+      if (isUnauthorizedError(error)) {
+        toast({
+          title: "Unauthorized",
+          description: "Please log in again to continue",
+          variant: "destructive",
+        });
+        setTimeout(() => {
+          setLocation("/auth");
+        }, 1000);
+        return;
+      }
+      toast({ title: 'Failed to delete work experience', variant: 'destructive' });
     },
   });
 
@@ -156,6 +243,30 @@ export default function AdminPanel() {
     }
   };
 
+  const handleWorkExperienceSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    
+    const data: InsertWorkExperience = {
+      position: formData.get('position') as string,
+      company: formData.get('company') as string,
+      location: formData.get('location') as string,
+      duration: formData.get('duration') as string,
+      startDate: formData.get('startDate') as string,
+      endDate: formData.get('endDate') as string,
+      description: (formData.get('description') as string).split('\n').filter(d => d.trim()),
+      technologies: (formData.get('technologies') as string).split(',').map(t => t.trim()),
+      type: formData.get('type') as string,
+      order: parseInt(formData.get('order') as string) || 0,
+    };
+
+    if (editingWorkExperience) {
+      updateWorkExperienceMutation.mutate({ id: editingWorkExperience.id, data });
+    } else {
+      createWorkExperienceMutation.mutate(data);
+    }
+  };
+
   // Authentication effects - redirect to login if not authenticated
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -237,20 +348,63 @@ export default function AdminPanel() {
                 {logoutMutation.isPending ? 'Logging out...' : 'Logout'}
               </Button>
             </div>
-            <p className="text-gray-400">Manage your portfolio projects</p>
+            <p className="text-gray-400">Manage your portfolio projects and work experience</p>
           </div>
 
         </div>
 
-        <div className="space-y-4">
-            <div className="flex justify-between items-center">
-              <h2 className="text-xl font-semibold text-white">All Projects</h2>
-              <Button onClick={() => setIsCreating(true)}>
-                <Plus className="w-4 h-4 mr-2" />
-                Add Project
-              </Button>
-            </div>
+        {/* Tab Navigation */}
+        <div className="mb-6">
+          <div className="flex space-x-1 bg-gray-800/50 p-1 rounded-lg">
+            <button
+              onClick={() => setActiveTab('projects')}
+              className={`px-4 py-2 rounded-md font-medium transition-colors ${
+                activeTab === 'projects'
+                  ? 'bg-blue-600 text-white'
+                  : 'text-gray-400 hover:text-white hover:bg-gray-700'
+              }`}
+            >
+              Projects
+            </button>
+            <button
+              onClick={() => setActiveTab('work-experience')}
+              className={`px-4 py-2 rounded-md font-medium transition-colors ${
+                activeTab === 'work-experience'
+                  ? 'bg-blue-600 text-white'
+                  : 'text-gray-400 hover:text-white hover:bg-gray-700'
+              }`}
+            >
+              Work Experience
+            </button>
+          </div>
+        </div>
 
+        <div className="space-y-4">
+          {activeTab === 'projects' && (
+            <>
+              <div className="flex justify-between items-center">
+                <h2 className="text-xl font-semibold text-white">All Projects</h2>
+                <Button onClick={() => setIsCreating(true)}>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add Project
+                </Button>
+              </div>
+            </>
+          )}
+
+          {activeTab === 'work-experience' && (
+            <>
+              <div className="flex justify-between items-center">
+                <h2 className="text-xl font-semibold text-white">Work Experience</h2>
+                <Button onClick={() => setIsCreatingWorkExperience(true)}>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add Work Experience
+                </Button>
+              </div>
+            </>
+          )}
+
+          {activeTab === 'projects' && (
             <div className="grid gap-4">
               {projectsLoading ? (
                 <div className="text-white text-center py-8">Loading projects...</div>
@@ -301,6 +455,69 @@ export default function AdminPanel() {
                 ))
               )}
             </div>
+          )}
+
+          {activeTab === 'work-experience' && (
+            <div className="grid gap-4">
+              {workExperiencesLoading ? (
+                <div className="text-white text-center py-8">Loading work experiences...</div>
+              ) : (
+                workExperiences.map((workExp) => (
+                  <Card key={workExp.id} className="bg-gray-800/50 border-gray-700">
+                    <CardHeader>
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <CardTitle className="text-white">{workExp.position}</CardTitle>
+                          <CardDescription className="text-gray-400">
+                            {workExp.company} • {workExp.location}
+                          </CardDescription>
+                        </div>
+                        <div className="flex gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setEditingWorkExperience(workExp)}
+                          >
+                            <Edit2 className="w-4 h-4" />
+                          </Button>
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => deleteWorkExperienceMutation.mutate(workExp.id)}
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="mb-4">
+                        <div className="text-gray-300 text-sm mb-2">
+                          {workExp.duration} ({workExp.startDate} - {workExp.endDate})
+                        </div>
+                        <div className="space-y-2">
+                          {workExp.description.map((desc, index) => (
+                            <div key={index} className="text-gray-300 text-sm">• {desc}</div>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        {workExp.technologies.map((tech) => (
+                          <Badge key={tech} variant="secondary">
+                            {tech}
+                          </Badge>
+                        ))}
+                      </div>
+                      <div className="flex gap-4 text-sm text-gray-400">
+                        <span>Type: {workExp.type}</span>
+                        <span>Order: {workExp.order}</span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))
+              )}
+            </div>
+          )}
         </div>
 
         {/* Edit Modal */}
@@ -328,6 +545,36 @@ export default function AdminPanel() {
                 onSubmit={handleSubmit}
                 onCancel={() => setIsCreating(false)}
                 isSubmitting={createProjectMutation.isPending}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Edit Work Experience Modal */}
+        {editingWorkExperience && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+            <div className="bg-gray-800 rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+              <h2 className="text-xl font-semibold text-white mb-4">Edit Work Experience</h2>
+              <WorkExperienceForm
+                workExperience={editingWorkExperience}
+                onSubmit={handleWorkExperienceSubmit}
+                onCancel={() => setEditingWorkExperience(null)}
+                isSubmitting={updateWorkExperienceMutation.isPending}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Create Work Experience Modal */}
+        {isCreatingWorkExperience && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+            <div className="bg-gray-800 rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+              <h2 className="text-xl font-semibold text-white mb-4">Create New Work Experience</h2>
+              <WorkExperienceForm
+                workExperience={null}
+                onSubmit={handleWorkExperienceSubmit}
+                onCancel={() => setIsCreatingWorkExperience(false)}
+                isSubmitting={createWorkExperienceMutation.isPending}
               />
             </div>
           </div>
@@ -534,6 +781,162 @@ function ProjectForm({
               </div>
             </div>
           )}
+
+          <div className="flex gap-2 pt-4">
+            <Button type="submit" disabled={isSubmitting}>
+              <Save className="w-4 h-4 mr-2" />
+              {isSubmitting ? 'Saving...' : 'Save'}
+            </Button>
+            <Button type="button" variant="outline" onClick={onCancel}>
+              <X className="w-4 h-4 mr-2" />
+              Cancel
+            </Button>
+          </div>
+        </form>
+      </CardContent>
+    </Card>
+  );
+}
+
+function WorkExperienceForm({
+  workExperience,
+  onSubmit,
+  onCancel,
+  isSubmitting,
+}: {
+  workExperience: WorkExperience | null;
+  onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
+  onCancel: () => void;
+  isSubmitting: boolean;
+}) {
+  return (
+    <Card className="bg-gray-800/50 border-gray-700">
+      <CardHeader>
+        <CardTitle className="text-white">
+          {workExperience ? 'Edit Work Experience' : 'Create New Work Experience'}
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={onSubmit} className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="position" className="text-white">Position</Label>
+              <Input
+                id="position"
+                name="position"
+                defaultValue={workExperience?.position}
+                required
+                className="bg-gray-700 border-gray-600 text-white"
+              />
+            </div>
+            <div>
+              <Label htmlFor="company" className="text-white">Company</Label>
+              <Input
+                id="company"
+                name="company"
+                defaultValue={workExperience?.company}
+                required
+                className="bg-gray-700 border-gray-600 text-white"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="location" className="text-white">Location</Label>
+              <Input
+                id="location"
+                name="location"
+                defaultValue={workExperience?.location}
+                required
+                className="bg-gray-700 border-gray-600 text-white"
+              />
+            </div>
+            <div>
+              <Label htmlFor="duration" className="text-white">Duration</Label>
+              <Input
+                id="duration"
+                name="duration"
+                defaultValue={workExperience?.duration}
+                required
+                className="bg-gray-700 border-gray-600 text-white"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="startDate" className="text-white">Start Date</Label>
+              <Input
+                id="startDate"
+                name="startDate"
+                defaultValue={workExperience?.startDate}
+                required
+                className="bg-gray-700 border-gray-600 text-white"
+              />
+            </div>
+            <div>
+              <Label htmlFor="endDate" className="text-white">End Date</Label>
+              <Input
+                id="endDate"
+                name="endDate"
+                defaultValue={workExperience?.endDate}
+                required
+                className="bg-gray-700 border-gray-600 text-white"
+              />
+            </div>
+          </div>
+
+          <div>
+            <Label htmlFor="description" className="text-white">Description (one bullet point per line)</Label>
+            <Textarea
+              id="description"
+              name="description"
+              defaultValue={workExperience?.description.join('\n')}
+              required
+              className="bg-gray-700 border-gray-600 text-white"
+              rows={4}
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="technologies" className="text-white">Technologies (comma-separated)</Label>
+            <Input
+              id="technologies"
+              name="technologies"
+              defaultValue={workExperience?.technologies.join(', ')}
+              required
+              className="bg-gray-700 border-gray-600 text-white"
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="type" className="text-white">Type</Label>
+              <Select name="type" defaultValue={workExperience?.type || 'past'}>
+                <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
+                  <SelectValue placeholder="Select type" />
+                </SelectTrigger>
+                <SelectContent>
+                  {workExperienceTypes.map((type) => (
+                    <SelectItem key={type} value={type}>
+                      {type}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label htmlFor="order" className="text-white">Order</Label>
+              <Input
+                id="order"
+                name="order"
+                type="number"
+                defaultValue={workExperience?.order}
+                className="bg-gray-700 border-gray-600 text-white"
+              />
+            </div>
+          </div>
 
           <div className="flex gap-2 pt-4">
             <Button type="submit" disabled={isSubmitting}>
