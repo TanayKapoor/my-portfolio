@@ -7,6 +7,7 @@ import Home from "@/pages/home";
 import ProjectsPage from "@/pages/projects";
 import ProjectDetail from "@/pages/project-detail";
 import AdminPanel from "@/pages/admin";
+import AuthPage from "@/pages/auth";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -16,6 +17,7 @@ function Router() {
       <Route path="/projects" component={ProjectsPage} />
       <Route path="/project/:id" component={ProjectDetail} />
       <Route path="/admin" component={AdminPanel} />
+      <Route path="/auth" component={AuthPage} />
       <Route component={NotFound} />
     </Switch>
   );

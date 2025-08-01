@@ -1,11 +1,22 @@
-import { users, projects, workExperiences, type User, type UpsertUser, type Project, type InsertProject, type WorkExperience, type InsertWorkExperience } from "@shared/schema";
+import { users, projects, workExperiences, type User, type UpsertUser, type Project, type InsertProject, type WorkExperience, type InsertWorkExperience, type RegisterData } from "@shared/schema";
 import { db } from "./db";
-import { eq, asc } from "drizzle-orm";
+import { eq, asc, or } from "drizzle-orm";
+import session from "express-session";
+import connectPg from "connect-pg-simple";
+import { pool } from "./db";
+
+const PostgresSessionStore = connectPg(session);
 
 export interface IStorage {
-  // User operations (IMPORTANT) these user operations are mandatory for Replit Auth.
+  // User operations for internal authentication
   getUser(id: string): Promise<User | undefined>;
+  getUserByUsername(username: string): Promise<User | undefined>;
+  getUserByEmail(email: string): Promise<User | undefined>;
+  createUser(userData: RegisterData & { password: string }): Promise<User>;
   upsertUser(user: UpsertUser): Promise<User>;
+  
+  // Session store
+  sessionStore: any;
   
   // Project methods
   getAllProjects(): Promise<Project[]>;
@@ -23,9 +34,43 @@ export interface IStorage {
 }
 
 export class DatabaseStorage implements IStorage {
+  sessionStore: any;
+
+  constructor() {
+    this.sessionStore = new PostgresSessionStore({ 
+      pool, 
+      createTableIfMissing: true 
+    });
+  }
+
   async getUser(id: string): Promise<User | undefined> {
     const [user] = await db.select().from(users).where(eq(users.id, id));
     return user || undefined;
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user || undefined;
+  }
+
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.email, email));
+    return user || undefined;
+  }
+
+  async createUser(userData: RegisterData & { password: string }): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values({
+        username: userData.username,
+        email: userData.email,
+        password: userData.password,
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        isAdmin: false,
+      })
+      .returning();
+    return user;
   }
 
   async upsertUser(userData: UpsertUser): Promise<User> {

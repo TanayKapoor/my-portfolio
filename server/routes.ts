@@ -7,35 +7,11 @@ import fs from "fs";
 import { storage } from "./storage";
 import { insertProjectSchema, insertWorkExperienceSchema } from "@shared/schema";
 import { z } from "zod";
-import { setupAuth, isAuthenticated, isAdmin } from "./replitAuth";
+import { setupAuth, requireAuth, requireAdmin } from "./auth";
 
-export async function registerRoutes(app: Express): Promise<Server> {
-  // Auth middleware
-  await setupAuth(app);
-
-  // Auth routes
-  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
-    try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      res.json(user);
-    } catch (error) {
-      console.error("Error fetching user:", error);
-      res.status(500).json({ message: "Failed to fetch user" });
-    }
-  });
-
-  // Check admin status route
-  app.get('/api/auth/admin-status', isAuthenticated, async (req: any, res) => {
-    try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      res.json({ isAdmin: user?.isAdmin || false });
-    } catch (error) {
-      console.error("Error checking admin status:", error);
-      res.status(500).json({ message: "Failed to check admin status" });
-    }
-  });
+export function registerRoutes(app: Express): Server {
+  // Set up authentication
+  setupAuth(app);
   // Project routes
   app.get("/api/projects", async (req, res) => {
     try {
@@ -63,7 +39,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/projects", isAdmin, async (req, res) => {
+  app.post("/api/projects", requireAdmin, async (req, res) => {
     try {
       const validatedData = insertProjectSchema.parse(req.body);
       const project = await storage.createProject(validatedData);
@@ -77,7 +53,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put("/api/projects/:id", isAdmin, async (req, res) => {
+  app.put("/api/projects/:id", requireAdmin, async (req, res) => {
     try {
       const { id } = req.params;
       const validatedData = insertProjectSchema.partial().parse(req.body);
@@ -97,7 +73,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/projects/:id", isAdmin, async (req, res) => {
+  app.delete("/api/projects/:id", requireAdmin, async (req, res) => {
     try {
       const { id } = req.params;
       const deleted = await storage.deleteProject(id);
@@ -140,7 +116,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/work-experiences", isAdmin, async (req, res) => {
+  app.post("/api/work-experiences", requireAdmin, async (req, res) => {
     try {
       const validatedData = insertWorkExperienceSchema.parse(req.body);
       const workExperience = await storage.createWorkExperience(validatedData);
@@ -154,7 +130,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put("/api/work-experiences/:id", isAdmin, async (req, res) => {
+  app.put("/api/work-experiences/:id", requireAdmin, async (req, res) => {
     try {
       const { id } = req.params;
       const validatedData = insertWorkExperienceSchema.partial().parse(req.body);
@@ -174,7 +150,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/work-experiences/:id", isAdmin, async (req, res) => {
+  app.delete("/api/work-experiences/:id", requireAdmin, async (req, res) => {
     try {
       const { id } = req.params;
       const deleted = await storage.deleteWorkExperience(id);
@@ -226,7 +202,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // File upload routes
-  app.post("/api/projects/:id/upload-icon", isAdmin, upload.single('icon'), async (req, res) => {
+  app.post("/api/projects/:id/upload-icon", requireAdmin, upload.single('icon'), async (req, res) => {
     try {
       const { id } = req.params;
       
@@ -253,7 +229,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/projects/:id/upload-screenshots", isAdmin, upload.array('screenshots', 10), async (req, res) => {
+  app.post("/api/projects/:id/upload-screenshots", requireAdmin, upload.array('screenshots', 10), async (req, res) => {
     try {
       const { id } = req.params;
       
@@ -286,7 +262,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/projects/:id/screenshots/:screenshotIndex", isAdmin, async (req, res) => {
+  app.delete("/api/projects/:id/screenshots/:screenshotIndex", requireAdmin, async (req, res) => {
     try {
       const { id, screenshotIndex } = req.params;
       const index = parseInt(screenshotIndex);
@@ -321,6 +297,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Serve uploaded files statically
   app.use('/uploads', express.static(uploadsDir));
+
+  // Admin status check endpoint
+  app.get("/api/admin-status", (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ error: "Not authenticated" });
+    }
+    
+    const user = req.user as any;
+    res.json({ isAdmin: user.isAdmin || false });
+  });
 
   const httpServer = createServer(app);
 

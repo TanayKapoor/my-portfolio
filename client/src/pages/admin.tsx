@@ -12,6 +12,7 @@ import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
 import { useAdminAuth } from '@/hooks/useAdminAuth';
 import { isUnauthorizedError } from '@/lib/authUtils';
+import { useLocation } from 'wouter';
 import FileUpload from '@/components/FileUpload';
 import type { Project, InsertProject } from '@shared/schema';
 
@@ -27,6 +28,7 @@ export default function AdminPanel() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { isAuthenticated, isAdmin, isLoading } = useAdminAuth();
+  const [, setLocation] = useLocation();
 
   // Fetch all projects - must be declared before any conditional returns
   const { data: projects = [], isLoading: projectsLoading } = useQuery<Project[]>({
@@ -52,7 +54,7 @@ export default function AdminPanel() {
           variant: "destructive",
         });
         setTimeout(() => {
-          window.location.href = "/api/login";
+          setLocation("/auth");
         }, 1000);
         return;
       }
@@ -79,7 +81,7 @@ export default function AdminPanel() {
           variant: "destructive",
         });
         setTimeout(() => {
-          window.location.href = "/api/login";
+          setLocation("/auth");
         }, 1000);
         return;
       }
@@ -104,11 +106,26 @@ export default function AdminPanel() {
           variant: "destructive",
         });
         setTimeout(() => {
-          window.location.href = "/api/login";
+          setLocation("/auth");
         }, 1000);
         return;
       }
       toast({ title: 'Failed to delete project', variant: 'destructive' });
+    },
+  });
+
+  // Logout mutation
+  const logoutMutation = useMutation({
+    mutationFn: async () => {
+      await apiRequest('POST', '/api/logout');
+    },
+    onSuccess: () => {
+      queryClient.clear();
+      toast({ title: 'Logged out successfully' });
+      setLocation('/auth');
+    },
+    onError: (error: Error) => {
+      toast({ title: 'Logout failed', variant: 'destructive' });
     },
   });
 
@@ -148,7 +165,7 @@ export default function AdminPanel() {
         variant: "destructive",
       });
       setTimeout(() => {
-        window.location.href = "/api/login";
+        setLocation("/auth");
       }, 1000);
       return;
     }
@@ -188,12 +205,13 @@ export default function AdminPanel() {
           </CardHeader>
           <CardContent className="text-center">
             <Button 
-              onClick={() => window.location.href = "/api/logout"} 
+              onClick={() => logoutMutation.mutate()} 
               variant="outline" 
               className="w-full"
+              disabled={logoutMutation.isPending}
             >
               <LogOut className="w-4 h-4 mr-2" />
-              Log Out
+              {logoutMutation.isPending ? 'Logging out...' : 'Log Out'}
             </Button>
           </CardContent>
         </Card>
@@ -206,17 +224,22 @@ export default function AdminPanel() {
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8 flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold text-white mb-2">Admin Panel</h1>
+            <div className="flex items-center justify-between mb-2">
+              <h1 className="text-3xl font-bold text-white">Admin Panel</h1>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => logoutMutation.mutate()}
+                disabled={logoutMutation.isPending}
+                className="text-gray-400 hover:text-white"
+              >
+                <LogOut className="w-4 h-4 mr-2" />
+                {logoutMutation.isPending ? 'Logging out...' : 'Logout'}
+              </Button>
+            </div>
             <p className="text-gray-400">Manage your portfolio projects</p>
           </div>
-          <Button 
-            variant="outline" 
-            onClick={() => window.location.href = "/api/logout"}
-            className="border-gray-600 text-gray-300 hover:bg-gray-700"
-          >
-            <LogOut className="w-4 h-4 mr-2" />
-            Logout
-          </Button>
+
         </div>
 
         <div className="space-y-4">

@@ -9,7 +9,7 @@ export function useAdminAuth() {
   const { isAuthenticated, isLoading: authLoading, user } = useAuth();
   
   const { data: adminStatus, isLoading: adminLoading, error: adminError } = useQuery<AdminStatusResponse>({
-    queryKey: ["/api/auth/admin-status"],
+    queryKey: ["/api/admin-status"],
     enabled: isAuthenticated,
     retry: false,
   });
