@@ -51,13 +51,13 @@ export default function ConnectThreeAnimation({
 
       // Create stars
       stars = [];
-      for (let i = 0; i < 150; i++) {
+      for (let i = 0; i < 80; i++) {
         stars.push({
           x: Math.random() * width,
           y: Math.random() * height,
-          size: Math.random() * 2 + 0.5,
-          opacity: Math.random() * 0.8 + 0.2,
-          twinkleSpeed: Math.random() * 0.02 + 0.01
+          size: Math.random() * 1.5 + 0.3,
+          opacity: Math.random() * 0.6 + 0.2,
+          twinkleSpeed: Math.random() * 0.01 + 0.005
         });
       }
 
@@ -105,7 +105,7 @@ export default function ConnectThreeAnimation({
       
       // Initialize meteorites after functions are defined
       setTimeout(() => {
-        for (let i = 0; i < 3; i++) {
+        for (let i = 0; i < 2; i++) {
           createMeteorite();
         }
       }, 100);
@@ -289,8 +289,8 @@ export default function ConnectThreeAnimation({
     function drawStars() {
       if (!ctx) return;
       stars.forEach(star => {
-        star.opacity += Math.sin(Date.now() * star.twinkleSpeed) * 0.1;
-        star.opacity = Math.max(0.2, Math.min(1, star.opacity));
+        star.opacity += Math.sin(Date.now() * star.twinkleSpeed) * 0.05;
+        star.opacity = Math.max(0.1, Math.min(0.6, star.opacity));
         
         ctx.beginPath();
         ctx.arc(star.x, star.y, star.size, 0, 2 * Math.PI);
@@ -300,8 +300,8 @@ export default function ConnectThreeAnimation({
     }
 
     function updateShootingStars() {
-      // Randomly create shooting stars
-      if (Math.random() < 0.005) {
+      // Randomly create shooting stars (much less frequent)
+      if (Math.random() < 0.001) {
         createShootingStar();
       }
       
@@ -349,8 +349,8 @@ export default function ConnectThreeAnimation({
         
         if (meteorite.x > width + 50) {
           meteorites.splice(index, 1);
-          // Create a new one to maintain count
-          setTimeout(() => createMeteorite(), Math.random() * 5000);
+          // Create a new one to maintain count (longer delay)
+          setTimeout(() => createMeteorite(), Math.random() * 15000 + 10000);
         }
       });
     }
