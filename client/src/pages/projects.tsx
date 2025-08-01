@@ -33,6 +33,11 @@ export default function ProjectsPage() {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [searchTerm, setSearchTerm] = useState('');
 
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   // Fetch projects from API
   const { data: projects = [], isLoading, error } = useQuery<Project[]>({
     queryKey: ['/api/projects'],
