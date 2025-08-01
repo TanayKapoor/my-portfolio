@@ -100,12 +100,15 @@ export default function ProjectsPage() {
         </motion.button>
       </Link>
 
+      {/* Gradient Transition */}
+      <div className="relative z-10 h-20 bg-gradient-to-b from-transparent via-black/50 to-black"></div>
+      
       {/* Projects Section */}
-      <section className="relative z-10 pb-20 bg-gradient-to-b from-black/60 via-black/80 to-black/90 backdrop-blur-sm pt-8">
+      <section className="relative z-10 pb-20 bg-black pt-0">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             {/* Filters and Controls */}
             <motion.div
-              className="mb-8 p-6 bg-black/50 backdrop-blur-md rounded-2xl border border-white/10"
+              className="mb-8 p-6 bg-black rounded-2xl border border-white/10"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
@@ -270,7 +273,7 @@ function ProjectCard({ project, viewMode, index }: ProjectCardProps) {
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.4, delay: index * 0.1 }}
       >
-        <div className="p-6 bg-black/30 backdrop-blur-sm border border-white/10 rounded-xl hover:bg-black/50 hover:border-white/20 transition-all duration-300 group">
+        <div className="p-6 bg-black border border-white/10 rounded-xl hover:bg-gray-900 hover:border-white/20 transition-all duration-300 group">
           <div className="flex items-start justify-between">
             <div className="flex-1">
               <Link href={`/project/${project.id}`}>
@@ -347,7 +350,7 @@ function ProjectCard({ project, viewMode, index }: ProjectCardProps) {
       whileHover={{ y: -5 }}
       className="group"
     >
-      <div className="p-6 bg-black/30 backdrop-blur-sm border border-white/10 rounded-xl hover:bg-black/50 hover:border-white/20 transition-all duration-300 h-full">
+      <div className="p-6 bg-black border border-white/10 rounded-xl hover:bg-gray-900 hover:border-white/20 transition-all duration-300 h-full">
         <Link href={`/project/${project.id}`}>
           <h3 className="text-xl font-semibold mb-3 group-hover:text-blue-400 transition-colors cursor-pointer">
             {project.title}
