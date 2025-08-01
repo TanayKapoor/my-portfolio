@@ -250,6 +250,19 @@ export default function ConnectThreeAnimation({
         backgroundImage: 'url("https://www.marcoguglie.it/Codepen/AnimatedHeaderBg/demo-1/img/demo-1-bg.jpg")'
       }}
     >
+      {/* Black gradient overlay at bottom */}
+      <div 
+        style={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          height: '200px',
+          background: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.8) 30%, rgba(0,0,0,0.4) 60%, rgba(0,0,0,0) 100%)',
+          zIndex: 10,
+          pointerEvents: 'none'
+        }}
+      />
       <canvas 
         ref={canvasRef}
         style={{ 

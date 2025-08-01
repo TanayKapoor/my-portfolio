@@ -83,9 +83,12 @@ export default function ProjectsPage() {
       </Link>
 
       {/* Content Overlay */}
-      <div className="relative z-10 min-h-screen pt-[100vh]">
+      <div className="relative z-10 min-h-screen">
+        {/* Hero spacer to push content down */}
+        <div className="h-[100vh]"></div>
+        
         {/* Projects Section */}
-        <section className="relative z-20 pb-20 bg-black/80 backdrop-blur-sm">
+        <section className="relative z-20 pb-20 bg-black">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             {/* Filters and Controls */}
             <motion.div
