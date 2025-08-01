@@ -71,7 +71,7 @@ export default function ProjectsPage() {
       </div>
 
       {/* Hero Section with Title */}
-      <section className="relative z-10 h-[100vh] flex items-center justify-center">
+      <section className="relative z-10 h-[70vh] flex items-center justify-center">
         <div className="text-center z-20 px-4">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -101,11 +101,11 @@ export default function ProjectsPage() {
       </Link>
 
       {/* Projects Section */}
-      <section className="relative z-10 pb-20 bg-gradient-to-b from-black/60 via-black/80 to-black/90 backdrop-blur-sm">
+      <section className="relative z-10 pb-20 bg-gradient-to-b from-black/60 via-black/80 to-black/90 backdrop-blur-sm pt-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             {/* Filters and Controls */}
             <motion.div
-              className="mb-12 p-6 bg-black/50 backdrop-blur-md rounded-2xl border border-white/10"
+              className="mb-8 p-6 bg-black/50 backdrop-blur-md rounded-2xl border border-white/10"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
