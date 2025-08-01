@@ -257,8 +257,8 @@ export default function ConnectThreeAnimation({
           bottom: 0,
           left: 0,
           right: 0,
-          height: '300px',
-          background: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.9) 20%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.2) 80%, rgba(0,0,0,0) 100%)',
+          height: '400px',
+          background: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 10%, rgba(0,0,0,0.95) 25%, rgba(0,0,0,0.7) 50%, rgba(0,0,0,0.3) 75%, rgba(0,0,0,0) 100%)',
           zIndex: 10,
           pointerEvents: 'none'
         }}

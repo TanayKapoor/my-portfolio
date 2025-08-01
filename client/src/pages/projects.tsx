@@ -88,7 +88,7 @@ export default function ProjectsPage() {
         <div className="h-[100vh]"></div>
         
         {/* Projects Section */}
-        <section className="relative z-20 pb-20 bg-black -mt-[100px] pt-[100px]">
+        <section className="relative z-20 pb-20 bg-black -mt-[200px] pt-[50px]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             {/* Filters and Controls */}
             <motion.div
