@@ -2,33 +2,23 @@ import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import { Express } from "express";
 import session from "express-session";
-import { scrypt, randomBytes, timingSafeEqual } from "crypto";
-import { promisify } from "util";
+import bcrypt from "bcrypt";
 import { storage } from "./storage";
-import { User, loginSchema, registerSchema } from "@shared/schema";
+import { User as DbUser, loginSchema, registerSchema } from "@shared/schema";
 import { z } from "zod";
 
 declare global {
   namespace Express {
-    interface User extends Omit<User, 'id'> {
-      id: string;
-    }
+    interface User extends DbUser {}
   }
 }
 
-const scryptAsync = promisify(scrypt);
-
 async function hashPassword(password: string): Promise<string> {
-  const salt = randomBytes(16).toString("hex");
-  const buf = (await scryptAsync(password, salt, 64)) as Buffer;
-  return `${buf.toString("hex")}.${salt}`;
+  return await bcrypt.hash(password, 10);
 }
 
 async function comparePasswords(supplied: string, stored: string): Promise<boolean> {
-  const [hashed, salt] = stored.split(".");
-  const hashedBuf = Buffer.from(hashed, "hex");
-  const suppliedBuf = (await scryptAsync(supplied, salt, 64)) as Buffer;
-  return timingSafeEqual(hashedBuf, suppliedBuf);
+  return await bcrypt.compare(supplied, stored);
 }
 
 export function setupAuth(app: Express) {
@@ -120,7 +110,7 @@ export function setupAuth(app: Express) {
     try {
       const validatedData = loginSchema.parse(req.body);
       
-      passport.authenticate("local", (err: any, user: User | false, info: any) => {
+      passport.authenticate("local", (err: any, user: DbUser | false, info: any) => {
         if (err) return next(err);
         if (!user) {
           return res.status(401).json({ 
