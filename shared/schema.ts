@@ -64,12 +64,30 @@ export const workExperiences = pgTable("work_experiences", {
   order: integer("order").notNull(),
 });
 
+export const commands = pgTable("commands", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  command: text("command").notNull(),
+  description: text("description").notNull(),
+  category: text("category").notNull(), // e.g., "Git", "Docker", "Node.js", "General"
+  example: text("example"), // Optional usage example
+  tags: text("tags").array(), // Optional tags for filtering
+  order: integer("order").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 export const insertProjectSchema = createInsertSchema(projects).omit({
   id: true,
 });
 
 export const insertWorkExperienceSchema = createInsertSchema(workExperiences).omit({
   id: true,
+});
+
+export const insertCommandSchema = createInsertSchema(commands).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
 });
 
 // User schemas
@@ -99,3 +117,5 @@ export type InsertProject = z.infer<typeof insertProjectSchema>;
 export type Project = typeof projects.$inferSelect;
 export type InsertWorkExperience = z.infer<typeof insertWorkExperienceSchema>;
 export type WorkExperience = typeof workExperiences.$inferSelect;
+export type InsertCommand = z.infer<typeof insertCommandSchema>;
+export type Command = typeof commands.$inferSelect;

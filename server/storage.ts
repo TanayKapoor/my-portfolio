@@ -1,4 +1,4 @@
-import { users, projects, workExperiences, type User, type UpsertUser, type Project, type InsertProject, type WorkExperience, type InsertWorkExperience, type RegisterData } from "@shared/schema";
+import { users, projects, workExperiences, commands, type User, type UpsertUser, type Project, type InsertProject, type WorkExperience, type InsertWorkExperience, type Command, type InsertCommand, type RegisterData } from "@shared/schema";
 import { db } from "./db";
 import { eq, asc, or } from "drizzle-orm";
 import session from "express-session";
@@ -31,6 +31,13 @@ export interface IStorage {
   createWorkExperience(workExperience: InsertWorkExperience): Promise<WorkExperience>;
   updateWorkExperience(id: string, workExperience: Partial<InsertWorkExperience>): Promise<WorkExperience | undefined>;
   deleteWorkExperience(id: string): Promise<boolean>;
+  
+  // Command methods
+  getAllCommands(): Promise<Command[]>;
+  getCommand(id: string): Promise<Command | undefined>;
+  createCommand(command: InsertCommand): Promise<Command>;
+  updateCommand(id: string, command: Partial<InsertCommand>): Promise<Command | undefined>;
+  deleteCommand(id: string): Promise<boolean>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -149,6 +156,37 @@ export class DatabaseStorage implements IStorage {
 
   async deleteWorkExperience(id: string): Promise<boolean> {
     const result = await db.delete(workExperiences).where(eq(workExperiences.id, id));
+    return (result.rowCount ?? 0) > 0;
+  }
+
+  async getAllCommands(): Promise<Command[]> {
+    return await db.select().from(commands).orderBy(asc(commands.order));
+  }
+
+  async getCommand(id: string): Promise<Command | undefined> {
+    const [command] = await db.select().from(commands).where(eq(commands.id, id));
+    return command || undefined;
+  }
+
+  async createCommand(insertCommand: InsertCommand): Promise<Command> {
+    const [command] = await db
+      .insert(commands)
+      .values(insertCommand)
+      .returning();
+    return command;
+  }
+
+  async updateCommand(id: string, updateData: Partial<InsertCommand>): Promise<Command | undefined> {
+    const [command] = await db
+      .update(commands)
+      .set(updateData)
+      .where(eq(commands.id, id))
+      .returning();
+    return command || undefined;
+  }
+
+  async deleteCommand(id: string): Promise<boolean> {
+    const result = await db.delete(commands).where(eq(commands.id, id));
     return (result.rowCount ?? 0) > 0;
   }
 }

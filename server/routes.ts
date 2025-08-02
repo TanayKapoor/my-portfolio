@@ -5,7 +5,7 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 import { storage } from "./storage";
-import { insertProjectSchema, insertWorkExperienceSchema } from "@shared/schema";
+import { insertProjectSchema, insertWorkExperienceSchema, insertCommandSchema } from "@shared/schema";
 import { z } from "zod";
 import { setupAuth, requireAuth, requireAdmin } from "./auth";
 
@@ -292,6 +292,83 @@ export function registerRoutes(app: Express): Server {
     } catch (error) {
       console.error("Error deleting project screenshot:", error);
       res.status(500).json({ error: "Failed to delete project screenshot" });
+    }
+  });
+
+  // Command routes
+  app.get("/api/commands", async (req, res) => {
+    try {
+      const commands = await storage.getAllCommands();
+      res.json(commands);
+    } catch (error) {
+      console.error("Error fetching commands:", error);
+      res.status(500).json({ error: "Failed to fetch commands" });
+    }
+  });
+
+  app.get("/api/commands/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const command = await storage.getCommand(id);
+      
+      if (!command) {
+        return res.status(404).json({ error: "Command not found" });
+      }
+      
+      res.json(command);
+    } catch (error) {
+      console.error("Error fetching command:", error);
+      res.status(500).json({ error: "Failed to fetch command" });
+    }
+  });
+
+  app.post("/api/commands", requireAdmin, async (req, res) => {
+    try {
+      const validatedData = insertCommandSchema.parse(req.body);
+      const command = await storage.createCommand(validatedData);
+      res.status(201).json(command);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: "Invalid command data", details: error.errors });
+      }
+      console.error("Error creating command:", error);
+      res.status(500).json({ error: "Failed to create command" });
+    }
+  });
+
+  app.put("/api/commands/:id", requireAdmin, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const validatedData = insertCommandSchema.partial().parse(req.body);
+      const command = await storage.updateCommand(id, validatedData);
+      
+      if (!command) {
+        return res.status(404).json({ error: "Command not found" });
+      }
+      
+      res.json(command);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: "Invalid command data", details: error.errors });
+      }
+      console.error("Error updating command:", error);
+      res.status(500).json({ error: "Failed to update command" });
+    }
+  });
+
+  app.delete("/api/commands/:id", requireAdmin, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const deleted = await storage.deleteCommand(id);
+      
+      if (!deleted) {
+        return res.status(404).json({ error: "Command not found" });
+      }
+      
+      res.status(204).send();
+    } catch (error) {
+      console.error("Error deleting command:", error);
+      res.status(500).json({ error: "Failed to delete command" });
     }
   });
 

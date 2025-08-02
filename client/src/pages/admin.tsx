@@ -14,7 +14,7 @@ import { useAdminAuth } from '@/hooks/useAdminAuth';
 import { isUnauthorizedError } from '@/lib/authUtils';
 import { useLocation } from 'wouter';
 import FileUpload from '@/components/FileUpload';
-import type { Project, InsertProject, WorkExperience, InsertWorkExperience } from '@shared/schema';
+import type { Project, InsertProject, WorkExperience, InsertWorkExperience, Command, InsertCommand } from '@shared/schema';
 
 const colorThemes = [
   'blue', 'green', 'purple', 'orange', 'red', 'yellow', 'pink', 'indigo', 'cyan', 'emerald'
@@ -22,13 +22,16 @@ const colorThemes = [
 
 const statusOptions = ['planning', 'in-progress', 'completed', 'on-hold'] as const;
 const workExperienceTypes = ['current', 'past'] as const;
+const commandCategories = ['Git', 'Docker', 'Node.js', 'Python', 'Linux', 'AWS', 'Database', 'General'] as const;
 
 export default function AdminPanel() {
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [editingWorkExperience, setEditingWorkExperience] = useState<WorkExperience | null>(null);
+  const [editingCommand, setEditingCommand] = useState<Command | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [isCreatingWorkExperience, setIsCreatingWorkExperience] = useState(false);
-  const [activeTab, setActiveTab] = useState<'projects' | 'work-experience'>('projects');
+  const [isCreatingCommand, setIsCreatingCommand] = useState(false);
+  const [activeTab, setActiveTab] = useState<'projects' | 'work-experience' | 'commands'>('projects');
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { isAuthenticated, isAdmin, isLoading } = useAdminAuth();
@@ -41,6 +44,10 @@ export default function AdminPanel() {
 
   const { data: workExperiences = [], isLoading: workExperiencesLoading } = useQuery<WorkExperience[]>({
     queryKey: ['/api/work-experiences'],
+  });
+
+  const { data: commands = [], isLoading: commandsLoading } = useQuery<Command[]>({
+    queryKey: ['/api/commands'],
   });
 
   // Create project mutation
@@ -146,6 +153,85 @@ export default function AdminPanel() {
         return;
       }
       toast({ title: 'Failed to delete work experience', variant: 'destructive' });
+    },
+  });
+
+  // Create command mutation
+  const createCommandMutation = useMutation({
+    mutationFn: async (data: InsertCommand) => {
+      const response = await apiRequest('POST', '/api/commands', data);
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/commands'] });
+      setIsCreatingCommand(false);
+      toast({ title: 'Command created successfully!' });
+    },
+    onError: (error: Error) => {
+      if (isUnauthorizedError(error)) {
+        toast({
+          title: "Unauthorized",
+          description: "Please log in again to continue",
+          variant: "destructive",
+        });
+        setTimeout(() => {
+          setLocation("/auth");
+        }, 1000);
+        return;
+      }
+      toast({ title: 'Failed to create command', variant: 'destructive' });
+    },
+  });
+
+  // Update command mutation
+  const updateCommandMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: Partial<InsertCommand> }) => {
+      const response = await apiRequest('PUT', `/api/commands/${id}`, data);
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/commands'] });
+      setEditingCommand(null);
+      toast({ title: 'Command updated successfully!' });
+    },
+    onError: (error: Error) => {
+      if (isUnauthorizedError(error)) {
+        toast({
+          title: "Unauthorized",
+          description: "Please log in again to continue",
+          variant: "destructive",
+        });
+        setTimeout(() => {
+          setLocation("/auth");
+        }, 1000);
+        return;
+      }
+      toast({ title: 'Failed to update command', variant: 'destructive' });
+    },
+  });
+
+  // Delete command mutation
+  const deleteCommandMutation = useMutation({
+    mutationFn: async (id: string) => {
+      await apiRequest('DELETE', `/api/commands/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/commands'] });
+      toast({ title: 'Command deleted successfully!' });
+    },
+    onError: (error: Error) => {
+      if (isUnauthorizedError(error)) {
+        toast({
+          title: "Unauthorized",
+          description: "Please log in again to continue",
+          variant: "destructive",
+        });
+        setTimeout(() => {
+          setLocation("/auth");
+        }, 1000);
+        return;
+      }
+      toast({ title: 'Failed to delete command', variant: 'destructive' });
     },
   });
 
@@ -267,6 +353,28 @@ export default function AdminPanel() {
     }
   };
 
+  const handleCommandSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    
+    const tags = (formData.get('tags') as string || '').split(',').map(t => t.trim()).filter(t => t);
+    
+    const data: InsertCommand = {
+      command: formData.get('command') as string,
+      description: formData.get('description') as string,
+      category: formData.get('category') as string,
+      example: formData.get('example') as string || null,
+      tags: tags.length > 0 ? tags : null,
+      order: parseInt(formData.get('order') as string) || 0,
+    };
+
+    if (editingCommand) {
+      updateCommandMutation.mutate({ id: editingCommand.id, data });
+    } else {
+      createCommandMutation.mutate(data);
+    }
+  };
+
   // Authentication effects - redirect to login if not authenticated
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -376,6 +484,16 @@ export default function AdminPanel() {
             >
               Work Experience
             </button>
+            <button
+              onClick={() => setActiveTab('commands')}
+              className={`px-4 py-2 rounded-md font-medium transition-colors ${
+                activeTab === 'commands'
+                  ? 'bg-blue-600 text-white'
+                  : 'text-gray-400 hover:text-white hover:bg-gray-700'
+              }`}
+            >
+              Commands Guide
+            </button>
           </div>
         </div>
 
@@ -399,6 +517,18 @@ export default function AdminPanel() {
                 <Button onClick={() => setIsCreatingWorkExperience(true)}>
                   <Plus className="w-4 h-4 mr-2" />
                   Add Work Experience
+                </Button>
+              </div>
+            </>
+          )}
+
+          {activeTab === 'commands' && (
+            <>
+              <div className="flex justify-between items-center">
+                <h2 className="text-xl font-semibold text-white">Commands Guide</h2>
+                <Button onClick={() => setIsCreatingCommand(true)}>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add Command
                 </Button>
               </div>
             </>
@@ -518,6 +648,76 @@ export default function AdminPanel() {
               )}
             </div>
           )}
+
+          {activeTab === 'commands' && (
+            <div className="grid gap-4">
+              {commandsLoading ? (
+                <div className="text-white text-center py-8">Loading commands...</div>
+              ) : (
+                commands.map((command) => (
+                  <Card key={command.id} className="bg-gray-800/50 border-gray-700">
+                    <CardHeader>
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <CardTitle className="text-white font-mono text-lg">{command.command}</CardTitle>
+                          <CardDescription className="text-gray-400">
+                            {command.description}
+                          </CardDescription>
+                        </div>
+                        <div className="flex gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setEditingCommand(command)}
+                          >
+                            <Edit2 className="w-4 h-4" />
+                          </Button>
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => deleteCommandMutation.mutate(command.id)}
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-3">
+                        {command.example && (
+                          <div>
+                            <div className="text-gray-400 text-sm mb-1">Example:</div>
+                            <div className="bg-gray-900 rounded p-2 font-mono text-sm text-green-400">
+                              {command.example}
+                            </div>
+                          </div>
+                        )}
+                        
+                        <div className="flex items-center gap-4">
+                          <Badge variant="outline" className="text-blue-400 border-blue-400">
+                            {command.category}
+                          </Badge>
+                          {command.tags && command.tags.length > 0 && (
+                            <div className="flex flex-wrap gap-1">
+                              {command.tags.map((tag, index) => (
+                                <Badge key={index} variant="secondary" className="text-xs">
+                                  {tag}
+                                </Badge>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                        
+                        <div className="text-sm text-gray-400">
+                          Order: {command.order}
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))
+              )}
+            </div>
+          )}
         </div>
 
         {/* Edit Modal */}
@@ -575,6 +775,36 @@ export default function AdminPanel() {
                 onSubmit={handleWorkExperienceSubmit}
                 onCancel={() => setIsCreatingWorkExperience(false)}
                 isSubmitting={createWorkExperienceMutation.isPending}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Edit Command Modal */}
+        {editingCommand && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+            <div className="bg-gray-800 rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+              <h2 className="text-xl font-semibold text-white mb-4">Edit Command</h2>
+              <CommandForm
+                command={editingCommand}
+                onSubmit={handleCommandSubmit}
+                onCancel={() => setEditingCommand(null)}
+                isSubmitting={updateCommandMutation.isPending}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Create Command Modal */}
+        {isCreatingCommand && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+            <div className="bg-gray-800 rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+              <h2 className="text-xl font-semibold text-white mb-4">Create New Command</h2>
+              <CommandForm
+                command={null}
+                onSubmit={handleCommandSubmit}
+                onCancel={() => setIsCreatingCommand(false)}
+                isSubmitting={createCommandMutation.isPending}
               />
             </div>
           </div>
@@ -942,6 +1172,116 @@ function WorkExperienceForm({
             <Button type="submit" disabled={isSubmitting}>
               <Save className="w-4 h-4 mr-2" />
               {isSubmitting ? 'Saving...' : 'Save'}
+            </Button>
+            <Button type="button" variant="outline" onClick={onCancel}>
+              <X className="w-4 h-4 mr-2" />
+              Cancel
+            </Button>
+          </div>
+        </form>
+      </CardContent>
+    </Card>
+  );
+}
+function CommandForm({
+  command,
+  onSubmit,
+  onCancel,
+  isSubmitting,
+}: {
+  command: Command | null;
+  onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
+  onCancel: () => void;
+  isSubmitting: boolean;
+}) {
+  return (
+    <Card className="bg-gray-800/50 border-gray-700">
+      <CardHeader>
+        <CardTitle className="text-white">
+          {command ? "Edit Command" : "Create New Command"}
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={onSubmit} className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="command" className="text-white">Command</Label>
+              <Input
+                id="command"
+                name="command"
+                defaultValue={command?.command}
+                required
+                className="bg-gray-700 border-gray-600 text-white font-mono"
+                placeholder="git clone"
+              />
+            </div>
+            <div>
+              <Label htmlFor="order" className="text-white">Order</Label>
+              <Input
+                id="order"
+                name="order"
+                type="number"
+                defaultValue={command?.order}
+                className="bg-gray-700 border-gray-600 text-white"
+              />
+            </div>
+          </div>
+
+          <div>
+            <Label htmlFor="description" className="text-white">Description</Label>
+            <Textarea
+              id="description"
+              name="description"
+              defaultValue={command?.description}
+              required
+              className="bg-gray-700 border-gray-600 text-white"
+              placeholder="Clone a Git repository to your local machine"
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="category" className="text-white">Category</Label>
+            <Select name="category" defaultValue={command?.category || "General"}>
+              <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
+                <SelectValue placeholder="Select category" />
+              </SelectTrigger>
+              <SelectContent>
+                {commandCategories.map((category) => (
+                  <SelectItem key={category} value={category}>
+                    {category}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div>
+            <Label htmlFor="example" className="text-white">Example (optional)</Label>
+            <Textarea
+              id="example"
+              name="example"
+              defaultValue={command?.example || ""}
+              className="bg-gray-700 border-gray-600 text-white font-mono"
+              placeholder="git clone https://github.com/user/repo.git"
+              rows={2}
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="tags" className="text-white">Tags (optional, comma-separated)</Label>
+            <Input
+              id="tags"
+              name="tags"
+              defaultValue={command?.tags?.join(", ") || ""}
+              className="bg-gray-700 border-gray-600 text-white"
+              placeholder="version-control, github, clone"
+            />
+          </div>
+
+          <div className="flex gap-2 pt-4">
+            <Button type="submit" disabled={isSubmitting}>
+              <Save className="w-4 h-4 mr-2" />
+              {isSubmitting ? "Saving..." : "Save"}
             </Button>
             <Button type="button" variant="outline" onClick={onCancel}>
               <X className="w-4 h-4 mr-2" />
