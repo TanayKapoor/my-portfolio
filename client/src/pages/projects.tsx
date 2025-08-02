@@ -276,8 +276,17 @@ function ProjectCard({ project, viewMode, index }: ProjectCardProps) {
         <div className="p-6 bg-black border border-white/10 rounded-xl hover:bg-gray-900 hover:border-white/20 transition-all duration-300 group">
           <div className="flex items-start justify-between">
             <div className="flex items-start gap-4 flex-1">
-              {/* Project Screenshots or Icon */}
-              {project.screenshotUrls && project.screenshotUrls.length > 0 ? (
+              {/* Project Hero Image, Screenshots, or Icon */}
+              {project.heroImageUrl ? (
+                <div className="flex-shrink-0 relative">
+                  <img 
+                    src={project.heroImageUrl} 
+                    alt={`${project.title} hero image`}
+                    className="w-20 h-16 rounded-lg object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent rounded-lg"></div>
+                </div>
+              ) : project.screenshotUrls && project.screenshotUrls.length > 0 ? (
                 <div className="flex-shrink-0 relative">
                   <img 
                     src={project.screenshotUrls[0]} 
@@ -377,8 +386,17 @@ function ProjectCard({ project, viewMode, index }: ProjectCardProps) {
       className="group"
     >
       <div className="p-6 bg-black border border-white/10 rounded-xl hover:bg-gray-900 hover:border-white/20 transition-all duration-300 h-full">
-        {/* Project Screenshots or Icon */}
-        {project.screenshotUrls && project.screenshotUrls.length > 0 ? (
+        {/* Project Hero Image, Screenshots, or Icon */}
+        {project.heroImageUrl ? (
+          <div className="mb-4 relative overflow-hidden rounded-lg">
+            <img 
+              src={project.heroImageUrl} 
+              alt={`${project.title} hero image`}
+              className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+          </div>
+        ) : project.screenshotUrls && project.screenshotUrls.length > 0 ? (
           <div className="mb-4 relative overflow-hidden rounded-lg">
             <img 
               src={project.screenshotUrls[0]} 
