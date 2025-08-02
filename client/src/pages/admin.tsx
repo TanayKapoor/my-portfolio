@@ -776,10 +776,14 @@ function ProjectForm({
             <div className="space-y-6 pt-6 border-t border-gray-700">
               <h3 className="text-lg font-semibold text-white">Project Media</h3>
               
-              <div className="grid md:grid-cols-2 gap-6">
+              <div className="grid md:grid-cols-3 gap-6">
                 <FileUpload 
                   project={project} 
                   type="icon"
+                />
+                <FileUpload 
+                  project={project} 
+                  type="hero"
                 />
                 <FileUpload 
                   project={project} 
@@ -792,7 +796,7 @@ function ProjectForm({
               <div className="bg-blue-900/20 border border-blue-800/50 rounded-lg p-4">
                 <h3 className="text-lg font-semibold text-blue-300 mb-2">Project Media</h3>
                 <p className="text-blue-200 text-sm">
-                  After creating this project, you'll be able to upload a project icon and screenshots in the edit form.
+                  After creating this project, you'll be able to upload a project icon, hero image, and screenshots in the edit form.
                 </p>
               </div>
             </div>

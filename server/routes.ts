@@ -229,6 +229,33 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
+  app.post("/api/projects/:id/upload-hero", requireAdmin, upload.single('hero'), async (req, res) => {
+    try {
+      const { id } = req.params;
+      
+      if (!req.file) {
+        return res.status(400).json({ error: "No hero image file provided" });
+      }
+
+      const heroImageUrl = `/uploads/${req.file.filename}`;
+      const project = await storage.updateProject(id, { heroImageUrl });
+      
+      if (!project) {
+        // Clean up uploaded file if project not found
+        fs.unlinkSync(req.file.path);
+        return res.status(404).json({ error: "Project not found" });
+      }
+      
+      res.json({ heroImageUrl, project });
+    } catch (error) {
+      console.error("Error uploading project hero image:", error);
+      if (req.file) {
+        fs.unlinkSync(req.file.path);
+      }
+      res.status(500).json({ error: "Failed to upload project hero image" });
+    }
+  });
+
   app.post("/api/projects/:id/upload-screenshots", requireAdmin, upload.array('screenshots', 10), async (req, res) => {
     try {
       const { id } = req.params;

@@ -10,7 +10,7 @@ import type { Project } from '@shared/schema';
 
 interface FileUploadProps {
   project: Project;
-  type: 'icon' | 'screenshots';
+  type: 'icon' | 'hero' | 'screenshots';
   onUploadComplete?: () => void;
 }
 
@@ -35,6 +35,14 @@ export default function FileUpload({ project, type, onUploadComplete }: FileUplo
         });
         if (!response.ok) throw new Error('Failed to upload icon');
         return response.json();
+      } else if (type === 'hero') {
+        formData.append('hero', files[0]);
+        const response = await fetch(`/api/projects/${project.id}/upload-hero`, {
+          method: 'POST',
+          body: formData,
+        });
+        if (!response.ok) throw new Error('Failed to upload hero image');
+        return response.json();
       } else {
         Array.from(files).forEach(file => {
           formData.append('screenshots', file);
@@ -51,8 +59,8 @@ export default function FileUpload({ project, type, onUploadComplete }: FileUplo
       queryClient.invalidateQueries({ queryKey: ['/api/projects'] });
       queryClient.invalidateQueries({ queryKey: ['/api/projects', project.id] });
       toast({ 
-        title: `${type === 'icon' ? 'Icon' : 'Screenshots'} uploaded successfully!`,
-        description: type === 'icon' ? 'Project icon updated' : `${data.screenshotUrls?.length || 0} screenshots added`
+        title: `${type === 'icon' ? 'Icon' : type === 'hero' ? 'Hero Image' : 'Screenshots'} uploaded successfully!`,
+        description: type === 'icon' ? 'Project icon updated' : type === 'hero' ? 'Project hero image updated' : `${data.screenshotUrls?.length || 0} screenshots added`
       });
       onUploadComplete?.();
     },
@@ -141,10 +149,10 @@ export default function FileUpload({ project, type, onUploadComplete }: FileUplo
   };
 
   const handleFiles = (files: FileList) => {
-    if (type === 'icon' && files.length > 1) {
+    if ((type === 'icon' || type === 'hero') && files.length > 1) {
       toast({ 
         title: 'Multiple files selected', 
-        description: 'Please select only one icon file',
+        description: `Please select only one ${type} file`,
         variant: 'destructive' 
       });
       return;
@@ -236,7 +244,7 @@ export default function FileUpload({ project, type, onUploadComplete }: FileUplo
   return (
     <div className="space-y-4">
       <Label className="text-sm font-medium text-gray-300">
-        {type === 'icon' ? 'Project Icon' : 'Project Screenshots'}
+        {type === 'icon' ? 'Project Icon' : type === 'hero' ? 'Hero Image' : 'Project Screenshots'}
       </Label>
       
       {/* Upload Area */}
@@ -263,7 +271,7 @@ export default function FileUpload({ project, type, onUploadComplete }: FileUplo
         <div className="text-center">
           <Upload className="mx-auto h-12 w-12 text-gray-400 mb-4" />
           <div className="text-gray-300 mb-2">
-            {type === 'icon' ? 'Upload project icon' : 'Upload project screenshots'}
+            {type === 'icon' ? 'Upload project icon' : type === 'hero' ? 'Upload hero image' : 'Upload project screenshots'}
           </div>
           <div className="text-sm text-gray-500 mb-4">
             Drag and drop or{' '}
@@ -303,6 +311,25 @@ export default function FileUpload({ project, type, onUploadComplete }: FileUplo
                 <div className="text-xs text-gray-500">{project.iconUrl}</div>
               </div>
               <FileImage className="h-4 w-4 text-gray-400" />
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {type === 'hero' && project.heroImageUrl && (
+        <Card className="bg-gray-800/50 border-gray-700">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <img
+                src={project.heroImageUrl}
+                alt="Project hero image"
+                className="w-16 h-12 rounded-lg object-cover border border-gray-600"
+              />
+              <div className="flex-1">
+                <div className="text-sm text-gray-300">Current Hero Image</div>
+                <div className="text-xs text-gray-500">{project.heroImageUrl}</div>
+              </div>
+              <Image className="h-4 w-4 text-gray-400" />
             </div>
           </CardContent>
         </Card>

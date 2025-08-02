@@ -180,12 +180,29 @@ function OverviewTab({ project }: { project: Project }) {
           className="bg-gray-900/50 backdrop-blur-sm rounded-xl p-6 border border-gray-800"
         >
           <h2 className="text-2xl font-bold mb-6 font-['Courier_Prime']">Project Showcase</h2>
-          <div className="flex items-center justify-center h-48 bg-gray-800 rounded-lg border border-gray-700">
-            <div className="text-center">
-              <Image size={48} className="mx-auto text-gray-600 mb-4" />
-              <p className="text-gray-400">Project screenshots coming soon</p>
+          {project.screenshotUrls && project.screenshotUrls.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {project.screenshotUrls.map((url, index) => (
+                <div key={index} className="group relative">
+                  <img
+                    src={url}
+                    alt={`${project.title} screenshot ${index + 1}`}
+                    className="w-full h-48 object-cover rounded-lg border border-gray-700 group-hover:border-gray-600 transition-colors"
+                  />
+                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
+                    <span className="text-white text-sm">Screenshot {index + 1}</span>
+                  </div>
+                </div>
+              ))}
             </div>
-          </div>
+          ) : (
+            <div className="flex items-center justify-center h-48 bg-gray-800 rounded-lg border border-gray-700">
+              <div className="text-center">
+                <Image size={48} className="mx-auto text-gray-600 mb-4" />
+                <p className="text-gray-400">No screenshots available</p>
+              </div>
+            </div>
+          )}
         </motion.section>
 
         {/* Description */}

@@ -331,24 +331,19 @@ export default function ProjectsSection() {
                     {/* Divider */}
                     <div className="project-divider"></div>
 
-                    {/* Project Screenshots or Visual Placeholder */}
+                    {/* Project Hero Image or Visual Placeholder */}
                     <div className="project-image-placeholder">
                       <div className="project-visual-content">
-                        {project.screenshotUrls && project.screenshotUrls.length > 0 ? (
-                          <div className="project-screenshot">
+                        {project.heroImageUrl ? (
+                          <div className="project-hero-image">
                             <img 
-                              src={project.screenshotUrls[0]} 
-                              alt={`${project.title} screenshot`}
+                              src={project.heroImageUrl} 
+                              alt={`${project.title} hero image`}
                               className="w-full h-full object-cover rounded-lg"
                             />
-                            {project.screenshotUrls.length > 1 && (
-                              <div className="absolute top-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded-full">
-                                +{project.screenshotUrls.length - 1}
-                              </div>
-                            )}
                           </div>
                         ) : (
-                          // Fallback to visual elements when no screenshots available
+                          // Fallback to visual elements when no hero image available
                           <>
                             {visualId === 1 && (
                               <div className="meal-planner-visual">
