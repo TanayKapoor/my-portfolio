@@ -3,7 +3,7 @@ import { ArrowLeft, ExternalLink, Github, Code2, Zap, Brain, Target, Package, Ca
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { useQuery } from '@tanstack/react-query';
-import type { Project } from '@/types/project';
+import type { Project } from '@shared/schema';
 
 export default function ProjectDetail() {
   const { id } = useParams();
@@ -64,9 +64,23 @@ export default function ProjectDetail() {
           transition={{ delay: 0.1 }}
           className="mb-12"
         >
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-4 font-['Courier_Prime']">
-            {project.title}
-          </h1>
+          <div className="flex items-start gap-6 mb-6">
+            {/* Project Icon */}
+            {project.iconUrl && (
+              <div className="flex-shrink-0">
+                <img 
+                  src={project.iconUrl} 
+                  alt={`${project.title} icon`}
+                  className="w-16 h-16 rounded-xl object-cover border border-gray-700"
+                />
+              </div>
+            )}
+            <div>
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-4 font-['Courier_Prime']">
+                {project.title}
+              </h1>
+            </div>
+          </div>
           <p className="text-xl text-gray-400 mb-6">{project.description}</p>
           
           {/* Quick Info */}

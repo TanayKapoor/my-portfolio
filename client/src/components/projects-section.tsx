@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { ExternalLink, Github, ChevronRight, Code2, Brain, FileSearch, ChevronLeft, Utensils, Timer, Cloud, DollarSign, BookOpen, Sprout } from 'lucide-react';
 import { Link } from 'wouter';
 import { useQuery } from '@tanstack/react-query';
-import type { Project } from '@/types/project';
+import type { Project } from '@shared/schema';
 import { colorThemes } from '@/types/project';
 
 export default function ProjectsSection() {
@@ -93,6 +93,17 @@ export default function ProjectsSection() {
 
   // Helper function to get the project icon from database or fallback
   const getProjectIcon = (project: Project) => {
+    // If project has an uploaded icon, use that
+    if (project.iconUrl) {
+      return (
+        <img 
+          src={project.iconUrl} 
+          alt={`${project.title} icon`}
+          className="w-8 h-8 rounded-lg object-cover"
+        />
+      );
+    }
+
     // Map of icon names to Lucide icons
     const iconMap = {
       'utensils': Utensils,
