@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'wouter';
 import { useQuery } from '@tanstack/react-query';
 import { ExternalLink, Github, ArrowLeft, Filter, Grid, List } from 'lucide-react';
-import type { Project } from '@/types/project';
+import type { Project } from '@shared/schema';
 import ConnectThreeAnimation from '@/components/connect-three-animation';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -275,12 +275,24 @@ function ProjectCard({ project, viewMode, index }: ProjectCardProps) {
       >
         <div className="p-6 bg-black border border-white/10 rounded-xl hover:bg-gray-900 hover:border-white/20 transition-all duration-300 group">
           <div className="flex items-start justify-between">
-            <div className="flex-1">
-              <Link href={`/project/${project.id}`}>
-                <h3 className="text-xl font-semibold mb-2 group-hover:text-blue-400 transition-colors cursor-pointer">
-                  {project.title}
-                </h3>
-              </Link>
+            <div className="flex items-start gap-4 flex-1">
+              {/* Project Icon */}
+              {project.iconUrl && (
+                <div className="flex-shrink-0">
+                  <img 
+                    src={project.iconUrl} 
+                    alt={`${project.title} icon`}
+                    className="w-12 h-12 rounded-lg object-cover"
+                  />
+                </div>
+              )}
+              
+              <div className="flex-1">
+                <Link href={`/project/${project.id}`}>
+                  <h3 className="text-xl font-semibold mb-2 group-hover:text-blue-400 transition-colors cursor-pointer">
+                    {project.title}
+                  </h3>
+                </Link>
               <p className="text-gray-400 mb-4 line-clamp-2">
                 {project.description}
               </p>
@@ -335,6 +347,7 @@ function ProjectCard({ project, viewMode, index }: ProjectCardProps) {
                   )}
                 </div>
               </div>
+              </div>
             </div>
           </div>
         </div>
@@ -351,6 +364,17 @@ function ProjectCard({ project, viewMode, index }: ProjectCardProps) {
       className="group"
     >
       <div className="p-6 bg-black border border-white/10 rounded-xl hover:bg-gray-900 hover:border-white/20 transition-all duration-300 h-full">
+        {/* Project Icon */}
+        {project.iconUrl && (
+          <div className="mb-4">
+            <img 
+              src={project.iconUrl} 
+              alt={`${project.title} icon`}
+              className="w-12 h-12 rounded-lg object-cover"
+            />
+          </div>
+        )}
+        
         <Link href={`/project/${project.id}`}>
           <h3 className="text-xl font-semibold mb-3 group-hover:text-blue-400 transition-colors cursor-pointer">
             {project.title}
