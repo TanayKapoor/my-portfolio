@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Upload, X, Image, FileImage } from 'lucide-react';
+import { Upload, X, Image, FileImage, GripVertical } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import type { Project } from '@shared/schema';
@@ -17,6 +17,8 @@ interface FileUploadProps {
 export default function FileUpload({ project, type, onUploadComplete }: FileUploadProps) {
   const [dragActive, setDragActive] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [draggedItem, setDraggedItem] = useState<number | null>(null);
+  const [dragOverItem, setDragOverItem] = useState<number | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -79,6 +81,32 @@ export default function FileUpload({ project, type, onUploadComplete }: FileUplo
     onError: (error) => {
       toast({ 
         title: 'Failed to delete screenshot', 
+        description: error instanceof Error ? error.message : 'Unknown error',
+        variant: 'destructive' 
+      });
+    },
+  });
+
+  const reorderScreenshotsMutation = useMutation({
+    mutationFn: async (newOrder: string[]) => {
+      const response = await fetch(`/api/projects/${project.id}/reorder-screenshots`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ screenshotUrls: newOrder }),
+      });
+      if (!response.ok) throw new Error('Failed to reorder screenshots');
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/projects'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/projects', project.id] });
+      toast({ title: 'Screenshots reordered successfully!' });
+    },
+    onError: (error) => {
+      toast({ 
+        title: 'Failed to reorder screenshots', 
         description: error instanceof Error ? error.message : 'Unknown error',
         variant: 'destructive' 
       });
@@ -162,6 +190,49 @@ export default function FileUpload({ project, type, onUploadComplete }: FileUplo
     deleteScreenshotMutation.mutate(index);
   };
 
+  // Drag and drop handlers for reordering screenshots
+  const handleDragStart = (e: React.DragEvent, index: number) => {
+    setDraggedItem(index);
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
+  const handleDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    setDragOverItem(index);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedItem(null);
+    setDragOverItem(null);
+  };
+
+  const handleScreenshotDrop = (e: React.DragEvent, dropIndex: number) => {
+    e.preventDefault();
+    
+    if (draggedItem === null || !project.screenshotUrls) return;
+    
+    if (draggedItem === dropIndex) {
+      setDraggedItem(null);
+      setDragOverItem(null);
+      return;
+    }
+
+    const newOrder = [...project.screenshotUrls];
+    const draggedUrl = newOrder[draggedItem];
+    
+    // Remove the dragged item
+    newOrder.splice(draggedItem, 1);
+    
+    // Insert at new position
+    const adjustedDropIndex = draggedItem < dropIndex ? dropIndex - 1 : dropIndex;
+    newOrder.splice(adjustedDropIndex, 0, draggedUrl);
+    
+    reorderScreenshotsMutation.mutate(newOrder);
+    setDraggedItem(null);
+    setDragOverItem(null);
+  };
+
   return (
     <div className="space-y-4">
       <Label className="text-sm font-medium text-gray-300">
@@ -241,10 +312,23 @@ export default function FileUpload({ project, type, onUploadComplete }: FileUplo
         <div className="space-y-2">
           <div className="text-sm font-medium text-gray-300">
             Current Screenshots ({project.screenshotUrls.length})
+            <span className="text-xs text-gray-500 ml-2">Drag to reorder</span>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
             {project.screenshotUrls.map((url, index) => (
-              <Card key={index} className="bg-gray-800/50 border-gray-700 relative group">
+              <Card 
+                key={`${url}-${index}`} 
+                className={`bg-gray-800/50 border-gray-700 relative group cursor-move transition-all duration-200 ${
+                  draggedItem === index ? 'opacity-50 scale-95' : ''
+                } ${
+                  dragOverItem === index ? 'border-blue-400 bg-blue-400/10' : ''
+                }`}
+                draggable
+                onDragStart={(e) => handleDragStart(e, index)}
+                onDragOver={(e) => handleDragOver(e, index)}
+                onDragEnd={handleDragEnd}
+                onDrop={(e) => handleScreenshotDrop(e, index)}
+              >
                 <CardContent className="p-2">
                   <div className="relative">
                     <img
@@ -252,6 +336,9 @@ export default function FileUpload({ project, type, onUploadComplete }: FileUplo
                       alt={`Screenshot ${index + 1}`}
                       className="w-full h-24 rounded object-cover"
                     />
+                    <div className="absolute top-1 left-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <GripVertical className="h-4 w-4 text-white bg-black/50 rounded p-0.5" />
+                    </div>
                     <Button
                       size="sm"
                       variant="destructive"

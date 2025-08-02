@@ -295,6 +295,38 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
+  app.put("/api/projects/:id/reorder-screenshots", requireAdmin, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { screenshotUrls } = req.body;
+
+      if (!Array.isArray(screenshotUrls)) {
+        return res.status(400).json({ error: "screenshotUrls must be an array" });
+      }
+
+      const project = await storage.getProject(id);
+      if (!project) {
+        return res.status(404).json({ error: "Project not found" });
+      }
+
+      // Validate that all provided URLs exist in the current project
+      const currentScreenshots = project.screenshotUrls || [];
+      const isValidReorder = screenshotUrls.length === currentScreenshots.length &&
+        screenshotUrls.every(url => currentScreenshots.includes(url));
+
+      if (!isValidReorder) {
+        return res.status(400).json({ error: "Invalid screenshot reorder: URLs must match existing screenshots" });
+      }
+
+      const updatedProject = await storage.updateProject(id, { screenshotUrls });
+      
+      res.json({ project: updatedProject });
+    } catch (error) {
+      console.error("Error reordering project screenshots:", error);
+      res.status(500).json({ error: "Failed to reorder project screenshots" });
+    }
+  });
+
   // Command routes (project-specific)
   app.get("/api/projects/:projectId/commands", async (req, res) => {
     try {

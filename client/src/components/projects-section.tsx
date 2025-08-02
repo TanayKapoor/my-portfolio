@@ -331,67 +331,84 @@ export default function ProjectsSection() {
                     {/* Divider */}
                     <div className="project-divider"></div>
 
-                    {/* Bottom Image Placeholder */}
+                    {/* Project Screenshots or Visual Placeholder */}
                     <div className="project-image-placeholder">
                       <div className="project-visual-content">
-                        {/* Create visual elements based on project type */}
-                        {visualId === 1 && (
-                          <div className="meal-planner-visual">
-                            <div className="food-grid">
-                              <div className="food-item green"></div>
-                              <div className="food-item orange"></div>
-                              <div className="food-item red"></div>
-                              <div className="food-item yellow"></div>
-                            </div>
+                        {project.screenshotUrls && project.screenshotUrls.length > 0 ? (
+                          <div className="project-screenshot">
+                            <img 
+                              src={project.screenshotUrls[0]} 
+                              alt={`${project.title} screenshot`}
+                              className="w-full h-full object-cover rounded-lg"
+                            />
+                            {project.screenshotUrls.length > 1 && (
+                              <div className="absolute top-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded-full">
+                                +{project.screenshotUrls.length - 1}
+                              </div>
+                            )}
                           </div>
-                        )}
-                        {visualId === 2 && (
-                          <div className="timer-visual">
-                            <div className="timer-circle">
-                              <div className="timer-progress"></div>
-                              <div className="timer-center">25:00</div>
-                            </div>
-                          </div>
-                        )}
-                        {visualId === 3 && (
-                          <div className="weather-visual">
-                            <div className="weather-chart">
-                              <div className="chart-bar" style={{height: '30%'}}></div>
-                              <div className="chart-bar" style={{height: '60%'}}></div>
-                              <div className="chart-bar" style={{height: '45%'}}></div>
-                              <div className="chart-bar" style={{height: '80%'}}></div>
-                              <div className="chart-bar" style={{height: '35%'}}></div>
-                            </div>
-                          </div>
-                        )}
-                        {visualId === 4 && (
-                          <div className="expense-visual">
-                            <div className="expense-chart">
-                              <div className="expense-category" style={{width: '40%'}}></div>
-                              <div className="expense-category" style={{width: '25%'}}></div>
-                              <div className="expense-category" style={{width: '20%'}}></div>
-                              <div className="expense-category" style={{width: '15%'}}></div>
-                            </div>
-                          </div>
-                        )}
-                        {visualId === 5 && (
-                          <div className="reading-visual">
-                            <div className="book-stack">
-                              <div className="book book-1"></div>
-                              <div className="book book-2"></div>
-                              <div className="book book-3"></div>
-                            </div>
-                          </div>
-                        )}
-                        {visualId === 6 && (
-                          <div className="plant-visual">
-                            <div className="plant-growth">
-                              <div className="growth-stage stage-1"></div>
-                              <div className="growth-stage stage-2"></div>
-                              <div className="growth-stage stage-3"></div>
-                              <div className="growth-stage stage-4"></div>
-                            </div>
-                          </div>
+                        ) : (
+                          // Fallback to visual elements when no screenshots available
+                          <>
+                            {visualId === 1 && (
+                              <div className="meal-planner-visual">
+                                <div className="food-grid">
+                                  <div className="food-item green"></div>
+                                  <div className="food-item orange"></div>
+                                  <div className="food-item red"></div>
+                                  <div className="food-item yellow"></div>
+                                </div>
+                              </div>
+                            )}
+                            {visualId === 2 && (
+                              <div className="timer-visual">
+                                <div className="timer-circle">
+                                  <div className="timer-progress"></div>
+                                  <div className="timer-center">25:00</div>
+                                </div>
+                              </div>
+                            )}
+                            {visualId === 3 && (
+                              <div className="weather-visual">
+                                <div className="weather-chart">
+                                  <div className="chart-bar" style={{height: '30%'}}></div>
+                                  <div className="chart-bar" style={{height: '60%'}}></div>
+                                  <div className="chart-bar" style={{height: '45%'}}></div>
+                                  <div className="chart-bar" style={{height: '80%'}}></div>
+                                  <div className="chart-bar" style={{height: '35%'}}></div>
+                                </div>
+                              </div>
+                            )}
+                            {visualId === 4 && (
+                              <div className="expense-visual">
+                                <div className="expense-chart">
+                                  <div className="expense-category" style={{width: '40%'}}></div>
+                                  <div className="expense-category" style={{width: '25%'}}></div>
+                                  <div className="expense-category" style={{width: '20%'}}></div>
+                                  <div className="expense-category" style={{width: '15%'}}></div>
+                                </div>
+                              </div>
+                            )}
+                            {visualId === 5 && (
+                              <div className="reading-visual">
+                                <div className="book-stack">
+                                  <div className="book book-1"></div>
+                                  <div className="book book-2"></div>
+                                  <div className="book book-3"></div>
+                                </div>
+                              </div>
+                            )}
+                            {visualId === 6 && (
+                              <div className="plant-visual">
+                                <div className="plant-growth">
+                                  <div className="growth-stage stage-1"></div>
+                                  <div className="growth-stage stage-2"></div>
+                                  <div className="growth-stage stage-3"></div>
+                                  <div className="growth-stage stage-4"></div>
+                                </div>
+                              </div>
+                            )}
+                          </>
                         )}
                       </div>
                     </div>
