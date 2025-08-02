@@ -1198,6 +1198,11 @@
   z-index: 3;
 }
 
+/* Remove bottom margin from divider when followed by hero image */
+.project-divider + .hero-image-container {
+  margin-top: -1.5rem;
+}
+
 /* Project Image Placeholder */
 .project-image-placeholder {
   margin-left: -1.5rem;
