@@ -385,32 +385,34 @@ function ProjectCard({ project, viewMode, index }: ProjectCardProps) {
       whileHover={{ y: -5 }}
       className="group"
     >
-      <div className="p-6 bg-black border border-white/10 rounded-xl hover:bg-gray-900 hover:border-white/20 transition-all duration-300 h-full">
-        {/* Project Hero Image, Screenshots, or Icon */}
+      <div className="bg-black border border-white/10 rounded-xl hover:bg-gray-900 hover:border-white/20 transition-all duration-300 h-full overflow-hidden relative">
+        {/* Project Hero Image - Edge to Edge at Top */}
         {project.heroImageUrl ? (
-          <div className="mb-4 relative overflow-hidden rounded-lg">
+          <div className="relative overflow-hidden">
             <img 
               src={project.heroImageUrl} 
               alt={`${project.title} hero image`}
               className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/30 to-black/90"></div>
           </div>
         ) : project.screenshotUrls && project.screenshotUrls.length > 0 ? (
-          <div className="mb-4 relative overflow-hidden rounded-lg">
-            <img 
-              src={project.screenshotUrls[0]} 
-              alt={`${project.title} screenshot`}
-              className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
-            />
-            {project.screenshotUrls.length > 1 && (
-              <div className="absolute top-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded">
-                +{project.screenshotUrls.length - 1} more
-              </div>
-            )}
+          <div className="p-6 pb-4">
+            <div className="relative overflow-hidden rounded-lg">
+              <img 
+                src={project.screenshotUrls[0]} 
+                alt={`${project.title} screenshot`}
+                className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
+              />
+              {project.screenshotUrls.length > 1 && (
+                <div className="absolute top-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded">
+                  +{project.screenshotUrls.length - 1} more
+                </div>
+              )}
+            </div>
           </div>
         ) : project.iconUrl ? (
-          <div className="mb-4">
+          <div className="p-6 pb-4">
             <img 
               src={project.iconUrl} 
               alt={`${project.title} icon`}
@@ -419,64 +421,67 @@ function ProjectCard({ project, viewMode, index }: ProjectCardProps) {
           </div>
         ) : null}
         
-        <Link href={`/project/${project.id}`}>
-          <h3 className="text-xl font-semibold mb-3 group-hover:text-blue-400 transition-colors cursor-pointer">
-            {project.title}
-          </h3>
-        </Link>
-        
-        <p className="text-gray-400 mb-4 line-clamp-3">
-          {project.description}
-        </p>
-        
-        {/* Tech Stack */}
-        <div className="flex flex-wrap gap-2 mb-4">
-          {project.technologies?.slice(0, 3).map((tech, i) => (
-            <span
-              key={i}
-              className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded text-sm"
-            >
-              {tech}
-            </span>
-          ))}
-          {project.technologies && project.technologies.length > 3 && (
-            <span className="px-2 py-1 bg-gray-500/20 text-gray-400 rounded text-sm">
-              +{project.technologies.length - 3}
-            </span>
-          )}
-        </div>
-
-        {/* Status */}
-        <div className="flex items-center justify-between">
-          <span className={`px-3 py-1 rounded-full text-sm ${
-            project.status === 'Completed' ? 'bg-green-500/20 text-green-300' :
-            project.status === 'In Progress' ? 'bg-yellow-500/20 text-yellow-300' :
-            'bg-gray-500/20 text-gray-400'
-          }`}>
-            {project.status}
-          </span>
+        {/* Card Content */}
+        <div className={`p-6 ${project.heroImageUrl ? 'pt-4' : ''}`}>
+          <Link href={`/project/${project.id}`}>
+            <h3 className="text-xl font-semibold mb-3 group-hover:text-blue-400 transition-colors cursor-pointer">
+              {project.title}
+            </h3>
+          </Link>
           
-          <div className="flex items-center gap-2">
-            {project.demoUrl && (
-              <a
-                href={project.demoUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-gray-400 hover:text-white transition-colors"
+          <p className="text-gray-400 mb-4 line-clamp-3">
+            {project.description}
+          </p>
+          
+          {/* Tech Stack */}
+          <div className="flex flex-wrap gap-2 mb-4">
+            {project.technologies?.slice(0, 3).map((tech, i) => (
+              <span
+                key={i}
+                className="px-2 py-1 bg-blue-500/20 text-blue-300 rounded text-sm"
               >
-                <ExternalLink size={16} />
-              </a>
+                {tech}
+              </span>
+            ))}
+            {project.technologies && project.technologies.length > 3 && (
+              <span className="px-2 py-1 bg-gray-500/20 text-gray-400 rounded text-sm">
+                +{project.technologies.length - 3}
+              </span>
             )}
-            {project.githubUrl && (
-              <a
-                href={project.githubUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-gray-400 hover:text-white transition-colors"
-              >
-                <Github size={16} />
-              </a>
-            )}
+          </div>
+
+          {/* Status */}
+          <div className="flex items-center justify-between">
+            <span className={`px-3 py-1 rounded-full text-sm ${
+              project.status === 'Completed' ? 'bg-green-500/20 text-green-300' :
+              project.status === 'In Progress' ? 'bg-yellow-500/20 text-yellow-300' :
+              'bg-gray-500/20 text-gray-400'
+            }`}>
+              {project.status}
+            </span>
+            
+            <div className="flex items-center gap-2">
+              {project.demoUrl && (
+                <a
+                  href={project.demoUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  <ExternalLink size={16} />
+                </a>
+              )}
+              {project.githubUrl && (
+                <a
+                  href={project.githubUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  <Github size={16} />
+                </a>
+              )}
+            </div>
           </div>
         </div>
       </div>
