@@ -276,8 +276,21 @@ function ProjectCard({ project, viewMode, index }: ProjectCardProps) {
         <div className="p-6 bg-black border border-white/10 rounded-xl hover:bg-gray-900 hover:border-white/20 transition-all duration-300 group">
           <div className="flex items-start justify-between">
             <div className="flex items-start gap-4 flex-1">
-              {/* Project Icon */}
-              {project.iconUrl && (
+              {/* Project Screenshots or Icon */}
+              {project.screenshotUrls && project.screenshotUrls.length > 0 ? (
+                <div className="flex-shrink-0 relative">
+                  <img 
+                    src={project.screenshotUrls[0]} 
+                    alt={`${project.title} screenshot`}
+                    className="w-20 h-16 rounded-lg object-cover"
+                  />
+                  {project.screenshotUrls.length > 1 && (
+                    <div className="absolute -top-1 -right-1 bg-blue-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
+                      {project.screenshotUrls.length}
+                    </div>
+                  )}
+                </div>
+              ) : project.iconUrl ? (
                 <div className="flex-shrink-0">
                   <img 
                     src={project.iconUrl} 
@@ -285,7 +298,7 @@ function ProjectCard({ project, viewMode, index }: ProjectCardProps) {
                     className="w-12 h-12 rounded-lg object-cover"
                   />
                 </div>
-              )}
+              ) : null}
               
               <div className="flex-1">
                 <Link href={`/project/${project.id}`}>
@@ -364,8 +377,21 @@ function ProjectCard({ project, viewMode, index }: ProjectCardProps) {
       className="group"
     >
       <div className="p-6 bg-black border border-white/10 rounded-xl hover:bg-gray-900 hover:border-white/20 transition-all duration-300 h-full">
-        {/* Project Icon */}
-        {project.iconUrl && (
+        {/* Project Screenshots or Icon */}
+        {project.screenshotUrls && project.screenshotUrls.length > 0 ? (
+          <div className="mb-4 relative overflow-hidden rounded-lg">
+            <img 
+              src={project.screenshotUrls[0]} 
+              alt={`${project.title} screenshot`}
+              className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
+            />
+            {project.screenshotUrls.length > 1 && (
+              <div className="absolute top-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded">
+                +{project.screenshotUrls.length - 1} more
+              </div>
+            )}
+          </div>
+        ) : project.iconUrl ? (
           <div className="mb-4">
             <img 
               src={project.iconUrl} 
@@ -373,7 +399,7 @@ function ProjectCard({ project, viewMode, index }: ProjectCardProps) {
               className="w-12 h-12 rounded-lg object-cover"
             />
           </div>
-        )}
+        ) : null}
         
         <Link href={`/project/${project.id}`}>
           <h3 className="text-xl font-semibold mb-3 group-hover:text-blue-400 transition-colors cursor-pointer">
