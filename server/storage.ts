@@ -32,8 +32,8 @@ export interface IStorage {
   updateWorkExperience(id: string, workExperience: Partial<InsertWorkExperience>): Promise<WorkExperience | undefined>;
   deleteWorkExperience(id: string): Promise<boolean>;
   
-  // Command methods
-  getAllCommands(): Promise<Command[]>;
+  // Command methods (project-specific)
+  getCommandsByProject(projectId: string): Promise<Command[]>;
   getCommand(id: string): Promise<Command | undefined>;
   createCommand(command: InsertCommand): Promise<Command>;
   updateCommand(id: string, command: Partial<InsertCommand>): Promise<Command | undefined>;
@@ -159,8 +159,8 @@ export class DatabaseStorage implements IStorage {
     return (result.rowCount ?? 0) > 0;
   }
 
-  async getAllCommands(): Promise<Command[]> {
-    return await db.select().from(commands).orderBy(asc(commands.order));
+  async getCommandsByProject(projectId: string): Promise<Command[]> {
+    return await db.select().from(commands).where(eq(commands.projectId, projectId)).orderBy(asc(commands.order));
   }
 
   async getCommand(id: string): Promise<Command | undefined> {

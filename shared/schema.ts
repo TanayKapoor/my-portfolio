@@ -66,9 +66,10 @@ export const workExperiences = pgTable("work_experiences", {
 
 export const commands = pgTable("commands", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  projectId: varchar("project_id").notNull().references(() => projects.id, { onDelete: "cascade" }),
   command: text("command").notNull(),
   description: text("description").notNull(),
-  category: text("category").notNull(), // e.g., "Git", "Docker", "Node.js", "General"
+  category: text("category").notNull(), // e.g., "Setup", "Development", "Deployment", "Testing"
   example: text("example"), // Optional usage example
   tags: text("tags").array(), // Optional tags for filtering
   order: integer("order").notNull(),

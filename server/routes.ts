@@ -295,10 +295,11 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
-  // Command routes
-  app.get("/api/commands", async (req, res) => {
+  // Command routes (project-specific)
+  app.get("/api/projects/:projectId/commands", async (req, res) => {
     try {
-      const commands = await storage.getAllCommands();
+      const { projectId } = req.params;
+      const commands = await storage.getCommandsByProject(projectId);
       res.json(commands);
     } catch (error) {
       console.error("Error fetching commands:", error);
@@ -322,9 +323,13 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
-  app.post("/api/commands", requireAdmin, async (req, res) => {
+  app.post("/api/projects/:projectId/commands", requireAdmin, async (req, res) => {
     try {
-      const validatedData = insertCommandSchema.parse(req.body);
+      const { projectId } = req.params;
+      const validatedData = insertCommandSchema.parse({
+        ...req.body,
+        projectId
+      });
       const command = await storage.createCommand(validatedData);
       res.status(201).json(command);
     } catch (error) {
