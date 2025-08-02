@@ -332,15 +332,16 @@ export default function ProjectsSection() {
                     <div className="project-divider"></div>
 
                     {/* Project Hero Image or Visual Placeholder */}
-                    <div className="project-image-placeholder">
+                    <div className={`project-image-placeholder ${project.heroImageUrl ? 'hero-image-container' : ''}`}>
                       <div className="project-visual-content">
                         {project.heroImageUrl ? (
-                          <div className="project-hero-image">
+                          <div className="project-hero-image absolute inset-0 overflow-hidden">
                             <img 
                               src={project.heroImageUrl} 
                               alt={`${project.title} hero image`}
-                              className="w-full h-full object-cover rounded-lg"
+                              className="w-full h-full object-cover"
                             />
+                            <div className="absolute inset-0 bg-gradient-to-t from-gray-900/95 via-gray-900/50 to-transparent"></div>
                           </div>
                         ) : (
                           // Fallback to visual elements when no hero image available

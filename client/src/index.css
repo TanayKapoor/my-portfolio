@@ -1222,6 +1222,28 @@
   border-color: rgba(255, 255, 255, 0.12);
 }
 
+/* Hero Image Container - Edge to Edge */
+.hero-image-container {
+  margin-left: -1.5rem !important;
+  margin-right: -1.5rem !important;
+  margin-bottom: -1.5rem !important;
+  width: calc(100% + 3rem) !important;
+  border-radius: 0 !important;
+  border: none !important;
+  background: transparent !important;
+  position: relative;
+}
+
+.hero-image-container .project-visual-content {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.project-hero-image {
+  border-radius: 0 0 24px 24px;
+}
+
 /* Project Visual Content */
 .project-visual-content {
   display: flex;
