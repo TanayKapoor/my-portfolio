@@ -4,8 +4,6 @@ import {
   Calendar,
   MapPin,
   ExternalLink,
-  ChevronLeft,
-  ChevronRight,
   Sparkles,
 } from "lucide-react";
 import { useQuery } from '@tanstack/react-query';
@@ -15,8 +13,6 @@ import type { WorkExperience } from '@shared/schema';
 
 export default function TimelineSection() {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(true);
 
   // Fetch work experiences from API
   const { data: workExperiences = [], isLoading, error } = useQuery<WorkExperience[]>({
@@ -26,14 +22,6 @@ export default function TimelineSection() {
   useEffect(() => {
     const container = scrollContainerRef.current;
     if (!container) return;
-
-    const updateScrollState = () => {
-      const scrollLeft = container.scrollLeft;
-      const maxScroll = container.scrollWidth - container.clientWidth;
-
-      setCanScrollLeft(scrollLeft > 0);
-      setCanScrollRight(scrollLeft < maxScroll - 1);
-    };
 
     // Initialize scroll to show current position in center
     const initializeScroll = () => {
@@ -102,19 +90,12 @@ export default function TimelineSection() {
     // Multiple attempts to ensure proper centering
     const initTimeout1 = setTimeout(initializeScroll, 100);
     const initTimeout2 = setTimeout(initializeScroll, 500);
-    const initTimeout3 = setTimeout(() => {
-      initializeScroll();
-      updateScrollState();
-    }, 1000);
-
-    // Update on scroll
-    container.addEventListener("scroll", updateScrollState);
+    const initTimeout3 = setTimeout(initializeScroll, 1000);
 
     return () => {
       clearTimeout(initTimeout1);
       clearTimeout(initTimeout2);
       clearTimeout(initTimeout3);
-      container.removeEventListener("scroll", updateScrollState);
     };
   }, [workExperiences]);
 
@@ -166,43 +147,7 @@ export default function TimelineSection() {
     }
   };
 
-  const scrollLeft = () => {
-    if (scrollContainerRef.current) {
-      // Get dynamic card width based on screen size
-      let scrollAmount = Math.min(window.innerWidth - 48, 240);
-      if (window.innerWidth >= 1024) {
-        scrollAmount = 400;
-      } else if (window.innerWidth >= 768) {
-        scrollAmount = 380;
-      } else if (window.innerWidth >= 640) {
-        scrollAmount = 350;
-      } else if (window.innerWidth >= 480) {
-        scrollAmount = Math.min(300, window.innerWidth - 64);
-      } else if (window.innerWidth >= 375) {
-        scrollAmount = Math.min(280, window.innerWidth - 64);
-      }
-      scrollContainerRef.current.scrollBy({ left: -scrollAmount, behavior: "smooth" });
-    }
-  };
 
-  const scrollRight = () => {
-    if (scrollContainerRef.current) {
-      // Get dynamic card width based on screen size
-      let scrollAmount = Math.min(window.innerWidth - 48, 240);
-      if (window.innerWidth >= 1024) {
-        scrollAmount = 400;
-      } else if (window.innerWidth >= 768) {
-        scrollAmount = 380;
-      } else if (window.innerWidth >= 640) {
-        scrollAmount = 350;
-      } else if (window.innerWidth >= 480) {
-        scrollAmount = Math.min(300, window.innerWidth - 64);
-      } else if (window.innerWidth >= 375) {
-        scrollAmount = Math.min(280, window.innerWidth - 64);
-      }
-      scrollContainerRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
-    }
-  };
 
   if (isLoading) {
     return (
@@ -428,24 +373,6 @@ export default function TimelineSection() {
                 className="timeline-nav-link"
               >
                 Current position
-              </button>
-            </div>
-            <div className="timeline-nav-buttons">
-              <button
-                className={`nav-button ${!canScrollLeft ? "disabled" : ""}`}
-                onClick={scrollLeft}
-                disabled={!canScrollLeft}
-                aria-label="Back to present"
-              >
-                <ChevronLeft size={16} />
-              </button>
-              <button
-                className={`nav-button ${!canScrollRight ? "disabled" : ""}`}
-                onClick={scrollRight}
-                disabled={!canScrollRight}
-                aria-label="Explore past"
-              >
-                <ChevronRight size={16} />
               </button>
             </div>
           </div>
