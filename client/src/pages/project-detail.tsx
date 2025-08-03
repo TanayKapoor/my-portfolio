@@ -9,6 +9,11 @@ export default function ProjectDetail() {
   const { id } = useParams();
   const [activeTab, setActiveTab] = useState<'overview' | 'commands' | 'versions'>('overview');
   
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+  
   // Fetch project from API
   const { data: project, isLoading, error } = useQuery<Project>({
     queryKey: ['/api/projects', id],
