@@ -8,20 +8,16 @@ interface OdometerTextProps {
 
 export default function OdometerText({ 
   messages, 
-  animationDelay = 3000,
+  animationDelay = 2000,
   onTextChange
 }: OdometerTextProps) {
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
-  const [displayText, setDisplayText] = useState('');
+  const [nextMessageIndex, setNextMessageIndex] = useState(1);
+  const [isTransitioning, setIsTransitioning] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Initialize display text
-  useEffect(() => {
-    if (messages.length > 0 && !displayText) {
-      setDisplayText(messages[0]);
-    }
-  }, [messages, displayText]);
+  const currentMessage = messages[currentMessageIndex] || '';
+  const nextMessage = messages[nextMessageIndex] || '';
 
   // Calculate dynamic font size based on text length
   const calculateFontSize = (text: string) => {
@@ -36,44 +32,58 @@ export default function OdometerText({
     if (messages.length <= 1) return;
 
     const interval = setInterval(() => {
-      setIsAnimating(true);
+      setIsTransitioning(true);
       onTextChange?.(true);
       
-      // Wait for animation to start, then change text
+      // Start the flip animation
       setTimeout(() => {
-        const nextIndex = (currentMessageIndex + 1) % messages.length;
-        setCurrentMessageIndex(nextIndex);
-        setDisplayText(messages[nextIndex]);
+        const newCurrentIndex = nextMessageIndex;
+        const newNextIndex = (nextMessageIndex + 1) % messages.length;
+        
+        setCurrentMessageIndex(newCurrentIndex);
+        setNextMessageIndex(newNextIndex);
         
         // Animation completes
         setTimeout(() => {
-          setIsAnimating(false);
+          setIsTransitioning(false);
           onTextChange?.(false);
-        }, 300);
-      }, 300);
+        }, 600);
+      }, 600);
       
     }, animationDelay);
 
     return () => clearInterval(interval);
-  }, [messages, currentMessageIndex, animationDelay, onTextChange]);
+  }, [messages, currentMessageIndex, nextMessageIndex, animationDelay, onTextChange]);
 
-  const currentFontSize = calculateFontSize(displayText);
+  // Get the longer message to determine dimensions
+  const longerMessage = currentMessage.length >= nextMessage.length ? currentMessage : nextMessage;
+  const maxLength = Math.max(currentMessage.length, nextMessage.length);
+  const currentFontSize = calculateFontSize(longerMessage);
 
-  // Debug logging
-  console.log('OdometerText render:', { displayText, isAnimating, messages: messages.length });
-
-  if (!displayText) {
+  // Create character positions for odometer effect
+  const renderOdometerChar = (position: number) => {
+    const currentChar = currentMessage[position] || '';
+    const nextChar = nextMessage[position] || '';
+    
     return (
       <div 
-        className="odometer-container"
-        style={{ fontSize: currentFontSize }}
+        key={position}
+        className="odometer-digit"
+        style={{
+          '--char-delay': `${position * 0.05}s`
+        } as React.CSSProperties}
       >
-        <div className="odometer-text">
-          Loading...
+        <div className={`odometer-digit-inner ${isTransitioning ? 'flipping' : ''}`}>
+          <div className="odometer-digit-current">
+            {currentChar === ' ' ? '\u00A0' : currentChar}
+          </div>
+          <div className="odometer-digit-next">
+            {nextChar === ' ' ? '\u00A0' : nextChar}
+          </div>
         </div>
       </div>
     );
-  }
+  };
 
   return (
     <div 
@@ -81,18 +91,8 @@ export default function OdometerText({
       className="odometer-container"
       style={{ fontSize: currentFontSize }}
     >
-      <div className={`odometer-text ${isAnimating ? 'animating' : ''}`}>
-        {displayText.split('').map((char, index) => (
-          <span
-            key={`${currentMessageIndex}-${index}`}
-            className="odometer-char"
-            style={{
-              '--char-delay': `${index * 0.03}s`
-            } as React.CSSProperties}
-          >
-            {char === ' ' ? '\u00A0' : char}
-          </span>
-        ))}
+      <div className="odometer-display">
+        {Array.from({ length: maxLength }).map((_, index) => renderOdometerChar(index))}
       </div>
     </div>
   );
