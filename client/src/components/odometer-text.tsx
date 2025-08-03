@@ -8,7 +8,7 @@ interface OdometerTextProps {
 
 export default function OdometerText({ 
   messages, 
-  animationDelay = 3000,
+  animationDelay = 4500,
   onTextChange
 }: OdometerTextProps) {
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0);

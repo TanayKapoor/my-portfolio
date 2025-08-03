@@ -45,7 +45,7 @@ export default function HalftoneHero() {
         <div className="w-full max-w-7xl px-4">
           <OdometerText 
             messages={greetingMessages} 
-            animationDelay={2000}
+            animationDelay={4500}
             onTextChange={setIsTyping}
           />
         </div>
