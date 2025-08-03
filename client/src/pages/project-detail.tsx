@@ -168,7 +168,7 @@ export default function ProjectDetail() {
 
 // Project Showcase Component with Gallery and Slideshow Views
 function ProjectShowcase({ project }: { project: Project }) {
-  const [viewMode, setViewMode] = useState<'gallery' | 'slideshow'>('gallery');
+  const [viewMode, setViewMode] = useState<'gallery' | 'slideshow'>('slideshow');
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
