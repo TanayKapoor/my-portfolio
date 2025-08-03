@@ -2229,6 +2229,53 @@
   flex: 1;
 }
 
+/* Timeline Navigation Links */
+.timeline-nav-link {
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.6);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  padding: 0;
+  text-decoration: none;
+}
+
+.timeline-nav-separator {
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+@media (min-width: 640px) {
+  .timeline-nav-link,
+  .timeline-nav-separator {
+    font-size: 1rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .timeline-nav-link,
+  .timeline-nav-separator {
+    font-size: 1.125rem;
+  }
+  
+  .timeline-controls {
+    flex-wrap: nowrap;
+  }
+}
+
+.timeline-nav-link:hover {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.timeline-nav-link:focus {
+  outline: none;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Legacy span support (if any remaining) */
 .timeline-nav-text span {
   font-family: 'Courier Prime', monospace;
   font-size: 0.875rem;
@@ -2246,10 +2293,6 @@
 @media (min-width: 768px) {
   .timeline-nav-text span {
     font-size: 1.125rem;
-  }
-  
-  .timeline-controls {
-    flex-wrap: nowrap;
   }
 }
 

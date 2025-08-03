@@ -118,6 +118,54 @@ export default function TimelineSection() {
     };
   }, [workExperiences]);
 
+  const scrollToPastExperiences = () => {
+    if (scrollContainerRef.current) {
+      // Scroll to the beginning to show past experiences
+      scrollContainerRef.current.scrollTo({ left: 0, behavior: "smooth" });
+    }
+  };
+
+  const scrollToCurrentPosition = () => {
+    if (scrollContainerRef.current && workExperiences.length > 0) {
+      // Scroll to current position (last item in the array)
+      const currentIndex = workExperiences.length - 1;
+      
+      // Get actual card width based on screen size
+      let cardWidth = Math.min(window.innerWidth - 48, 240);
+      if (window.innerWidth >= 1024) {
+        cardWidth = 400;
+      } else if (window.innerWidth >= 768) {
+        cardWidth = 380;
+      } else if (window.innerWidth >= 640) {
+        cardWidth = 350;
+      } else if (window.innerWidth >= 480) {
+        cardWidth = Math.min(300, window.innerWidth - 64);
+      } else if (window.innerWidth >= 375) {
+        cardWidth = Math.min(280, window.innerWidth - 64);
+      }
+      
+      // Get actual gap based on screen size
+      let gap = 24;
+      if (window.innerWidth >= 1024) {
+        gap = 48;
+      } else if (window.innerWidth >= 768) {
+        gap = 40;
+      } else if (window.innerWidth >= 640) {
+        gap = 32;
+      }
+
+      // Calculate position to center current card
+      const viewportWidth = window.innerWidth;
+      const viewportCenter = viewportWidth / 2;
+      const currentCardLeft = currentIndex * (cardWidth + gap);
+      const currentCardCenter = currentCardLeft + cardWidth / 2;
+      const scrollNeeded = currentCardCenter - viewportCenter;
+      const finalScroll = scrollNeeded + (window.innerWidth >= 768 ? 550 : 300);
+      
+      scrollContainerRef.current.scrollTo({ left: Math.max(0, finalScroll), behavior: "smooth" });
+    }
+  };
+
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
       // Get dynamic card width based on screen size
@@ -368,7 +416,19 @@ export default function TimelineSection() {
           {/* Navigation Controls */}
           <div className="timeline-controls">
             <div className="timeline-nav-text">
-              <span>← Past experiences | Current position | Future →</span>
+              <button 
+                onClick={scrollToPastExperiences}
+                className="timeline-nav-link"
+              >
+                Past experiences
+              </button>
+              <span className="timeline-nav-separator"> | </span>
+              <button 
+                onClick={scrollToCurrentPosition}
+                className="timeline-nav-link"
+              >
+                Current position
+              </button>
             </div>
             <div className="timeline-nav-buttons">
               <button
