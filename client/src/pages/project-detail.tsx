@@ -1,7 +1,7 @@
 import { useParams, Link } from "wouter";
-import { ArrowLeft, ExternalLink, Github, Code2, Zap, Brain, Target, Package, Calendar, User, Image, Terminal, Clock, Download, Play, Settings, GitBranch, CheckCircle, AlertCircle, ChevronLeft, ChevronRight } from "lucide-react";
-import { motion } from "framer-motion";
-import { useState } from "react";
+import { ArrowLeft, ExternalLink, Github, Code2, Zap, Brain, Target, Package, Calendar, User, Image, Terminal, Clock, Download, Play, Settings, GitBranch, CheckCircle, AlertCircle, ChevronLeft, ChevronRight, Grid3X3, RotateCcw, Maximize2, X } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect } from "react";
 import { useQuery } from '@tanstack/react-query';
 import type { Project } from '@shared/schema';
 
@@ -166,6 +166,262 @@ export default function ProjectDetail() {
   );
 }
 
+// Project Showcase Component with Gallery and Slideshow Views
+function ProjectShowcase({ project }: { project: Project }) {
+  const [viewMode, setViewMode] = useState<'gallery' | 'slideshow'>('gallery');
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  const screenshots = project.screenshotUrls || [];
+
+  // Auto-advance slideshow
+  useEffect(() => {
+    if (viewMode === 'slideshow' && screenshots.length > 1 && !isFullscreen) {
+      const interval = setInterval(() => {
+        setCurrentSlide((prev) => (prev + 1) % screenshots.length);
+      }, 4000);
+      return () => clearInterval(interval);
+    }
+  }, [viewMode, screenshots.length, isFullscreen]);
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % screenshots.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + screenshots.length) % screenshots.length);
+  };
+
+  const openFullscreen = (index: number) => {
+    setCurrentSlide(index);
+    setIsFullscreen(true);
+  };
+
+  return (
+    <>
+      <motion.section
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+        className="bg-gray-900/50 backdrop-blur-sm rounded-xl p-6 border border-gray-800"
+      >
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-bold font-['Courier_Prime']">Project Showcase</h2>
+          
+          {screenshots.length > 0 && (
+            <div className="flex items-center gap-2">
+              <div className="inline-flex bg-gray-800/80 backdrop-blur-sm rounded-lg p-1 border border-gray-700/50">
+                <button
+                  onClick={() => setViewMode('gallery')}
+                  className={`px-3 py-1 rounded-md transition-all duration-200 text-sm font-medium ${
+                    viewMode === 'gallery'
+                      ? 'bg-gray-600 text-white shadow-sm'
+                      : 'text-gray-400 hover:text-gray-300'
+                  }`}
+                >
+                  <Grid3X3 size={16} className="inline mr-1" />
+                  Gallery
+                </button>
+                <button
+                  onClick={() => setViewMode('slideshow')}
+                  className={`px-3 py-1 rounded-md transition-all duration-200 text-sm font-medium ${
+                    viewMode === 'slideshow'
+                      ? 'bg-gray-600 text-white shadow-sm'
+                      : 'text-gray-400 hover:text-gray-300'
+                  }`}
+                >
+                  <RotateCcw size={16} className="inline mr-1" />
+                  Slideshow
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {screenshots.length > 0 ? (
+          <div className="relative">
+            {viewMode === 'gallery' ? (
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="grid grid-cols-1 md:grid-cols-2 gap-4"
+              >
+                {screenshots.map((url, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: index * 0.1 }}
+                    className="group relative cursor-pointer"
+                    onClick={() => openFullscreen(index)}
+                  >
+                    <img
+                      src={url}
+                      alt={`${project.title} screenshot ${index + 1}`}
+                      className="w-full h-48 object-cover rounded-lg border border-gray-700 group-hover:border-gray-600 transition-all duration-300 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
+                      <div className="text-center">
+                        <Maximize2 size={24} className="text-white mx-auto mb-2" />
+                        <span className="text-white text-sm">Screenshot {index + 1}</span>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </motion.div>
+            ) : (
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="relative bg-gray-800 rounded-lg overflow-hidden"
+              >
+                <div className="relative h-80 lg:h-96">
+                  <AnimatePresence mode="wait">
+                    <motion.img
+                      key={currentSlide}
+                      src={screenshots[currentSlide]}
+                      alt={`${project.title} screenshot ${currentSlide + 1}`}
+                      initial={{ opacity: 0, x: 100 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -100 }}
+                      transition={{ duration: 0.5 }}
+                      className="w-full h-full object-cover cursor-pointer"
+                      onClick={() => openFullscreen(currentSlide)}
+                    />
+                  </AnimatePresence>
+
+                  {screenshots.length > 1 && (
+                    <>
+                      <button
+                        onClick={prevSlide}
+                        className="absolute left-4 top-1/2 -translate-y-1/2 p-2 bg-black/50 hover:bg-black/70 rounded-full transition-colors"
+                      >
+                        <ChevronLeft size={20} className="text-white" />
+                      </button>
+                      <button
+                        onClick={nextSlide}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 p-2 bg-black/50 hover:bg-black/70 rounded-full transition-colors"
+                      >
+                        <ChevronRight size={20} className="text-white" />
+                      </button>
+                    </>
+                  )}
+
+                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+                    {screenshots.map((_, index) => (
+                      <button
+                        key={index}
+                        onClick={() => setCurrentSlide(index)}
+                        className={`w-2 h-2 rounded-full transition-colors ${
+                          index === currentSlide ? 'bg-white' : 'bg-white/40'
+                        }`}
+                      />
+                    ))}
+                  </div>
+
+                  <button
+                    onClick={() => openFullscreen(currentSlide)}
+                    className="absolute top-4 right-4 p-2 bg-black/50 hover:bg-black/70 rounded-full transition-colors"
+                  >
+                    <Maximize2 size={16} className="text-white" />
+                  </button>
+                </div>
+
+                <div className="p-4 text-center">
+                  <span className="text-sm text-gray-400">
+                    {currentSlide + 1} of {screenshots.length}
+                  </span>
+                </div>
+              </motion.div>
+            )}
+          </div>
+        ) : (
+          <div className="flex items-center justify-center h-48 bg-gray-800 rounded-lg border border-gray-700">
+            <div className="text-center">
+              <Image size={48} className="mx-auto text-gray-600 mb-4" />
+              <p className="text-gray-400">No screenshots available</p>
+            </div>
+          </div>
+        )}
+      </motion.section>
+
+      {/* Fullscreen Modal */}
+      <AnimatePresence>
+        {isFullscreen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center"
+            onClick={() => setIsFullscreen(false)}
+          >
+            <div className="relative max-w-7xl max-h-[90vh] w-full h-full flex items-center justify-center p-4">
+              <motion.img
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.8, opacity: 0 }}
+                src={screenshots[currentSlide]}
+                alt={`${project.title} screenshot ${currentSlide + 1}`}
+                className="max-w-full max-h-full object-contain"
+                onClick={(e) => e.stopPropagation()}
+              />
+
+              <button
+                onClick={() => setIsFullscreen(false)}
+                className="absolute top-4 right-4 p-2 bg-black/50 hover:bg-black/70 rounded-full transition-colors"
+              >
+                <X size={20} className="text-white" />
+              </button>
+
+              {screenshots.length > 1 && (
+                <>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      prevSlide();
+                    }}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 p-3 bg-black/50 hover:bg-black/70 rounded-full transition-colors"
+                  >
+                    <ChevronLeft size={24} className="text-white" />
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      nextSlide();
+                    }}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 p-3 bg-black/50 hover:bg-black/70 rounded-full transition-colors"
+                  >
+                    <ChevronRight size={24} className="text-white" />
+                  </button>
+                </>
+              )}
+
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+                {screenshots.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setCurrentSlide(index);
+                    }}
+                    className={`w-3 h-3 rounded-full transition-colors ${
+                      index === currentSlide ? 'bg-white' : 'bg-white/40'
+                    }`}
+                  />
+                ))}
+              </div>
+
+              <div className="absolute bottom-4 right-4 text-white bg-black/50 px-3 py-1 rounded-lg">
+                {currentSlide + 1} of {screenshots.length}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  );
+}
+
 // Overview Tab Component
 function OverviewTab({ project }: { project: Project }) {
   return (
@@ -173,37 +429,7 @@ function OverviewTab({ project }: { project: Project }) {
       {/* Left Column - Main Content */}
       <div className="lg:col-span-2 space-y-8">
         {/* Project Showcase */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="bg-gray-900/50 backdrop-blur-sm rounded-xl p-6 border border-gray-800"
-        >
-          <h2 className="text-2xl font-bold mb-6 font-['Courier_Prime']">Project Showcase</h2>
-          {project.screenshotUrls && project.screenshotUrls.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {project.screenshotUrls.map((url, index) => (
-                <div key={index} className="group relative">
-                  <img
-                    src={url}
-                    alt={`${project.title} screenshot ${index + 1}`}
-                    className="w-full h-48 object-cover rounded-lg border border-gray-700 group-hover:border-gray-600 transition-colors"
-                  />
-                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
-                    <span className="text-white text-sm">Screenshot {index + 1}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="flex items-center justify-center h-48 bg-gray-800 rounded-lg border border-gray-700">
-              <div className="text-center">
-                <Image size={48} className="mx-auto text-gray-600 mb-4" />
-                <p className="text-gray-400">No screenshots available</p>
-              </div>
-            </div>
-          )}
-        </motion.section>
+        <ProjectShowcase project={project} />
 
         {/* Description */}
         <motion.section
