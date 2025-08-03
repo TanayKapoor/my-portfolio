@@ -8,16 +8,16 @@ interface OdometerTextProps {
 
 export default function OdometerText({ 
   messages, 
-  animationDelay = 2000,
+  animationDelay = 3000,
   onTextChange
 }: OdometerTextProps) {
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
-  const [nextMessageIndex, setNextMessageIndex] = useState(1);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const currentMessage = messages[currentMessageIndex] || '';
-  const nextMessage = messages[nextMessageIndex] || '';
+  const currentMessage = messages[currentMessageIndex] || messages[0] || '';
+  const nextIndex = (currentMessageIndex + 1) % messages.length;
+  const nextMessage = messages[nextIndex] || '';
 
   // Calculate dynamic font size based on text length
   const calculateFontSize = (text: string) => {
@@ -35,25 +35,21 @@ export default function OdometerText({
       setIsTransitioning(true);
       onTextChange?.(true);
       
-      // Start the flip animation
+      // Start the flip animation immediately
       setTimeout(() => {
-        const newCurrentIndex = nextMessageIndex;
-        const newNextIndex = (nextMessageIndex + 1) % messages.length;
-        
-        setCurrentMessageIndex(newCurrentIndex);
-        setNextMessageIndex(newNextIndex);
+        setCurrentMessageIndex(nextIndex);
         
         // Animation completes
         setTimeout(() => {
           setIsTransitioning(false);
           onTextChange?.(false);
-        }, 600);
-      }, 600);
+        }, 700);
+      }, 50);
       
     }, animationDelay);
 
     return () => clearInterval(interval);
-  }, [messages, currentMessageIndex, nextMessageIndex, animationDelay, onTextChange]);
+  }, [messages, currentMessageIndex, nextIndex, animationDelay, onTextChange]);
 
   // Get the longer message to determine dimensions
   const longerMessage = currentMessage.length >= nextMessage.length ? currentMessage : nextMessage;
@@ -85,22 +81,6 @@ export default function OdometerText({
     );
   };
 
-  console.log('Odometer Debug:', { currentMessage, nextMessage, maxLength, isTransitioning });
-
-  // Fallback for when there's no content
-  if (!currentMessage && !nextMessage) {
-    return (
-      <div 
-        className="odometer-container"
-        style={{ fontSize: currentFontSize }}
-      >
-        <div style={{ color: '#fff', textShadow: '1px 1px 5px rgba(0,0,0,0.5)' }}>
-          {messages[0] || 'Loading...'}
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div 
       ref={containerRef}
@@ -109,10 +89,6 @@ export default function OdometerText({
     >
       <div className="odometer-display">
         {Array.from({ length: maxLength }).map((_, index) => renderOdometerChar(index))}
-      </div>
-      {/* Debug info */}
-      <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)', marginTop: '10px' }}>
-        Current: "{currentMessage}" | Next: "{nextMessage}" | Transitioning: {isTransitioning.toString()}
       </div>
     </div>
   );
