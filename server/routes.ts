@@ -8,6 +8,7 @@ import { storage } from "./storage";
 import { insertProjectSchema, insertWorkExperienceSchema, insertCommandSchema } from "@shared/schema";
 import { z } from "zod";
 import { setupAuth, requireAuth, requireAdmin } from "./auth";
+import { uploadToObjectStorage, deleteFromObjectStorage, getFileFromObjectStorage, extractFilenameFromUrl } from "./objectStorage";
 
 export function registerRoutes(app: Express): Server {
   // Set up authentication
@@ -166,37 +167,17 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
-  // Configure multer for file uploads
-  const uploadsDir = path.join(process.cwd(), 'uploads');
-  if (!fs.existsSync(uploadsDir)) {
-    fs.mkdirSync(uploadsDir, { recursive: true });
-  }
-
-  const storage_config = multer.diskStorage({
-    destination: (req, file, cb) => {
-      cb(null, uploadsDir);
-    },
-    filename: (req, file, cb) => {
-      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-      const ext = path.extname(file.originalname);
-      cb(null, file.fieldname + '-' + uniqueSuffix + ext);
-    }
-  });
-
+  // File upload configuration - using memory storage for object storage
   const upload = multer({
-    storage: storage_config,
+    storage: multer.memoryStorage(),
     limits: {
       fileSize: 10 * 1024 * 1024, // 10MB limit
     },
     fileFilter: (req, file, cb) => {
-      const allowedTypes = /jpeg|jpg|png|gif|svg|webp/;
-      const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-      const mimetype = allowedTypes.test(file.mimetype);
-
-      if (mimetype && extname) {
-        return cb(null, true);
+      if (file.mimetype.startsWith('image/')) {
+        cb(null, true);
       } else {
-        cb(new Error('Only image files are allowed!'));
+        cb(new Error('Only image files are allowed'));
       }
     }
   });
@@ -210,21 +191,22 @@ export function registerRoutes(app: Express): Server {
         return res.status(400).json({ error: "No icon file provided" });
       }
 
-      const iconUrl = `/uploads/${req.file.filename}`;
+      // Upload to object storage
+      const { url: iconUrl } = await uploadToObjectStorage(
+        req.file.buffer,
+        req.file.originalname,
+        'icon'
+      );
+
       const project = await storage.updateProject(id, { iconUrl });
       
       if (!project) {
-        // Clean up uploaded file if project not found
-        fs.unlinkSync(req.file.path);
         return res.status(404).json({ error: "Project not found" });
       }
       
       res.json({ iconUrl, project });
     } catch (error) {
       console.error("Error uploading project icon:", error);
-      if (req.file) {
-        fs.unlinkSync(req.file.path);
-      }
       res.status(500).json({ error: "Failed to upload project icon" });
     }
   });
@@ -237,21 +219,22 @@ export function registerRoutes(app: Express): Server {
         return res.status(400).json({ error: "No hero image file provided" });
       }
 
-      const heroImageUrl = `/uploads/${req.file.filename}`;
+      // Upload to object storage
+      const { url: heroImageUrl } = await uploadToObjectStorage(
+        req.file.buffer,
+        req.file.originalname,
+        'hero'
+      );
+
       const project = await storage.updateProject(id, { heroImageUrl });
       
       if (!project) {
-        // Clean up uploaded file if project not found
-        fs.unlinkSync(req.file.path);
         return res.status(404).json({ error: "Project not found" });
       }
       
       res.json({ heroImageUrl, project });
     } catch (error) {
       console.error("Error uploading project hero image:", error);
-      if (req.file) {
-        fs.unlinkSync(req.file.path);
-      }
       res.status(500).json({ error: "Failed to upload project hero image" });
     }
   });
@@ -264,15 +247,19 @@ export function registerRoutes(app: Express): Server {
         return res.status(400).json({ error: "No screenshot files provided" });
       }
 
-      const screenshotUrls = req.files.map(file => `/uploads/${file.filename}`);
-      
       // Get current project to append to existing screenshots
       const currentProject = await storage.getProject(id);
       if (!currentProject) {
-        // Clean up uploaded files if project not found
-        req.files.forEach(file => fs.unlinkSync(file.path));
         return res.status(404).json({ error: "Project not found" });
       }
+
+      // Upload all screenshots to object storage
+      const uploadPromises = req.files.map(file => 
+        uploadToObjectStorage(file.buffer, file.originalname, 'screenshot')
+      );
+      
+      const uploadResults = await Promise.all(uploadPromises);
+      const screenshotUrls = uploadResults.map(result => result.url);
 
       const existingScreenshots = currentProject.screenshotUrls || [];
       const updatedScreenshots = [...existingScreenshots, ...screenshotUrls];
@@ -282,9 +269,6 @@ export function registerRoutes(app: Express): Server {
       res.json({ screenshotUrls, project });
     } catch (error) {
       console.error("Error uploading project screenshots:", error);
-      if (req.files && Array.isArray(req.files)) {
-        req.files.forEach(file => fs.unlinkSync(file.path));
-      }
       res.status(500).json({ error: "Failed to upload project screenshots" });
     }
   });
@@ -304,11 +288,11 @@ export function registerRoutes(app: Express): Server {
         return res.status(400).json({ error: "Invalid screenshot index" });
       }
 
-      // Delete file from disk
+      // Delete file from object storage
       const screenshotUrl = screenshots[index];
-      const filePath = path.join(process.cwd(), screenshotUrl);
-      if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath);
+      const filename = extractFilenameFromUrl(screenshotUrl);
+      if (filename) {
+        await deleteFromObjectStorage(filename);
       }
 
       // Remove from array
@@ -334,11 +318,11 @@ export function registerRoutes(app: Express): Server {
 
       const screenshots = project.screenshotUrls || [];
       
-      // Delete all files from disk
+      // Delete all files from object storage
       screenshots.forEach(screenshotUrl => {
-        const filePath = path.join(process.cwd(), screenshotUrl);
-        if (fs.existsSync(filePath)) {
-          fs.unlinkSync(filePath);
+        const filename = extractFilenameFromUrl(screenshotUrl);
+        if (filename) {
+          deleteFromObjectStorage(filename);
         }
       });
 
@@ -466,8 +450,44 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
-  // Serve uploaded files statically
-  app.use('/uploads', express.static(uploadsDir));
+  // Serve files from object storage
+  app.get('/api/files/:filename', async (req, res) => {
+    try {
+      const { filename } = req.params;
+      const fileBuffer = await getFileFromObjectStorage(filename);
+      
+      if (!fileBuffer) {
+        return res.status(404).json({ error: 'File not found' });
+      }
+
+      // Set appropriate content type based on file extension
+      const ext = path.extname(filename).toLowerCase();
+      let contentType = 'application/octet-stream';
+      
+      switch (ext) {
+        case '.jpg':
+        case '.jpeg':
+          contentType = 'image/jpeg';
+          break;
+        case '.png':
+          contentType = 'image/png';
+          break;
+        case '.gif':
+          contentType = 'image/gif';
+          break;
+        case '.webp':
+          contentType = 'image/webp';
+          break;
+      }
+
+      res.set('Content-Type', contentType);
+      res.set('Cache-Control', 'public, max-age=31536000'); // Cache for 1 year
+      res.send(fileBuffer);
+    } catch (error) {
+      console.error('Error serving file:', error);
+      res.status(500).json({ error: 'Failed to serve file' });
+    }
+  });
 
   // Admin status check endpoint
   app.get("/api/admin-status", (req, res) => {

@@ -26,7 +26,7 @@ Preferred communication style: Simple, everyday language.
 - **Database**: PostgreSQL with Drizzle ORM, hosted on Neon Database
 - **Session Management**: Connect-pg-simple for PostgreSQL session storage
 - **Authentication**: Internal authentication system with username/password login, bcrypt password hashing, Express sessions, and role-based admin access control. Replaces external Replit OAuth for enhanced security.
-- **File Upload System**: Multer-based API endpoints for project media uploads (icons, screenshots) with validation and cleanup.
+- **File Upload System**: Multer-based API endpoints for project media uploads (icons, hero images, screenshots) with Replit Object Storage for persistent image storage across deployments.
 - **Admin Panel**: Comprehensive `/admin` route with CRUD operations for project management, secured by Replit Auth and admin role.
 
 ### System Design
@@ -77,7 +77,23 @@ But the main `run` command needs to match for deployment success.
 ### Backend Dependencies
 - **Database**: `@neondatabase/serverless`, Drizzle ORM (PostgreSQL dialect)
 - **Session**: `connect-pg-simple`
+- **File Storage**: `@replit/object-storage` for persistent image storage
 - **Development**: `tsx`, `esbuild`
+
+## Recent Changes
+
+### Image Storage Migration (August 2025)
+**Issue**: Images were being lost during redeployments because they were stored in the local filesystem's `uploads/` directory, which gets rebuilt on each deployment.
+
+**Solution**: Migrated to Replit Object Storage for persistent image storage:
+- **Backend Changes**:
+  - Added `server/objectStorage.ts` with Object Storage client and utility functions
+  - Updated Multer configuration to use memory storage instead of disk storage
+  - Modified all upload routes (`/upload-icon`, `/upload-hero`, `/upload-screenshots`) to use Object Storage
+  - Updated deletion routes to remove files from Object Storage
+  - Added `/api/files/:filename` route to serve images from Object Storage
+- **Storage Cost**: $0.03/GiB/month + $0.10/GiB data transfer + request fees
+- **Benefits**: Images now persist across all deployments and redeploys
 
 ### Fonts and Assets
 - **Typography**: Courier Prime (Google Fonts)
