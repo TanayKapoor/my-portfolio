@@ -35,38 +35,46 @@ export default function OdometerText({
       setIsTransitioning(true);
       onTextChange?.(true);
       
-      // Start the flip animation immediately
+      // Change to next message immediately when animation starts
+      const newIndex = (currentMessageIndex + 1) % messages.length;
+      setCurrentMessageIndex(newIndex);
+      
+      // Animation completes
       setTimeout(() => {
-        setCurrentMessageIndex(nextIndex);
-        
-        // Animation completes
-        setTimeout(() => {
-          setIsTransitioning(false);
-          onTextChange?.(false);
-        }, 500);
-      }, 50);
+        setIsTransitioning(false);
+        onTextChange?.(false);
+      }, 500);
       
     }, animationDelay);
 
     return () => clearInterval(interval);
-  }, [messages, currentMessageIndex, nextIndex, animationDelay, onTextChange]);
+  }, [messages, currentMessageIndex, animationDelay, onTextChange]);
 
   // Get the longer message to determine dimensions
   const longerMessage = currentMessage.length >= nextMessage.length ? currentMessage : nextMessage;
   const maxLength = Math.max(currentMessage.length, nextMessage.length);
   const currentFontSize = calculateFontSize(longerMessage);
 
-  // Create character positions for odometer effect
+  // Create character positions for odometer effect  
   const renderOdometerChar = (position: number) => {
     const currentChar = currentMessage[position] || '';
     const nextChar = nextMessage[position] || '';
+    
+    // Calculate width based on character type
+    const getCharWidth = (char: string) => {
+      if (!char || char === ' ') return '0.4em';
+      if (char.match(/[iIl1]/)) return '0.3em';
+      if (char.match(/[mMwW]/)) return '1em';
+      return '0.6em';
+    };
     
     return (
       <div 
         key={position}
         className="odometer-digit"
         style={{
-          '--char-delay': `${position * 0.02}s`
+          '--char-delay': `${position * 0.02}s`,
+          minWidth: getCharWidth(currentChar || nextChar)
         } as React.CSSProperties}
       >
         <div className={`odometer-digit-inner ${isTransitioning ? 'flipping' : ''}`}>

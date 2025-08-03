@@ -2432,22 +2432,27 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
 }
 
 .odometer-display {
-  display: inline-block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   overflow: visible;
   white-space: nowrap;
+  min-height: 1.4em;
 }
 
 .odometer-digit {
-  display: inline-block;
+  display: flex;
   position: relative;
   overflow: hidden;
   height: 1.4em;
-  vertical-align: top;
-  min-width: 0.8em;
-  text-align: center;
+  align-items: center;
+  justify-content: center;
+  min-width: 0.6em;
+  flex-shrink: 0;
 }
 
 .odometer-digit-inner {
