@@ -85,6 +85,22 @@ export default function OdometerText({
     );
   };
 
+  console.log('Odometer Debug:', { currentMessage, nextMessage, maxLength, isTransitioning });
+
+  // Fallback for when there's no content
+  if (!currentMessage && !nextMessage) {
+    return (
+      <div 
+        className="odometer-container"
+        style={{ fontSize: currentFontSize }}
+      >
+        <div style={{ color: '#fff', textShadow: '1px 1px 5px rgba(0,0,0,0.5)' }}>
+          {messages[0] || 'Loading...'}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div 
       ref={containerRef}
@@ -93,6 +109,10 @@ export default function OdometerText({
     >
       <div className="odometer-display">
         {Array.from({ length: maxLength }).map((_, index) => renderOdometerChar(index))}
+      </div>
+      {/* Debug info */}
+      <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)', marginTop: '10px' }}>
+        Current: "{currentMessage}" | Next: "{nextMessage}" | Transitioning: {isTransitioning.toString()}
       </div>
     </div>
   );
