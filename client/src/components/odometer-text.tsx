@@ -43,7 +43,7 @@ export default function OdometerText({
         setTimeout(() => {
           setIsTransitioning(false);
           onTextChange?.(false);
-        }, 700);
+        }, 500);
       }, 50);
       
     }, animationDelay);
@@ -66,15 +66,15 @@ export default function OdometerText({
         key={position}
         className="odometer-digit"
         style={{
-          '--char-delay': `${position * 0.05}s`
+          '--char-delay': `${position * 0.02}s`
         } as React.CSSProperties}
       >
         <div className={`odometer-digit-inner ${isTransitioning ? 'flipping' : ''}`}>
           <div className="odometer-digit-current">
-            {currentChar === ' ' ? '\u00A0' : currentChar}
+            {currentChar === ' ' ? '\u00A0' : (currentChar || '')}
           </div>
           <div className="odometer-digit-next">
-            {nextChar === ' ' ? '\u00A0' : nextChar}
+            {nextChar === ' ' ? '\u00A0' : (nextChar || '')}
           </div>
         </div>
       </div>
