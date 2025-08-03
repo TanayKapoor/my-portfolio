@@ -322,6 +322,36 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
+  // Delete all screenshots for a project
+  app.delete("/api/projects/:id/screenshots", requireAdmin, async (req, res) => {
+    try {
+      const { id } = req.params;
+      
+      const project = await storage.getProject(id);
+      if (!project) {
+        return res.status(404).json({ error: "Project not found" });
+      }
+
+      const screenshots = project.screenshotUrls || [];
+      
+      // Delete all files from disk
+      screenshots.forEach(screenshotUrl => {
+        const filePath = path.join(process.cwd(), screenshotUrl);
+        if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath);
+        }
+      });
+
+      // Clear the screenshots array
+      const updatedProject = await storage.updateProject(id, { screenshotUrls: [] });
+      
+      res.json({ project: updatedProject });
+    } catch (error) {
+      console.error("Error deleting all project screenshots:", error);
+      res.status(500).json({ error: "Failed to delete all project screenshots" });
+    }
+  });
+
   app.put("/api/projects/:id/reorder-screenshots", requireAdmin, async (req, res) => {
     try {
       const { id } = req.params;

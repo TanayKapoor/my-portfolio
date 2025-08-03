@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Upload, X, Image, FileImage, GripVertical } from 'lucide-react';
+import { Upload, X, Image, FileImage, GripVertical, Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import type { Project } from '@shared/schema';
@@ -89,6 +89,28 @@ export default function FileUpload({ project, type, onUploadComplete }: FileUplo
     onError: (error) => {
       toast({ 
         title: 'Failed to delete screenshot', 
+        description: error instanceof Error ? error.message : 'Unknown error',
+        variant: 'destructive' 
+      });
+    },
+  });
+
+  const deleteAllScreenshotsMutation = useMutation({
+    mutationFn: async () => {
+      const response = await fetch(`/api/projects/${project.id}/screenshots`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) throw new Error('Failed to delete all screenshots');
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/projects'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/projects', project.id] });
+      toast({ title: 'All screenshots deleted successfully!' });
+    },
+    onError: (error) => {
+      toast({ 
+        title: 'Failed to delete all screenshots', 
         description: error instanceof Error ? error.message : 'Unknown error',
         variant: 'destructive' 
       });
@@ -196,6 +218,12 @@ export default function FileUpload({ project, type, onUploadComplete }: FileUplo
 
   const handleDeleteScreenshot = (index: number) => {
     deleteScreenshotMutation.mutate(index);
+  };
+
+  const handleDeleteAllScreenshots = () => {
+    if (window.confirm('Are you sure you want to delete all screenshots? This action cannot be undone.')) {
+      deleteAllScreenshotsMutation.mutate();
+    }
   };
 
   // Drag and drop handlers for reordering screenshots
@@ -337,9 +365,21 @@ export default function FileUpload({ project, type, onUploadComplete }: FileUplo
 
       {type === 'screenshots' && project.screenshotUrls && project.screenshotUrls.length > 0 && (
         <div className="space-y-2">
-          <div className="text-sm font-medium text-gray-300">
-            Current Screenshots ({project.screenshotUrls.length})
-            <span className="text-xs text-gray-500 ml-2">Drag to reorder</span>
+          <div className="flex items-center justify-between">
+            <div className="text-sm font-medium text-gray-300">
+              Current Screenshots ({project.screenshotUrls.length})
+              <span className="text-xs text-gray-500 ml-2">Drag to reorder</span>
+            </div>
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={handleDeleteAllScreenshots}
+              disabled={deleteAllScreenshotsMutation.isPending}
+              className="text-xs"
+            >
+              <Trash2 className="h-3 w-3 mr-1" />
+              Remove All
+            </Button>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
             {project.screenshotUrls.map((url, index) => (
