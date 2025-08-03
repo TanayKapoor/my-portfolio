@@ -1,13 +1,32 @@
 import { Client } from '@replit/object-storage';
 import { v4 as uuidv4 } from 'uuid';
 import { extname } from 'path';
+import path from 'path';
+import fs from 'fs';
 
 // Initialize the object storage client with bucket configuration
-let storage: Client;
+let storage: Client | null = null;
+let isObjectStorageAvailable = false;
 
 async function initializeStorage() {
-  if (!storage) {
-    storage = new Client({ bucketId: 'project-images' });
+  if (!storage && !isObjectStorageAvailable) {
+    try {
+      storage = new Client();
+      // Test if object storage is working by trying to list
+      const testResult = await storage.list();
+      if (testResult.ok) {
+        isObjectStorageAvailable = true;
+        console.log('Object storage initialized successfully');
+      } else {
+        console.log('Object storage not available, falling back to local storage');
+        storage = null;
+        isObjectStorageAvailable = false;
+      }
+    } catch (error) {
+      console.log('Object storage not available, falling back to local storage');
+      storage = null;
+      isObjectStorageAvailable = false;
+    }
   }
   return storage;
 }
@@ -17,7 +36,7 @@ export interface UploadResult {
   filename: string;
 }
 
-// Upload a file to object storage
+// Upload a file to storage (object storage or local fallback)
 export async function uploadToObjectStorage(
   fileBuffer: Buffer,
   originalName: string,
@@ -30,49 +49,92 @@ export async function uploadToObjectStorage(
     const extension = extname(originalName);
     const filename = `${fileType}-${Date.now()}-${Math.floor(Math.random() * 1000000000)}${extension}`;
     
-    // Upload to object storage using uploadFromBytes
-    const { ok, error } = await client.uploadFromBytes(filename, fileBuffer);
-    
-    if (!ok) {
-      throw new Error(`Upload failed: ${error}`);
+    if (client && isObjectStorageAvailable) {
+      // Use object storage
+      const { ok, error } = await client.uploadFromBytes(filename, fileBuffer);
+      
+      if (!ok) {
+        console.error('Upload failed with error:', error);
+        // Fall back to local storage
+        return await uploadToLocalStorage(fileBuffer, filename);
+      }
+      
+      const url = `/api/files/${filename}`;
+      return { url, filename };
+    } else {
+      // Fall back to local storage
+      return await uploadToLocalStorage(fileBuffer, filename);
     }
-    
-    // For Replit object storage, the URL points to our API endpoint
-    const url = `/api/files/${filename}`;
-    
-    return { url, filename };
   } catch (error) {
-    console.error('Error uploading to object storage:', error);
-    throw new Error('Failed to upload file to object storage');
+    console.error('Error uploading to object storage, falling back to local:', error);
+    // Fall back to local storage
+    const extension = extname(originalName);
+    const filename = `${fileType}-${Date.now()}-${Math.floor(Math.random() * 1000000000)}${extension}`;
+    return await uploadToLocalStorage(fileBuffer, filename);
   }
 }
 
-// Delete a file from object storage
+// Local storage fallback
+async function uploadToLocalStorage(fileBuffer: Buffer, filename: string): Promise<UploadResult> {
+  const uploadsDir = path.join(process.cwd(), 'uploads');
+  if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+  }
+  
+  const filePath = path.join(uploadsDir, filename);
+  fs.writeFileSync(filePath, fileBuffer);
+  
+  const url = `/uploads/${filename}`;
+  return { url, filename };
+}
+
+// Delete a file from storage
 export async function deleteFromObjectStorage(filename: string): Promise<void> {
   try {
     const client = await initializeStorage();
-    const { ok, error } = await client.delete(filename);
-    if (!ok) {
-      console.error('Delete failed:', error);
+    
+    if (client && isObjectStorageAvailable) {
+      const { ok, error } = await client.delete(filename);
+      if (!ok) {
+        console.error('Delete failed:', error);
+      }
+    } else {
+      // Delete from local storage
+      const uploadsDir = path.join(process.cwd(), 'uploads');
+      const filePath = path.join(uploadsDir, filename);
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
     }
   } catch (error) {
-    console.error('Error deleting from object storage:', error);
+    console.error('Error deleting from storage:', error);
     // Don't throw here to avoid breaking the main operation
   }
 }
 
-// Get a file from object storage
+// Get a file from storage
 export async function getFileFromObjectStorage(filename: string): Promise<Buffer | null> {
   try {
     const client = await initializeStorage();
-    const { ok, value, error } = await client.downloadAsBytes(filename);
-    if (!ok) {
-      console.error('Download failed:', error);
+    
+    if (client && isObjectStorageAvailable) {
+      const { ok, value, error } = await client.downloadAsBytes(filename);
+      if (!ok) {
+        console.error('Download failed:', error);
+        return null;
+      }
+      return value[0];
+    } else {
+      // Get from local storage
+      const uploadsDir = path.join(process.cwd(), 'uploads');
+      const filePath = path.join(uploadsDir, filename);
+      if (fs.existsSync(filePath)) {
+        return fs.readFileSync(filePath);
+      }
       return null;
     }
-    return value[0];
   } catch (error) {
-    console.error('Error downloading from object storage:', error);
+    console.error('Error downloading from storage:', error);
     return null;
   }
 }

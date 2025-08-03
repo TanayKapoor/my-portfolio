@@ -450,7 +450,14 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
-  // Serve files from object storage
+  // Set up static file serving for local uploads (fallback)
+  const uploadsDir = path.join(process.cwd(), 'uploads');
+  if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+  }
+  app.use('/uploads', express.static(uploadsDir));
+
+  // Serve files from object storage or local fallback
   app.get('/api/files/:filename', async (req, res) => {
     try {
       const { filename } = req.params;

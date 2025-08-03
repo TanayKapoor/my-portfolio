@@ -85,15 +85,26 @@ But the main `run` command needs to match for deployment success.
 ### Image Storage Migration (August 2025)
 **Issue**: Images were being lost during redeployments because they were stored in the local filesystem's `uploads/` directory, which gets rebuilt on each deployment.
 
-**Solution**: Migrated to Replit Object Storage for persistent image storage:
+**Solution**: Implemented hybrid storage system with Object Storage integration:
+- **Current State**: Hybrid storage system that automatically falls back to local storage if Object Storage isn't available
 - **Backend Changes**:
-  - Added `server/objectStorage.ts` with Object Storage client and utility functions
-  - Updated Multer configuration to use memory storage instead of disk storage
-  - Modified all upload routes (`/upload-icon`, `/upload-hero`, `/upload-screenshots`) to use Object Storage
-  - Updated deletion routes to remove files from Object Storage
-  - Added `/api/files/:filename` route to serve images from Object Storage
-- **Storage Cost**: $0.03/GiB/month + $0.10/GiB data transfer + request fees
-- **Benefits**: Images now persist across all deployments and redeploys
+  - Added `server/objectStorage.ts` with Object Storage client and local storage fallback
+  - Updated Multer configuration to use memory storage
+  - Modified all upload routes to use hybrid storage system
+  - Added `/api/files/:filename` route for Object Storage files
+  - Maintained `/uploads/` static serving for local fallback
+- **Benefits**: 
+  - Images work immediately with local storage fallback
+  - Ready for Object Storage when bucket is configured
+  - Automatic detection and switching between storage methods
+
+**To Enable Object Storage** (Optional - for permanent image persistence):
+1. Go to the "Object Storage" tool in your Replit workspace
+2. Click "Create new bucket" and name it (e.g., "project-images") 
+3. The system will automatically detect and use Object Storage
+4. **Cost**: $0.03/GiB/month + $0.10/GiB data transfer + request fees
+
+**Current Status**: ✅ Images working with local storage (lost on redeploy) / 🔄 Ready for Object Storage upgrade
 
 ### Fonts and Assets
 - **Typography**: Courier Prime (Google Fonts)
