@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import Typewriter from './typewriter';
+import OdometerText from './odometer-text';
 import profilePic from '@assets/pfp_1753712646611.png';
 
 export default function HalftoneHero() {
@@ -41,14 +41,12 @@ export default function HalftoneHero() {
           FullStack Machine Learning Engineer
         </h2>
 
-        {/* Typewriter Text - Below job title */}
+        {/* Odometer Text - Below job title */}
         <div className="w-full max-w-7xl px-4">
-          <Typewriter 
+          <OdometerText 
             messages={greetingMessages} 
-            typingSpeed={100}
-            backspaceSpeed={50}
-            pauseBetweenMessages={2000}
-            onTypingStateChange={setIsTyping}
+            animationDelay={3000}
+            onTextChange={setIsTyping}
           />
         </div>
       </div>
