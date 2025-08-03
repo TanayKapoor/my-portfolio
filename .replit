@@ -49,3 +49,6 @@ integrations = [
   "javascript_auth_all_persistance==1.0.0",
   "javascript_mem_db==1.0.0",
 ]
+
+[objectStorage]
+defaultBucketID = "replit-objstore-aacd5e32-5960-483f-a0b7-abc0fc4a086b"
