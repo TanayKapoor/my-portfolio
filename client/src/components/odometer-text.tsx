@@ -8,13 +8,20 @@ interface OdometerTextProps {
 
 export default function OdometerText({ 
   messages, 
-  animationDelay = 2000,
+  animationDelay = 3000,
   onTextChange
 }: OdometerTextProps) {
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
-  const [displayText, setDisplayText] = useState(messages[0] || '');
+  const [displayText, setDisplayText] = useState('');
   const containerRef = useRef<HTMLDivElement>(null);
+
+  // Initialize display text
+  useEffect(() => {
+    if (messages.length > 0 && !displayText) {
+      setDisplayText(messages[0]);
+    }
+  }, [messages, displayText]);
 
   // Calculate dynamic font size based on text length
   const calculateFontSize = (text: string) => {
@@ -32,35 +39,46 @@ export default function OdometerText({
       setIsAnimating(true);
       onTextChange?.(true);
       
-      // Change text immediately when animation starts
-      const nextIndex = (currentMessageIndex + 1) % messages.length;
-      setCurrentMessageIndex(nextIndex);
-      setDisplayText(messages[nextIndex]);
-      
-      // Animation completes after 600ms
+      // Wait for animation to start, then change text
       setTimeout(() => {
-        setIsAnimating(false);
-        onTextChange?.(false);
-      }, 600);
+        const nextIndex = (currentMessageIndex + 1) % messages.length;
+        setCurrentMessageIndex(nextIndex);
+        setDisplayText(messages[nextIndex]);
+        
+        // Animation completes
+        setTimeout(() => {
+          setIsAnimating(false);
+          onTextChange?.(false);
+        }, 300);
+      }, 300);
       
     }, animationDelay);
 
     return () => clearInterval(interval);
   }, [messages, currentMessageIndex, animationDelay, onTextChange]);
 
-  // Initialize with first message
-  useEffect(() => {
-    if (messages.length > 0) {
-      setDisplayText(messages[0]);
-    }
-  }, [messages]);
-
   const currentFontSize = calculateFontSize(displayText);
+
+  // Debug logging
+  console.log('OdometerText render:', { displayText, isAnimating, messages: messages.length });
+
+  if (!displayText) {
+    return (
+      <div 
+        className="odometer-container"
+        style={{ fontSize: currentFontSize }}
+      >
+        <div className="odometer-text">
+          Loading...
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div 
       ref={containerRef}
-      className="odometer-container relative overflow-hidden"
+      className="odometer-container"
       style={{ fontSize: currentFontSize }}
     >
       <div className={`odometer-text ${isAnimating ? 'animating' : ''}`}>
@@ -72,7 +90,7 @@ export default function OdometerText({
               '--char-delay': `${index * 0.03}s`
             } as React.CSSProperties}
           >
-            {char}
+            {char === ' ' ? '\u00A0' : char}
           </span>
         ))}
       </div>
