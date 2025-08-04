@@ -157,6 +157,20 @@ export default function NewsletterPage() {
                 </defs>
               </svg>
             </div>
+            
+            {/* Divider */}
+            <div className="w-full px-8 mb-6">
+              <div className="w-full h-px bg-gradient-to-r from-transparent via-gray-400/50 to-transparent"></div>
+            </div>
+            
+            {/* Description Text */}
+            <div className="px-8 pb-6">
+              <p className="text-gray-300 text-sm leading-relaxed">
+                I send occasional, code-focused updates on my solo ML experiments, projects in progress, and useful dev tools.
+                <br /><br />
+                If you're into clean code and AI, sign up.
+              </p>
+            </div>
           </div>
 
           {/* Account Signup Container */}
