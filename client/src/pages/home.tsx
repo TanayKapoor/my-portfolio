@@ -13,7 +13,8 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { Mail, Send } from 'lucide-react';
+import { Mail, Send, Newspaper } from 'lucide-react';
+import { Link } from 'wouter';
 
 export default function Home() {
   const [email, setEmail] = useState('');
@@ -97,6 +98,14 @@ export default function Home() {
                   >
                     <Mail className="mr-3 h-5 w-5" />
                     <span>Send me an email</span>
+                  </DropdownMenuItem>
+                  
+                  {/* Newsletter signup option */}
+                  <DropdownMenuItem className="cursor-pointer hover:bg-white/10 p-3 rounded-lg transition-colors text-white" asChild>
+                    <Link href="/newsletter">
+                      <Newspaper className="mr-3 h-5 w-5" />
+                      <span>Join newsletter for updates</span>
+                    </Link>
                   </DropdownMenuItem>
                   
                   {/* Divider */}

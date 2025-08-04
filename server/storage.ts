@@ -1,4 +1,4 @@
-import { users, projects, workExperiences, commands, type User, type UpsertUser, type Project, type InsertProject, type WorkExperience, type InsertWorkExperience, type Command, type InsertCommand, type RegisterData } from "@shared/schema";
+import { users, projects, workExperiences, commands, newsletters, type User, type UpsertUser, type Project, type InsertProject, type WorkExperience, type InsertWorkExperience, type Command, type InsertCommand, type RegisterData, type Newsletter, type InsertNewsletter, type NewsletterSignupData } from "@shared/schema";
 import { db } from "./db";
 import { eq, asc, or } from "drizzle-orm";
 import session from "express-session";
@@ -38,6 +38,13 @@ export interface IStorage {
   createCommand(command: InsertCommand): Promise<Command>;
   updateCommand(id: string, command: Partial<InsertCommand>): Promise<Command | undefined>;
   deleteCommand(id: string): Promise<boolean>;
+  
+  // Newsletter methods
+  createUserAndSubscribe(userData: NewsletterSignupData & { password: string }): Promise<{ user: User; newsletter: Newsletter }>;
+  subscribeToNewsletter(userId: string, preferences?: any): Promise<Newsletter>;
+  unsubscribeFromNewsletter(userId: string): Promise<boolean>;
+  getUserNewsletterSubscription(userId: string): Promise<Newsletter | undefined>;
+  getAllNewsletterSubscriptions(): Promise<Newsletter[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -188,6 +195,69 @@ export class DatabaseStorage implements IStorage {
   async deleteCommand(id: string): Promise<boolean> {
     const result = await db.delete(commands).where(eq(commands.id, id));
     return (result.rowCount ?? 0) > 0;
+  }
+
+  // Newsletter methods implementation
+  async createUserAndSubscribe(userData: NewsletterSignupData & { password: string }): Promise<{ user: User; newsletter: Newsletter }> {
+    // First create the user
+    const [user] = await db
+      .insert(users)
+      .values({
+        username: userData.username,
+        email: userData.email,
+        password: userData.password,
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        isAdmin: false,
+      })
+      .returning();
+    
+    // Then subscribe them to the newsletter
+    const [newsletter] = await db
+      .insert(newsletters)
+      .values({
+        userId: user.id,
+        preferences: userData.preferences || { frequency: "monthly", topics: [] },
+        isActive: true,
+      })
+      .returning();
+    
+    return { user, newsletter };
+  }
+
+  async subscribeToNewsletter(userId: string, preferences?: any): Promise<Newsletter> {
+    const [newsletter] = await db
+      .insert(newsletters)
+      .values({
+        userId,
+        preferences: preferences || { frequency: "monthly", topics: [] },
+        isActive: true,
+      })
+      .returning();
+    return newsletter;
+  }
+
+  async unsubscribeFromNewsletter(userId: string): Promise<boolean> {
+    const result = await db
+      .update(newsletters)
+      .set({ isActive: false })
+      .where(eq(newsletters.userId, userId));
+    return (result.rowCount ?? 0) > 0;
+  }
+
+  async getUserNewsletterSubscription(userId: string): Promise<Newsletter | undefined> {
+    const [newsletter] = await db
+      .select()
+      .from(newsletters)
+      .where(eq(newsletters.userId, userId));
+    return newsletter || undefined;
+  }
+
+  async getAllNewsletterSubscriptions(): Promise<Newsletter[]> {
+    return await db
+      .select()
+      .from(newsletters)
+      .where(eq(newsletters.isActive, true));
   }
 }
 

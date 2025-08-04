@@ -37,7 +37,8 @@ export default function AuthPage() {
         title: 'Welcome back!',
         description: `Logged in as ${user.username}`,
       });
-      setLocation('/admin');
+      // Redirect based on user role
+      setLocation(user.isAdmin ? '/admin' : '/dashboard');
     },
     onError: (error: any) => {
       const message = error.message || 'Login failed';
@@ -152,6 +153,19 @@ export default function AuthPage() {
                   {loginMutation.isPending ? 'Signing in...' : 'Sign In'}
                 </Button>
               </form>
+              
+              <div className="text-center">
+                <p className="text-gray-400 text-sm">
+                  Don't have an account?{' '}
+                  <Button
+                    variant="link"
+                    className="text-blue-400 hover:text-blue-300 p-0 h-auto font-normal"
+                    onClick={() => setLocation('/newsletter')}
+                  >
+                    Sign up for newsletter
+                  </Button>
+                </p>
+              </div>
             </CardContent>
           </Card>
         </div>

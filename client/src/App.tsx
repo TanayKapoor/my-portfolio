@@ -8,6 +8,8 @@ import ProjectsPage from "@/pages/projects";
 import ProjectDetail from "@/pages/project-detail";
 import AdminPanel from "@/pages/admin";
 import AuthPage from "@/pages/auth";
+import NewsletterPage from "@/pages/newsletter";
+import DashboardPage from "@/pages/dashboard";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -18,6 +20,8 @@ function Router() {
       <Route path="/project/:id" component={ProjectDetail} />
       <Route path="/admin" component={AdminPanel} />
       <Route path="/auth" component={AuthPage} />
+      <Route path="/newsletter" component={NewsletterPage} />
+      <Route path="/dashboard" component={DashboardPage} />
       <Route component={NotFound} />
     </Switch>
   );

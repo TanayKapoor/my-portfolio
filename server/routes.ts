@@ -5,7 +5,7 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 import { storage } from "./storage";
-import { insertProjectSchema, insertWorkExperienceSchema, insertCommandSchema } from "@shared/schema";
+import { insertProjectSchema, insertWorkExperienceSchema, insertCommandSchema, newsletterSignupSchema } from "@shared/schema";
 import { z } from "zod";
 import { setupAuth, requireAuth, requireAdmin } from "./auth";
 import { uploadToObjectStorage, deleteFromObjectStorage, getFileFromObjectStorage, extractFilenameFromUrl } from "./objectStorage";
@@ -493,6 +493,118 @@ export function registerRoutes(app: Express): Server {
     } catch (error) {
       console.error('Error serving file:', error);
       res.status(500).json({ error: 'Failed to serve file' });
+    }
+  });
+
+  // Newsletter routes
+  app.post("/api/newsletter/signup", async (req, res) => {
+    try {
+      const validatedData = newsletterSignupSchema.parse(req.body);
+      
+      // Check if user already exists
+      const existingUsername = await storage.getUserByUsername(validatedData.username);
+      if (existingUsername) {
+        return res.status(400).json({ message: "Username already exists" });
+      }
+
+      const existingEmail = await storage.getUserByEmail(validatedData.email);
+      if (existingEmail) {
+        return res.status(400).json({ message: "Email already exists" });
+      }
+
+      // Hash password and create user with newsletter subscription
+      const bcrypt = await import('bcrypt');
+      const hashedPassword = await bcrypt.hash(validatedData.password, 10);
+      
+      const { user, newsletter } = await storage.createUserAndSubscribe({
+        ...validatedData,
+        password: hashedPassword,
+      });
+
+      // Remove password from response
+      const { password, ...userWithoutPassword } = user;
+
+      // Auto-login the user
+      req.login(user, (err) => {
+        if (err) {
+          console.error("Login error:", err);
+          return res.status(201).json({ 
+            user: userWithoutPassword, 
+            newsletter,
+            message: "Account created successfully, but auto-login failed. Please log in manually." 
+          });
+        }
+        res.status(201).json({ 
+          user: userWithoutPassword, 
+          newsletter,
+          message: "Account created and newsletter subscription successful!" 
+        });
+      });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ 
+          message: "Validation error", 
+          errors: error.errors 
+        });
+      }
+      console.error("Newsletter signup error:", error);
+      res.status(500).json({ message: "Failed to create account and subscribe to newsletter" });
+    }
+  });
+
+  app.post("/api/newsletter/subscribe", requireAuth, async (req, res) => {
+    try {
+      const user = req.user as any;
+      const { preferences } = req.body;
+      
+      // Check if user is already subscribed
+      const existingSubscription = await storage.getUserNewsletterSubscription(user.id);
+      if (existingSubscription && existingSubscription.isActive) {
+        return res.status(400).json({ message: "Already subscribed to newsletter" });
+      }
+
+      const newsletter = await storage.subscribeToNewsletter(user.id, preferences);
+      res.status(201).json({ newsletter, message: "Successfully subscribed to newsletter!" });
+    } catch (error) {
+      console.error("Newsletter subscription error:", error);
+      res.status(500).json({ message: "Failed to subscribe to newsletter" });
+    }
+  });
+
+  app.delete("/api/newsletter/unsubscribe", requireAuth, async (req, res) => {
+    try {
+      const user = req.user as any;
+      const success = await storage.unsubscribeFromNewsletter(user.id);
+      
+      if (!success) {
+        return res.status(404).json({ message: "No active newsletter subscription found" });
+      }
+
+      res.json({ message: "Successfully unsubscribed from newsletter" });
+    } catch (error) {
+      console.error("Newsletter unsubscribe error:", error);
+      res.status(500).json({ message: "Failed to unsubscribe from newsletter" });
+    }
+  });
+
+  app.get("/api/newsletter/subscription", requireAuth, async (req, res) => {
+    try {
+      const user = req.user as any;
+      const subscription = await storage.getUserNewsletterSubscription(user.id);
+      res.json({ subscription });
+    } catch (error) {
+      console.error("Error fetching newsletter subscription:", error);
+      res.status(500).json({ message: "Failed to fetch newsletter subscription" });
+    }
+  });
+
+  app.get("/api/newsletter/subscriptions", requireAdmin, async (req, res) => {
+    try {
+      const subscriptions = await storage.getAllNewsletterSubscriptions();
+      res.json({ subscriptions });
+    } catch (error) {
+      console.error("Error fetching newsletter subscriptions:", error);
+      res.status(500).json({ message: "Failed to fetch newsletter subscriptions" });
     }
   });
 

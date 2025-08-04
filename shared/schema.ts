@@ -78,6 +78,14 @@ export const commands = pgTable("commands", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+export const newsletters = pgTable("newsletters", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  subscribedAt: timestamp("subscribed_at").defaultNow(),
+  isActive: boolean("is_active").default(true),
+  preferences: jsonb("preferences"), // Store newsletter preferences like frequency, topics, etc.
+});
+
 export const insertProjectSchema = createInsertSchema(projects).omit({
   id: true,
 });
@@ -90,6 +98,11 @@ export const insertCommandSchema = createInsertSchema(commands).omit({
   id: true,
   createdAt: true,
   updatedAt: true,
+});
+
+export const insertNewsletterSchema = createInsertSchema(newsletters).omit({
+  id: true,
+  subscribedAt: true,
 });
 
 // User schemas
@@ -110,14 +123,29 @@ export const registerSchema = loginSchema.extend({
   lastName: z.string().optional(),
 });
 
+export const newsletterSignupSchema = z.object({
+  email: z.string().email("Invalid email address"),
+  firstName: z.string().min(1, "First name is required"),
+  lastName: z.string().min(1, "Last name is required"),
+  username: z.string().min(3, "Username must be at least 3 characters"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+  preferences: z.object({
+    frequency: z.enum(["weekly", "monthly"]).default("monthly"),
+    topics: z.array(z.string()).default([]),
+  }).optional(),
+});
+
 export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type LoginData = z.infer<typeof loginSchema>;
 export type RegisterData = z.infer<typeof registerSchema>;
+export type NewsletterSignupData = z.infer<typeof newsletterSignupSchema>;
 export type InsertProject = z.infer<typeof insertProjectSchema>;
 export type Project = typeof projects.$inferSelect;
 export type InsertWorkExperience = z.infer<typeof insertWorkExperienceSchema>;
 export type WorkExperience = typeof workExperiences.$inferSelect;
 export type InsertCommand = z.infer<typeof insertCommandSchema>;
 export type Command = typeof commands.$inferSelect;
+export type InsertNewsletter = z.infer<typeof insertNewsletterSchema>;
+export type Newsletter = typeof newsletters.$inferSelect;
