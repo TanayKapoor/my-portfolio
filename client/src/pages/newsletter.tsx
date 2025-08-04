@@ -126,7 +126,7 @@ export default function NewsletterPage() {
           {/* Newsletter Signup Container */}
           <div className="bg-gray-800/40 backdrop-blur-lg rounded-3xl p-8 w-full max-w-md shadow-2xl border border-gray-600/30">
             <div 
-              className="flex items-start justify-start h-full cursor-pointer pt-4 pl-4" 
+              className="flex items-start justify-start cursor-pointer pt-4 pl-4 mb-6" 
               onClick={() => {
                 const svg = document.querySelector('.intro-svg');
                 if (svg) {
@@ -159,7 +159,7 @@ export default function NewsletterPage() {
             </div>
             
             {/* Divider */}
-            <div className="w-full px-8 mb-6">
+            <div className="w-full px-8 mb-4">
               <div className="w-full h-px bg-gradient-to-r from-transparent via-gray-400/50 to-transparent"></div>
             </div>
             
