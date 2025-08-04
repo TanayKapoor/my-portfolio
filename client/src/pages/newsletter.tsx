@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { useMutation } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
@@ -13,6 +13,7 @@ export default function NewsletterPage() {
   const { toast } = useToast();
   const { user } = useAuth();
   const [isSignUp, setIsSignUp] = useState(true);
+  const [animationKey, setAnimationKey] = useState(0);
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -21,6 +22,17 @@ export default function NewsletterPage() {
     password: '',
     phone: ''
   });
+
+  // Trigger animation on component mount and restart
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const svg = document.querySelector('.intro-svg');
+      if (svg) {
+        svg.classList.add('go');
+      }
+    }, 100);
+    return () => clearTimeout(timer);
+  }, [animationKey]);
 
   // Redirect if already logged in
   if (user) {
@@ -113,10 +125,37 @@ export default function NewsletterPage() {
         <div className="flex gap-8 w-full max-w-5xl">
           {/* Newsletter Signup Container */}
           <div className="bg-gray-800/40 backdrop-blur-lg rounded-3xl p-8 w-full max-w-md shadow-2xl border border-gray-600/30">
-            <div className="text-4xl font-bold text-white text-center">
-              SignUp<br />
-              for<br />
-              NewsLetter
+            <div 
+              className="flex items-center justify-center h-full cursor-pointer" 
+              onClick={() => {
+                const svg = document.querySelector('.intro-svg');
+                if (svg) {
+                  svg.classList.remove('go');
+                  setTimeout(() => {
+                    svg.classList.add('go');
+                  }, 100);
+                }
+              }}
+            >
+              <svg className="intro-svg" viewBox="0 0 200 86" style={{ maxWidth: '300px', width: '100%' }} key={animationKey}>
+                <text textAnchor="start" x="10" y="30" className="text text-stroke" clipPath="url(#text1)">SignUp</text>
+                <text textAnchor="start" x="10" y="50" className="text text-stroke" clipPath="url(#text2)">for</text>
+                <text textAnchor="start" x="10" y="70" className="text text-stroke" clipPath="url(#text3)">NewsLetter</text>
+                <text textAnchor="start" x="10" y="30" className="text text-stroke text-stroke-2" clipPath="url(#text1)">SignUp</text>
+                <text textAnchor="start" x="10" y="50" className="text text-stroke text-stroke-2" clipPath="url(#text2)">for</text>
+                <text textAnchor="start" x="10" y="70" className="text text-stroke text-stroke-2" clipPath="url(#text3)">NewsLetter</text>
+                <defs>
+                  <clipPath id="text1">
+                    <text textAnchor="start" x="10" y="30" className="text">SignUp</text>
+                  </clipPath>
+                  <clipPath id="text2">
+                    <text textAnchor="start" x="10" y="50" className="text">for</text>
+                  </clipPath>
+                  <clipPath id="text3">
+                    <text textAnchor="start" x="10" y="70" className="text">NewsLetter</text>
+                  </clipPath>
+                </defs>
+              </svg>
             </div>
           </div>
 
