@@ -2573,3 +2573,98 @@
     stroke-dashoffset: 0;
   }
 }
+
+/* Jelly-like Container Animations */
+.newsletter-container {
+  transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  animation: jellyBounce 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) both;
+}
+
+.newsletter-container:hover {
+  transform: scale(1.02);
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.account-container {
+  transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  animation: jellyBounce 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) both 0.2s;
+}
+
+.account-container:hover {
+  transform: scale(1.02);
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Content resize animations */
+.newsletter-content,
+.account-content {
+  transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* Jelly bounce keyframe */
+@keyframes jellyBounce {
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+  70% {
+    transform: scale(0.95);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Height transition animation */
+@keyframes smoothHeightChange {
+  from {
+    max-height: 0;
+    opacity: 0;
+  }
+  to {
+    max-height: 500px;
+    opacity: 1;
+  }
+}
+
+/* Form elements smooth animations */
+.form-element-enter {
+  animation: slideInFromBottom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+}
+
+@keyframes slideInFromBottom {
+  0% {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Container resize bounce effect */
+.container-resize {
+  animation: containerBounce 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) both;
+}
+
+@keyframes containerBounce {
+  0% {
+    transform: scaleY(1);
+  }
+  30% {
+    transform: scaleY(1.05);
+  }
+  60% {
+    transform: scaleY(0.98);
+  }
+  100% {
+    transform: scaleY(1);
+  }
+}
