@@ -2521,9 +2521,7 @@
 
 /* SVG Text Stroke Animation */
 .intro-svg {
-  background: linear-gradient(135deg, #aa3bb1, #582a7e);
-  border-radius: 1rem;
-  box-shadow: 0 30px 50px -20px rgba(46, 6, 66, 0.5);
+  /* Removed background gradient - transparent container */
 }
 
 .intro-svg .text { 
@@ -2539,7 +2537,7 @@
 
 .intro-svg.go .text-stroke {
   fill: none;
-  stroke: #51256f;
+  stroke: #ffffff;
   stroke-width: 2.8px;
   stroke-dashoffset: -900;
   stroke-dasharray: 900;
@@ -2557,7 +2555,8 @@
 }
 
 .intro-svg.go .text-stroke-2 {
-  stroke: #f6bdfa;
+  stroke: #ffffff;
+  stroke-width: 1.5px;
   animation-delay: 1.2s;
 }
 
