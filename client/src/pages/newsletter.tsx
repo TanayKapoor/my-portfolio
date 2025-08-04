@@ -110,7 +110,7 @@ export default function NewsletterPage() {
 
       {/* Content */}
       <div className="relative z-10 flex items-center justify-center min-h-screen p-4">
-        <div className="bg-gray-800/90 backdrop-blur-xl rounded-3xl p-8 w-full max-w-md shadow-2xl border border-gray-600/50">
+        <div className="bg-gray-800/40 backdrop-blur-lg rounded-3xl p-8 w-full max-w-md shadow-2xl border border-gray-600/30">
           {/* Close Button */}
           <button 
             onClick={() => setLocation('/')}
