@@ -2419,3 +2419,28 @@
     font-size: 3em;
   }
 }
+
+
+/* Wave Animations for Newsletter Page */
+@keyframes wave {
+  0%, 100% { transform: translateX(0) translateY(0); }
+  25% { transform: translateX(-5%) translateY(-10px); }
+  50% { transform: translateX(0) translateY(-5px); }
+  75% { transform: translateX(5%) translateY(-15px); }
+}
+
+@keyframes wave-delayed {
+  0%, 100% { transform: translateX(0) translateY(0); }
+  25% { transform: translateX(5%) translateY(-15px); }
+  50% { transform: translateX(0) translateY(-10px); }
+  75% { transform: translateX(-5%) translateY(-5px); }
+}
+
+.animate-wave {
+  animation: wave 8s ease-in-out infinite;
+}
+
+.animate-wave-delayed {
+  animation: wave-delayed 10s ease-in-out infinite;
+  animation-delay: -2s;
+}

@@ -1,369 +1,295 @@
 import { useState } from 'react';
 import { useLocation } from 'wouter';
 import { useMutation } from '@tanstack/react-query';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest, queryClient } from '@/lib/queryClient';
 import { useAuth } from '@/hooks/useAuth';
-import { 
-  Mail, 
-  User, 
-  Lock, 
-  CheckCircle, 
-  ArrowLeft, 
-  Newspaper, 
-  Clock, 
-  Settings,
-  Eye,
-  EyeOff 
-} from 'lucide-react';
-
-// Form schema that matches the backend newsletterSignupSchema
-const newsletterSignupSchema = z.object({
-  email: z.string().email("Invalid email address"),
-  firstName: z.string().min(1, "First name is required"),
-  lastName: z.string().min(1, "Last name is required"),
-  username: z.string().min(3, "Username must be at least 3 characters"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-  frequency: z.enum(["weekly", "monthly"]).default("monthly"),
-  topics: z.array(z.string()).default([]),
-});
-
-type NewsletterSignupData = z.infer<typeof newsletterSignupSchema>;
-
-const topics = [
-  "Web Development",
-  "React & Frontend",
-  "Backend & APIs",
-  "Database Design",
-  "DevOps & Deployment",
-  "UI/UX Design",
-  "Project Showcases",
-  "Career Tips"
-];
+import { X, Mail } from 'lucide-react';
 
 export default function NewsletterPage() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const { user } = useAuth();
-  const [showPassword, setShowPassword] = useState(false);
+  const [isSignUp, setIsSignUp] = useState(true);
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    username: '',
+    password: '',
+    phone: ''
+  });
 
   // Redirect if already logged in
   if (user) {
-    setLocation('/');
+    setLocation('/dashboard');
     return null;
   }
 
-  const form = useForm<NewsletterSignupData>({
-    resolver: zodResolver(newsletterSignupSchema),
-    defaultValues: {
-      email: '',
-      firstName: '',
-      lastName: '',
-      username: '',
-      password: '',
-      frequency: 'monthly',
-      topics: [],
-    },
-  });
-
   const signupMutation = useMutation({
-    mutationFn: async (data: NewsletterSignupData) => {
+    mutationFn: async (data: any) => {
       const res = await apiRequest('POST', '/api/newsletter/signup', {
-        ...data,
-        preferences: {
-          frequency: data.frequency,
-          topics: data.topics,
-        },
+        email: data.email,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        username: data.username,
+        password: data.password,
+        frequency: 'monthly',
+        topics: []
       });
       return await res.json();
     },
-    onSuccess: (data) => {
-      queryClient.setQueryData(['/api/user'], data.user);
+    onSuccess: (user) => {
+      queryClient.setQueryData(['/api/user'], user);
       toast({
-        title: 'Welcome!',
-        description: data.message || 'Successfully signed up for newsletter!',
+        title: 'Account created successfully!',
+        description: `Welcome ${user.username}! You're now subscribed to our newsletter.`,
       });
-      setLocation('/');
+      setLocation('/dashboard');
     },
     onError: (error: any) => {
-      const message = error.message || 'Signup failed';
       toast({
         title: 'Signup failed',
-        description: message,
+        description: error.message || 'Please try again',
         variant: 'destructive',
       });
     },
   });
 
-  const handleSubmit = (data: NewsletterSignupData) => {
-    signupMutation.mutate(data);
-  };
+  const loginMutation = useMutation({
+    mutationFn: async (credentials: { username: string; password: string }) => {
+      const res = await apiRequest('POST', '/api/login', credentials);
+      return await res.json();
+    },
+    onSuccess: (user) => {
+      queryClient.setQueryData(['/api/user'], user);
+      toast({
+        title: 'Welcome back!',
+        description: `Logged in as ${user.username}`,
+      });
+      setLocation(user.isAdmin ? '/admin' : '/dashboard');
+    },
+    onError: (error: any) => {
+      toast({
+        title: 'Login failed',
+        description: error.message || 'Invalid credentials',
+        variant: 'destructive',
+      });
+    },
+  });
 
-  const handleTopicChange = (topic: string, checked: boolean) => {
-    const currentTopics = form.getValues('topics');
-    if (checked) {
-      form.setValue('topics', [...currentTopics, topic]);
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (isSignUp) {
+      signupMutation.mutate(formData);
     } else {
-      form.setValue('topics', currentTopics.filter(t => t !== topic));
+      loginMutation.mutate({
+        username: formData.username,
+        password: formData.password
+      });
     }
   };
 
+  const handleInputChange = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-4">
-      <div className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Hero Section */}
-        <div className="hidden lg:flex flex-col justify-center space-y-6 text-white p-8">
-          <div className="space-y-4">
-            <div className="flex items-center space-x-3">
-              <Newspaper className="w-10 h-10 text-blue-400" />
-              <h1 className="text-4xl font-bold">Stay Updated</h1>
-            </div>
-            <p className="text-xl text-gray-300">
-              Join our newsletter and get exclusive insights into web development, project showcases, and industry tips.
-            </p>
-            
-            <div className="space-y-4 mt-8">
-              <div className="flex items-center space-x-3">
-                <CheckCircle className="w-6 h-6 text-green-400" />
-                <span className="text-gray-300">Weekly or monthly updates based on your preference</span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <CheckCircle className="w-6 h-6 text-green-400" />
-                <span className="text-gray-300">Curated content on topics you care about</span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <CheckCircle className="w-6 h-6 text-green-400" />
-                <span className="text-gray-300">Behind-the-scenes project insights</span>
-              </div>
-              <div className="flex items-center space-x-3">
-                <CheckCircle className="w-6 h-6 text-green-400" />
-                <span className="text-gray-300">Early access to new projects and tutorials</span>
-              </div>
-            </div>
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Animated Wave Background */}
+      <div className="absolute inset-0 bg-black">
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-blue-900/30 to-cyan-500/20"></div>
+        
+        {/* Animated Wave SVG */}
+        <svg 
+          className="absolute bottom-0 left-0 w-full h-full" 
+          viewBox="0 0 1200 800" 
+          preserveAspectRatio="none"
+        >
+          <defs>
+            <linearGradient id="waveGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.8" />
+              <stop offset="50%" stopColor="#8b5cf6" stopOpacity="0.6" />
+              <stop offset="100%" stopColor="#06b6d4" stopOpacity="0.8" />
+            </linearGradient>
+          </defs>
+          <path 
+            d="M0,400 Q300,200 600,400 T1200,400 L1200,800 L0,800 Z" 
+            fill="url(#waveGradient)"
+            className="animate-wave"
+          />
+          <path 
+            d="M0,500 Q200,300 400,500 T800,500 Q1000,300 1200,500 L1200,800 L0,800 Z" 
+            fill="url(#waveGradient)"
+            fillOpacity="0.5"
+            className="animate-wave-delayed"
+          />
+        </svg>
+      </div>
+
+      {/* Content */}
+      <div className="relative z-10 flex items-center justify-center min-h-screen p-4">
+        <div className="bg-gray-800/90 backdrop-blur-xl rounded-3xl p-8 w-full max-w-md shadow-2xl border border-gray-600/50">
+          {/* Close Button */}
+          <button 
+            onClick={() => setLocation('/')}
+            className="absolute top-6 right-6 text-gray-400 hover:text-white transition-colors"
+          >
+            <X className="w-6 h-6" />
+          </button>
+
+          {/* Tab Buttons */}
+          <div className="flex mb-8 bg-gray-700/50 rounded-2xl p-1">
+            <button
+              onClick={() => setIsSignUp(true)}
+              className={`flex-1 py-3 px-4 rounded-xl text-sm font-medium transition-all ${
+                isSignUp 
+                  ? 'bg-white text-black shadow-lg' 
+                  : 'text-gray-300 hover:text-white'
+              }`}
+            >
+              Sign up
+            </button>
+            <button
+              onClick={() => setIsSignUp(false)}
+              className={`flex-1 py-3 px-4 rounded-xl text-sm font-medium transition-all ${
+                !isSignUp 
+                  ? 'bg-white text-black shadow-lg' 
+                  : 'text-gray-300 hover:text-white'
+              }`}
+            >
+              Sign in
+            </button>
           </div>
-        </div>
 
-        {/* Signup Form */}
-        <div className="flex flex-col justify-center">
-          <Card className="w-full bg-white/10 backdrop-blur-md border-white/20">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle className="text-2xl text-white">Join Newsletter</CardTitle>
-                  <CardDescription className="text-gray-300">
-                    Create your account and subscribe to receive updates
-                  </CardDescription>
-                </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setLocation('/')}
-                  className="text-gray-400 hover:text-white"
-                >
-                  <ArrowLeft className="w-4 h-4 mr-2" />
-                  Back
-                </Button>
+          {/* Form Title */}
+          <h2 className="text-2xl font-bold text-white mb-8">
+            {isSignUp ? 'Create an account' : 'Welcome back'}
+          </h2>
+
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {isSignUp && (
+              <div className="grid grid-cols-2 gap-4">
+                <Input
+                  placeholder="First name"
+                  value={formData.firstName}
+                  onChange={(e) => handleInputChange('firstName', e.target.value)}
+                  required
+                  className="bg-gray-700/50 border-gray-600 text-white placeholder-gray-400 rounded-xl h-12"
+                />
+                <Input
+                  placeholder="Last name"
+                  value={formData.lastName}
+                  onChange={(e) => handleInputChange('lastName', e.target.value)}
+                  required
+                  className="bg-gray-700/50 border-gray-600 text-white placeholder-gray-400 rounded-xl h-12"
+                />
               </div>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-                {/* Personal Information */}
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-white flex items-center">
-                    <User className="w-5 h-5 mr-2" />
-                    Personal Information
-                  </h3>
-                  
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="firstName" className="text-gray-300">First Name</Label>
-                      <Input
-                        id="firstName"
-                        {...form.register('firstName')}
-                        className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
-                        placeholder="John"
-                      />
-                      {form.formState.errors.firstName && (
-                        <p className="text-red-400 text-sm mt-1">
-                          {form.formState.errors.firstName.message}
-                        </p>
-                      )}
-                    </div>
-                    
-                    <div>
-                      <Label htmlFor="lastName" className="text-gray-300">Last Name</Label>
-                      <Input
-                        id="lastName"
-                        {...form.register('lastName')}
-                        className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
-                        placeholder="Doe"
-                      />
-                      {form.formState.errors.lastName && (
-                        <p className="text-red-400 text-sm mt-1">
-                          {form.formState.errors.lastName.message}
-                        </p>
-                      )}
-                    </div>
-                  </div>
+            )}
 
-                  <div>
-                    <Label htmlFor="email" className="text-gray-300">Email</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      {...form.register('email')}
-                      className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
-                      placeholder="john@example.com"
-                    />
-                    {form.formState.errors.email && (
-                      <p className="text-red-400 text-sm mt-1">
-                        {form.formState.errors.email.message}
-                      </p>
-                    )}
-                  </div>
+            {isSignUp && (
+              <div className="relative">
+                <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <Input
+                  type="email"
+                  placeholder="Enter your email"
+                  value={formData.email}
+                  onChange={(e) => handleInputChange('email', e.target.value)}
+                  required
+                  className="bg-gray-700/50 border-gray-600 text-white placeholder-gray-400 rounded-xl h-12 pl-12"
+                />
+              </div>
+            )}
+
+            <Input
+              placeholder={isSignUp ? "Username" : "Username or email"}
+              value={formData.username}
+              onChange={(e) => handleInputChange('username', e.target.value)}
+              required
+              className="bg-gray-700/50 border-gray-600 text-white placeholder-gray-400 rounded-xl h-12"
+            />
+
+            <Input
+              type="password"
+              placeholder="Password"
+              value={formData.password}
+              onChange={(e) => handleInputChange('password', e.target.value)}
+              required
+              className="bg-gray-700/50 border-gray-600 text-white placeholder-gray-400 rounded-xl h-12"
+            />
+
+            {isSignUp && (
+              <div className="relative">
+                <select className="w-full bg-gray-700/50 border border-gray-600 text-white rounded-xl h-12 px-4 appearance-none">
+                  <option value="+1">🇺🇸 +1</option>
+                  <option value="+44">🇬🇧 +44</option>
+                  <option value="+91">🇮🇳 +91</option>
+                </select>
+                <Input
+                  placeholder="(775) 351-6501"
+                  value={formData.phone}
+                  onChange={(e) => handleInputChange('phone', e.target.value)}
+                  className="bg-gray-700/50 border-gray-600 text-white placeholder-gray-400 rounded-xl h-12 mt-2"
+                />
+              </div>
+            )}
+
+            <Button
+              type="submit"
+              disabled={signupMutation.isPending || loginMutation.isPending}
+              className="w-full bg-white text-black hover:bg-gray-100 rounded-xl h-12 font-medium text-base transition-all"
+            >
+              {signupMutation.isPending || loginMutation.isPending 
+                ? 'Please wait...' 
+                : isSignUp 
+                  ? 'Create an account' 
+                  : 'Sign in'
+              }
+            </Button>
+
+            {isSignUp && (
+              <>
+                <div className="text-center text-gray-400 text-sm my-6">
+                  OR SIGN IN WITH
                 </div>
 
-                {/* Account Information */}
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-white flex items-center">
-                    <Lock className="w-5 h-5 mr-2" />
-                    Account Information
-                  </h3>
-                  
-                  <div>
-                    <Label htmlFor="username" className="text-gray-300">Username</Label>
-                    <Input
-                      id="username"
-                      {...form.register('username')}
-                      className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
-                      placeholder="johndoe"
-                    />
-                    {form.formState.errors.username && (
-                      <p className="text-red-400 text-sm mt-1">
-                        {form.formState.errors.username.message}
-                      </p>
-                    )}
-                  </div>
-
-                  <div>
-                    <Label htmlFor="password" className="text-gray-300">Password</Label>
-                    <div className="relative">
-                      <Input
-                        id="password"
-                        type={showPassword ? "text" : "password"}
-                        {...form.register('password')}
-                        className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 pr-10"
-                        placeholder="••••••••"
-                      />
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        className="absolute right-0 top-0 h-full px-3 text-gray-400 hover:text-white"
-                        onClick={() => setShowPassword(!showPassword)}
-                      >
-                        {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                      </Button>
-                    </div>
-                    {form.formState.errors.password && (
-                      <p className="text-red-400 text-sm mt-1">
-                        {form.formState.errors.password.message}
-                      </p>
-                    )}
-                  </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <button
+                    type="button"
+                    className="bg-gray-700/50 border border-gray-600 rounded-xl h-12 flex items-center justify-center hover:bg-gray-600/50 transition-colors"
+                  >
+                    <svg className="w-5 h-5" viewBox="0 0 24 24">
+                      <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                      <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                      <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                      <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                    </svg>
+                  </button>
+                  <button
+                    type="button"
+                    className="bg-gray-700/50 border border-gray-600 rounded-xl h-12 flex items-center justify-center hover:bg-gray-600/50 transition-colors"
+                  >
+                    <svg className="w-5 h-5" fill="white" viewBox="0 0 24 24">
+                      <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.174-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.747.098.119.112.223.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.402.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.357-.629-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24.009 12.017 24.009c6.624 0 11.99-5.367 11.99-11.986C24.007 5.367 18.641.001.012.001z"/>
+                    </svg>
+                  </button>
                 </div>
 
-                {/* Newsletter Preferences */}
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-white flex items-center">
-                    <Settings className="w-5 h-5 mr-2" />
-                    Newsletter Preferences
-                  </h3>
-                  
-                  <div>
-                    <Label className="text-gray-300 flex items-center mb-3">
-                      <Clock className="w-4 h-4 mr-2" />
-                      Frequency
-                    </Label>
-                    <RadioGroup
-                      defaultValue="monthly"
-                      onValueChange={(value) => form.setValue('frequency', value as 'weekly' | 'monthly')}
-                    >
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="weekly" id="weekly" />
-                        <Label htmlFor="weekly" className="text-gray-300">Weekly updates</Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="monthly" id="monthly" />
-                        <Label htmlFor="monthly" className="text-gray-300">Monthly updates</Label>
-                      </div>
-                    </RadioGroup>
-                  </div>
-
-                  <div>
-                    <Label className="text-gray-300 mb-3 block">
-                      Topics of Interest (optional)
-                    </Label>
-                    <div className="grid grid-cols-2 gap-2">
-                      {topics.map((topic) => (
-                        <div key={topic} className="flex items-center space-x-2">
-                          <Checkbox
-                            id={topic}
-                            onCheckedChange={(checked) => handleTopicChange(topic, checked as boolean)}
-                          />
-                          <Label
-                            htmlFor={topic}
-                            className="text-sm text-gray-300 cursor-pointer"
-                          >
-                            {topic}
-                          </Label>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                <Button
-                  type="submit"
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3"
-                  disabled={signupMutation.isPending}
-                >
-                  {signupMutation.isPending ? (
-                    "Creating Account..."
-                  ) : (
-                    <>
-                      <Mail className="w-4 h-4 mr-2" />
-                      Join Newsletter
-                    </>
-                  )}
-                </Button>
-
-                <div className="text-center">
-                  <p className="text-gray-400 text-sm">
-                    Already have an account?{' '}
-                    <Button
-                      variant="link"
-                      className="text-blue-400 hover:text-blue-300 p-0 h-auto font-normal"
-                      onClick={() => setLocation('/auth')}
-                    >
-                      Sign in here
-                    </Button>
-                  </p>
-                </div>
-              </form>
-            </CardContent>
-          </Card>
+                <p className="text-xs text-gray-400 text-center mt-6">
+                  By creating an account, you agree to our{' '}
+                  <a href="#" className="text-blue-400 hover:underline">Terms & Service</a>
+                </p>
+              </>
+            )}
+          </form>
         </div>
       </div>
+
+
     </div>
   );
 }
