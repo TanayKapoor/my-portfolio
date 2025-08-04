@@ -113,37 +113,11 @@ export default function NewsletterPage() {
         <div className="flex gap-8 w-full max-w-5xl">
           {/* Newsletter Signup Container */}
           <div className="bg-gray-800/40 backdrop-blur-lg rounded-3xl p-8 w-full max-w-md shadow-2xl border border-gray-600/30">
-            <h2 className="text-4xl font-bold text-white mb-6 text-center">
-              Sign Up for Newsletter
-            </h2>
-            
-            <p className="text-gray-300 mb-8 text-center">
-              Stay updated with our latest news, updates, and exclusive content delivered straight to your inbox.
-            </p>
-
-            <form className="space-y-4">
-              <div className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  id="newsletter-agree"
-                  className="w-4 h-4 rounded border-gray-600 bg-gray-700 text-blue-600 focus:ring-blue-500 focus:ring-2"
-                />
-                <label htmlFor="newsletter-agree" className="text-sm text-gray-300">
-                  I agree to receive newsletters and updates
-                </label>
-              </div>
-
-              <button
-                type="submit"
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-xl transition-colors"
-              >
-                Subscribe to Newsletter
-              </button>
-            </form>
-
-            <p className="text-xs text-gray-400 text-center mt-4">
-              You can unsubscribe at any time. Read our privacy policy for more details.
-            </p>
+            <div className="text-4xl font-bold text-white text-center">
+              SignUp<br />
+              for<br />
+              NewsLetter
+            </div>
           </div>
 
           {/* Account Signup Container */}
