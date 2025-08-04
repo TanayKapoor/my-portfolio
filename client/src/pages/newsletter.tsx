@@ -194,7 +194,7 @@ export default function NewsletterPage() {
           </div>
 
           {/* Form Title */}
-          <h2 className="text-2xl font-bold text-white mb-8">
+          <h2 className="text-2xl font-bold text-white mb-8 uppercase" style={{ fontFamily: 'Arial, sans-serif' }}>
             {isSignUp ? 'Create an account' : 'Welcome back'}
           </h2>
 
