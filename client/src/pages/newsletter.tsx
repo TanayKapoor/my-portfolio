@@ -113,7 +113,7 @@ export default function NewsletterPage() {
         <div className="flex gap-8 w-full max-w-5xl">
           {/* Newsletter Signup Container */}
           <div className="bg-gray-800/40 backdrop-blur-lg rounded-3xl p-8 w-full max-w-md shadow-2xl border border-gray-600/30">
-            <h2 className="text-2xl font-bold text-white mb-6 text-center">
+            <h2 className="text-4xl font-bold text-white mb-6 text-center">
               Sign Up for Newsletter
             </h2>
             
@@ -122,14 +122,6 @@ export default function NewsletterPage() {
             </p>
 
             <form className="space-y-4">
-              <div>
-                <input
-                  type="email"
-                  placeholder="Enter your email"
-                  className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
-                />
-              </div>
-
               <div className="flex items-center space-x-2">
                 <input
                   type="checkbox"
