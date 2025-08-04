@@ -16,11 +16,11 @@ export default function DashboardPage() {
   const [, setLocation] = useLocation();
   const { user } = useAuth();
   
-  // Type guard for user object
-  const typedUser = user as any;
+  // Type guard for user object - handle nested user object structure
+  const typedUser = (user as any)?.user || user as any;
 
   // Redirect if not logged in
-  if (!user) {
+  if (!user || !typedUser?.id) {
     setLocation('/auth');
     return null;
   }
@@ -148,7 +148,7 @@ export default function DashboardPage() {
                     <Button
                       variant="outline"
                       onClick={() => setLocation('/projects')}
-                      className="border-white/20 text-white hover:bg-white/10 justify-start"
+                      className="border-white/30 bg-white/5 text-white hover:bg-white/20 hover:border-white/50 justify-start transition-all"
                     >
                       <Settings className="w-4 h-4 mr-2" />
                       View Projects
@@ -157,7 +157,7 @@ export default function DashboardPage() {
                     <Button
                       variant="outline"
                       onClick={() => window.location.href = 'mailto:tanay_kapoor@icloud.com'}
-                      className="border-white/20 text-white hover:bg-white/10 justify-start"
+                      className="border-white/30 bg-white/5 text-white hover:bg-white/20 hover:border-white/50 justify-start transition-all"
                     >
                       <Mail className="w-4 h-4 mr-2" />
                       Contact
