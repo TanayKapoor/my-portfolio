@@ -204,9 +204,9 @@ I like making ideas come to life with smart, scalable systems, whether they are 
     if (years === 0) {
       return '<1';
     } else if (years === 1) {
-      return '1+';
+      return '≈1';
     } else {
-      return `${years}+`;
+      return `≈${years}`;
     }
   };
 
