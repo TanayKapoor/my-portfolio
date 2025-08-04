@@ -58,7 +58,7 @@ export default function DashboardPage() {
                 <Button
                   variant="outline"
                   onClick={() => setLocation('/admin')}
-                  className="border-white/20 text-white hover:bg-white/10"
+                  className="border-white/30 bg-white/5 text-white hover:bg-white/20 hover:border-white/50 transition-all"
                 >
                   <Settings className="w-4 h-4 mr-2" />
                   Admin Panel
@@ -67,7 +67,7 @@ export default function DashboardPage() {
               <Button
                 variant="outline"
                 onClick={handleLogout}
-                className="border-white/20 text-white hover:bg-white/10"
+                className="border-white/30 bg-white/5 text-white hover:bg-white/20 hover:border-white/50 transition-all"
               >
                 <LogOut className="w-4 h-4 mr-2" />
                 Logout
@@ -132,40 +132,7 @@ export default function DashboardPage() {
 
           {/* Newsletter Status */}
           <div className="lg:col-span-2">
-            <div className="space-y-6">
-              <NewsletterStatus />
-              
-              {/* Quick Actions Card */}
-              <Card className="bg-white/10 backdrop-blur-md border-white/20">
-                <CardHeader>
-                  <CardTitle className="text-white">Quick Actions</CardTitle>
-                  <CardDescription className="text-gray-300">
-                    Explore the portfolio and projects
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <Button
-                      variant="outline"
-                      onClick={() => setLocation('/projects')}
-                      className="border-white/30 bg-white/5 text-white hover:bg-white/20 hover:border-white/50 justify-start transition-all"
-                    >
-                      <Settings className="w-4 h-4 mr-2" />
-                      View Projects
-                    </Button>
-                    
-                    <Button
-                      variant="outline"
-                      onClick={() => window.location.href = 'mailto:tanay_kapoor@icloud.com'}
-                      className="border-white/30 bg-white/5 text-white hover:bg-white/20 hover:border-white/50 justify-start transition-all"
-                    >
-                      <Mail className="w-4 h-4 mr-2" />
-                      Contact
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+            <NewsletterStatus />
           </div>
         </div>
       </main>
