@@ -35,10 +35,11 @@ export default function NewsletterPage() {
   }, [animationKey]);
 
   // Redirect if already logged in
-  if (user) {
-    setLocation('/dashboard');
-    return null;
-  }
+  useEffect(() => {
+    if (user) {
+      setLocation('/dashboard');
+    }
+  }, [user, setLocation]);
 
   const signupMutation = useMutation({
     mutationFn: async (data: any) => {
@@ -108,6 +109,11 @@ export default function NewsletterPage() {
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
+
+  // Don't render if user is already logged in
+  if (user) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen relative overflow-hidden">

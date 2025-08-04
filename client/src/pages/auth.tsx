@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -21,10 +21,11 @@ export default function AuthPage() {
   const [formErrors, setFormErrors] = useState<string>('');
 
   // Redirect if already logged in
-  if (user) {
-    setLocation('/');
-    return null;
-  }
+  useEffect(() => {
+    if (user) {
+      setLocation('/');
+    }
+  }, [user, setLocation]);
 
   const loginMutation = useMutation({
     mutationFn: async (credentials: LoginData) => {
@@ -64,6 +65,11 @@ export default function AuthPage() {
 
     loginMutation.mutate(credentials);
   };
+
+  // Don't render if user is already logged in
+  if (user) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-4">
