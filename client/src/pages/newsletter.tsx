@@ -126,7 +126,7 @@ export default function NewsletterPage() {
           {/* Newsletter Signup Container */}
           <div className="bg-gray-800/40 backdrop-blur-lg rounded-3xl p-8 w-full max-w-md shadow-2xl border border-gray-600/30">
             <div 
-              className="flex items-center justify-center h-full cursor-pointer" 
+              className="flex items-start justify-start h-full cursor-pointer pt-4 pl-4" 
               onClick={() => {
                 const svg = document.querySelector('.intro-svg');
                 if (svg) {
@@ -137,7 +137,7 @@ export default function NewsletterPage() {
                 }
               }}
             >
-              <svg className="intro-svg" viewBox="0 0 200 86" style={{ maxWidth: '300px', width: '100%' }} key={animationKey}>
+              <svg className="intro-svg" viewBox="0 0 200 86" style={{ maxWidth: '200px', width: '100%' }} key={animationKey}>
                 <text textAnchor="start" x="10" y="30" className="text text-stroke" clipPath="url(#text1)">SignUp</text>
                 <text textAnchor="start" x="10" y="50" className="text text-stroke" clipPath="url(#text2)">for</text>
                 <text textAnchor="start" x="10" y="70" className="text text-stroke" clipPath="url(#text3)">NewsLetter</text>
