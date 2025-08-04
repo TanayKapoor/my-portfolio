@@ -99,35 +99,13 @@ export default function NewsletterPage() {
 
   return (
     <div className="min-h-screen relative overflow-hidden">
-      {/* Animated Wave Background */}
-      <div className="absolute inset-0 bg-black">
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-blue-900/30 to-cyan-500/20"></div>
-        
-        {/* Animated Wave SVG */}
-        <svg 
-          className="absolute bottom-0 left-0 w-full h-full" 
-          viewBox="0 0 1200 800" 
-          preserveAspectRatio="none"
-        >
-          <defs>
-            <linearGradient id="waveGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.8" />
-              <stop offset="50%" stopColor="#8b5cf6" stopOpacity="0.6" />
-              <stop offset="100%" stopColor="#06b6d4" stopOpacity="0.8" />
-            </linearGradient>
-          </defs>
-          <path 
-            d="M0,400 Q300,200 600,400 T1200,400 L1200,800 L0,800 Z" 
-            fill="url(#waveGradient)"
-            className="animate-wave"
-          />
-          <path 
-            d="M0,500 Q200,300 400,500 T800,500 Q1000,300 1200,500 L1200,800 L0,800 Z" 
-            fill="url(#waveGradient)"
-            fillOpacity="0.5"
-            className="animate-wave-delayed"
-          />
-        </svg>
+      {/* Particle Animation Background */}
+      <div className="absolute inset-0 bg-blue-900 overflow-hidden">
+        <div className="particle-wrapper">
+          {Array.from({ length: 62 }, (_, i) => (
+            <i key={i} className={`particle particle-${i + 1}`}></i>
+          ))}
+        </div>
       </div>
 
       {/* Content */}
