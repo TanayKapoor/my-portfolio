@@ -57,7 +57,7 @@ export default function Home() {
             <div className="flex items-center space-x-4">
               {/* LinkedIn Icon */}
               <a 
-                href="https://linkedin.com/in/tanay-profile" 
+                href="https://www.linkedin.com/in/tanaykapoor/" 
                 target="_blank" 
                 rel="noopener noreferrer" 
                 className="text-white hover:text-blue-400 transition-colors duration-300 transform hover:scale-110"
@@ -69,7 +69,7 @@ export default function Home() {
               
               {/* GitHub Icon */}
               <a 
-                href="https://github.com/tanay-username" 
+                href="https://github.com/TanayKapoor/" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-white hover:text-gray-300 transition-colors duration-300 transform hover:scale-110"
