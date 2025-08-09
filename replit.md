@@ -106,6 +106,15 @@ But the main `run` command needs to match for deployment success.
 
 **Current Status**: ✅ Images working with local storage (lost on redeploy) / 🔄 Ready for Object Storage upgrade
 
+### Contact Email Functionality (August 2025)
+**Feature**: Implemented "Get in touch" email collection system:
+- **Database**: Added `contact_emails` table with email, source, and timestamp
+- **Backend**: API endpoint `/api/contact-email` for saving emails to database
+- **Frontend**: Updated home page header dropdown to use real API instead of mock data
+- **Integration**: React Query mutation with proper loading states and error handling
+- **Admin Access**: `/api/contact-emails` endpoint for admins to view submitted emails
+- **Current Status**: ✅ Fully functional email collection and storage
+
 ### Fonts and Assets
 - **Typography**: Courier Prime (Google Fonts)
 - **Icons**: Lucide React icon library

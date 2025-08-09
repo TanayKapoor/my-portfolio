@@ -24,7 +24,8 @@ export default function Home() {
 
   const saveEmailMutation = useMutation({
     mutationFn: async (emailData: { email: string; source?: string }) => {
-      return apiRequest('/api/contact-email', 'POST', emailData);
+      const response = await apiRequest('POST', '/api/contact-email', emailData);
+      return response.json();
     },
     onSuccess: (data) => {
       toast({
