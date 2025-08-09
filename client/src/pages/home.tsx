@@ -15,11 +15,33 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { Mail, Send, Newspaper } from 'lucide-react';
 import { Link } from 'wouter';
+import { useMutation } from '@tanstack/react-query';
+import { apiRequest } from '@/lib/queryClient';
 
 export default function Home() {
   const [email, setEmail] = useState('');
-  const [isConnecting, setIsConnecting] = useState(false);
   const { toast } = useToast();
+
+  const saveEmailMutation = useMutation({
+    mutationFn: async (emailData: { email: string; source?: string }) => {
+      return apiRequest('/api/contact-email', 'POST', emailData);
+    },
+    onSuccess: (data) => {
+      toast({
+        title: "Email saved!",
+        description: data.message || "Thanks for connecting. I'll be in touch soon!",
+      });
+      setEmail('');
+    },
+    onError: (error: any) => {
+      console.error('Error saving email:', error);
+      toast({
+        title: "Error saving email",
+        description: error.message || "Please try again later",
+        variant: "destructive",
+      });
+    },
+  });
 
   const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,17 +56,10 @@ export default function Home() {
       return;
     }
 
-    setIsConnecting(true);
-    
-    // Simulate saving email (in real app, this would be an API call)
-    setTimeout(() => {
-      toast({
-        title: "Email saved!",
-        description: "Thanks for connecting. I'll be in touch soon!",
-      });
-      setEmail('');
-      setIsConnecting(false);
-    }, 1000);
+    saveEmailMutation.mutate({ 
+      email,
+      source: "get_in_touch" 
+    });
   };
 
   return (
@@ -123,15 +138,15 @@ export default function Home() {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         className="w-full bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-white/40"
-                        disabled={isConnecting}
+                        disabled={saveEmailMutation.isPending}
                       />
                       <Button 
                         type="submit" 
                         className="w-full bg-white text-slate-900 hover:bg-gray-200 font-medium transition-all"
-                        disabled={isConnecting}
+                        disabled={saveEmailMutation.isPending}
                       >
-                        {isConnecting ? (
-                          "Connecting..."
+                        {saveEmailMutation.isPending ? (
+                          "Saving..."
                         ) : (
                           <>
                             <Send className="mr-2 h-4 w-4" />

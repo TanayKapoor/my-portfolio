@@ -86,6 +86,13 @@ export const newsletters = pgTable("newsletters", {
   preferences: jsonb("preferences"), // Store newsletter preferences like frequency, topics, etc.
 });
 
+export const contactEmails = pgTable("contact_emails", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  email: varchar("email").notNull(),
+  submittedAt: timestamp("submitted_at").defaultNow(),
+  source: text("source").default("get_in_touch"), // Source of the email (e.g., "get_in_touch", "footer", etc.)
+});
+
 export const insertProjectSchema = createInsertSchema(projects).omit({
   id: true,
 });
@@ -103,6 +110,11 @@ export const insertCommandSchema = createInsertSchema(commands).omit({
 export const insertNewsletterSchema = createInsertSchema(newsletters).omit({
   id: true,
   subscribedAt: true,
+});
+
+export const insertContactEmailSchema = createInsertSchema(contactEmails).omit({
+  id: true,
+  submittedAt: true,
 });
 
 // User schemas
@@ -135,6 +147,11 @@ export const newsletterSignupSchema = z.object({
   }).optional(),
 });
 
+export const contactEmailSchema = z.object({
+  email: z.string().email("Invalid email address"),
+  source: z.string().optional().default("get_in_touch"),
+});
+
 export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -149,3 +166,6 @@ export type InsertCommand = z.infer<typeof insertCommandSchema>;
 export type Command = typeof commands.$inferSelect;
 export type InsertNewsletter = z.infer<typeof insertNewsletterSchema>;
 export type Newsletter = typeof newsletters.$inferSelect;
+export type InsertContactEmail = z.infer<typeof insertContactEmailSchema>;
+export type ContactEmail = typeof contactEmails.$inferSelect;
+export type ContactEmailData = z.infer<typeof contactEmailSchema>;

@@ -5,7 +5,7 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 import { storage } from "./storage";
-import { insertProjectSchema, insertWorkExperienceSchema, insertCommandSchema, newsletterSignupSchema } from "@shared/schema";
+import { insertProjectSchema, insertWorkExperienceSchema, insertCommandSchema, newsletterSignupSchema, contactEmailSchema } from "@shared/schema";
 import { z } from "zod";
 import { setupAuth, requireAuth, requireAdmin } from "./auth";
 import { uploadToObjectStorage, deleteFromObjectStorage, getFileFromObjectStorage, extractFilenameFromUrl } from "./objectStorage";
@@ -605,6 +605,37 @@ export function registerRoutes(app: Express): Server {
     } catch (error) {
       console.error("Error fetching newsletter subscriptions:", error);
       res.status(500).json({ message: "Failed to fetch newsletter subscriptions" });
+    }
+  });
+
+  // Contact email routes
+  app.post("/api/contact-email", async (req, res) => {
+    try {
+      const validatedData = contactEmailSchema.parse(req.body);
+      const contactEmail = await storage.saveContactEmail(validatedData);
+      res.status(201).json({ 
+        contactEmail, 
+        message: "Email saved successfully!" 
+      });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ 
+          message: "Validation error", 
+          errors: error.errors 
+        });
+      }
+      console.error("Contact email save error:", error);
+      res.status(500).json({ message: "Failed to save email" });
+    }
+  });
+
+  app.get("/api/contact-emails", requireAdmin, async (req, res) => {
+    try {
+      const contactEmails = await storage.getAllContactEmails();
+      res.json({ contactEmails });
+    } catch (error) {
+      console.error("Error fetching contact emails:", error);
+      res.status(500).json({ message: "Failed to fetch contact emails" });
     }
   });
 

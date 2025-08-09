@@ -1,4 +1,4 @@
-import { users, projects, workExperiences, commands, newsletters, type User, type UpsertUser, type Project, type InsertProject, type WorkExperience, type InsertWorkExperience, type Command, type InsertCommand, type RegisterData, type Newsletter, type InsertNewsletter, type NewsletterSignupData } from "@shared/schema";
+import { users, projects, workExperiences, commands, newsletters, contactEmails, type User, type UpsertUser, type Project, type InsertProject, type WorkExperience, type InsertWorkExperience, type Command, type InsertCommand, type RegisterData, type Newsletter, type InsertNewsletter, type NewsletterSignupData, type ContactEmail, type InsertContactEmail, type ContactEmailData } from "@shared/schema";
 import { db } from "./db";
 import { eq, asc, or } from "drizzle-orm";
 import session from "express-session";
@@ -45,6 +45,10 @@ export interface IStorage {
   unsubscribeFromNewsletter(userId: string): Promise<boolean>;
   getUserNewsletterSubscription(userId: string): Promise<Newsletter | undefined>;
   getAllNewsletterSubscriptions(): Promise<Newsletter[]>;
+  
+  // Contact email methods
+  saveContactEmail(emailData: ContactEmailData): Promise<ContactEmail>;
+  getAllContactEmails(): Promise<ContactEmail[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -258,6 +262,25 @@ export class DatabaseStorage implements IStorage {
       .select()
       .from(newsletters)
       .where(eq(newsletters.isActive, true));
+  }
+
+  // Contact email methods implementation
+  async saveContactEmail(emailData: ContactEmailData): Promise<ContactEmail> {
+    const [contactEmail] = await db
+      .insert(contactEmails)
+      .values({
+        email: emailData.email,
+        source: emailData.source || "get_in_touch",
+      })
+      .returning();
+    return contactEmail;
+  }
+
+  async getAllContactEmails(): Promise<ContactEmail[]> {
+    return await db
+      .select()
+      .from(contactEmails)
+      .orderBy(asc(contactEmails.submittedAt));
   }
 }
 
