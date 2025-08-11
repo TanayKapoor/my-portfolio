@@ -395,7 +395,12 @@ export default function ConnectThreeAnimation({
       style={{
         position: 'relative',
         width: '100%',
-        background: 'radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%)',
+        background: `
+          radial-gradient(ellipse at bottom, #1e3a8a 0%, #0f172a 50%, #000000 100%),
+          radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+          radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.15) 0%, transparent 50%),
+          radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.1) 0%, transparent 50%)
+        `,
         overflow: 'hidden',
         zIndex: 1
       }}
@@ -408,7 +413,7 @@ export default function ConnectThreeAnimation({
           left: 0,
           width: '100%',
           height: '100%',
-          opacity: 0.9
+          opacity: 0.7
         }}
       />
       {title && (
