@@ -56,7 +56,7 @@ export default function ProjectDetail() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
-          <Link href="/" className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors">
+          <Link href="/projects" className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors">
             <ArrowLeft size={20} />
             <span className="font-['Courier_Prime']">Back to Projects</span>
           </Link>
