@@ -1,0 +1,82 @@
+### 1. Merge Filters into a Single “Control Bar”
+
+Right now:
+* Risk Level cards in one row
+* Quick Select buttons in another
+* State Chips in another
+
+⠀
+**Minimal version:**
+All filters in **one horizontal bar** at the top of the dashboard:
+
+[Date ▾] [States ▾ / Chips] | 🔴 11 | 🟠 6 | 🟢 3 | 📦 20 | [Top 5] [All] [Clear] [High Only]
+
+* Risk counts are **clickable** toggles.
+* Chips only show **selected** states (rest hidden in dropdown).
+
+⠀
+⸻
+
+### 2. Remove Redundant Labels & Large Banners
+* Remove big banners like “20 events” or “13 high-risk events” — show these as **inline counts** in section headers:
+
+⠀
+Spotlight Events (Top 5 of 20)
+
+
+* Replace large red alert blocks with **small pill alerts**:
+
+⠀
+🚨 95.0% probability event detected
+
+
+
+⸻
+
+### 3. Compact Spotlight & All Events
+
+Instead of two separate full tables:
+* Spotlight = **top N rows of filtered table** + small “View All” link
+* All Filtered Events = same table, just longer.
+* This removes duplication and reduces scrolling.
+
+⠀
+⸻
+
+### 4. Use Visual Hierarchy Instead of Big Colors
+* Use **icons + small badges** for risk level in table rows instead of full red background cells.
+* Highlight critical rows with a **left border** in the risk color, not a solid fill.
+
+⠀
+⸻
+
+### 5. Keep Project Status Always Visible
+
+Add a **persistent slim header bar** above the dashboard that shows:
+
+Mode: Local | Last run: 2025-08-10 10:18 UTC | ROC-AUC: 0.848 | PR-AUC: 0.743
+
+* This keeps performance and freshness in view at all times without taking a whole card.
+
+⠀
+⸻
+
+### 6. Collapse Development Info
+* Dev traceback, “tips”, and internal controls go in a **collapsible section** at the bottom.
+* This way production users only see clean data.
+
+⠀
+⸻
+
+### 7. Section Structure
+
+Minimal, clear structure:
+1. **Header Bar** — key stats + last run.
+2. **Control Bar** — all filters inline.
+3. **Spotlight Table** — top N events.
+4. **All Events Table** — rest of data.
+5. **Alerts Row** — small pills.
+6. **Collapsible Dev/Debug Section**.
+
+⠀
+⸻
