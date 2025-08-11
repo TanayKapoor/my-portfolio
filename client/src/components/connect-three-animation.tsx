@@ -395,12 +395,9 @@ export default function ConnectThreeAnimation({
       style={{
         position: 'relative',
         width: '100%',
-        background: '#333',
+        background: 'radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%)',
         overflow: 'hidden',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center center',
-        zIndex: 1,
-        backgroundImage: 'url("https://www.marcoguglie.it/Codepen/AnimatedHeaderBg/demo-1/img/demo-1-bg.jpg")'
+        zIndex: 1
       }}
     >
       <canvas 
@@ -410,7 +407,8 @@ export default function ConnectThreeAnimation({
           top: 0,
           left: 0,
           width: '100%',
-          height: '100%'
+          height: '100%',
+          opacity: 0.9
         }}
       />
       {title && (
