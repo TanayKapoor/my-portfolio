@@ -265,9 +265,9 @@ export default function ConnectThreeAnimation({
     function createMeteorite() {
       meteorites.push({
         x: -50,
-        y: Math.random() * height * 0.3,
+        y: height + 50,
         vx: 2 + Math.random() * 3,
-        vy: 1 + Math.random() * 2,
+        vy: -2 - Math.random() * 3,
         size: 3 + Math.random() * 4,
         opacity: 0.8 + Math.random() * 0.2,
         trail: []
@@ -276,10 +276,10 @@ export default function ConnectThreeAnimation({
 
     function createShootingStar() {
       shootingStars.push({
-        x: Math.random() * width,
-        y: -50,
-        vx: (Math.random() - 0.5) * 6,
-        vy: 3 + Math.random() * 5,
+        x: -50 - Math.random() * 100,
+        y: height + 50 + Math.random() * 100,
+        vx: 4 + Math.random() * 4,
+        vy: -3 - Math.random() * 4,
         length: 30 + Math.random() * 40,
         opacity: 1,
         life: 100
@@ -311,7 +311,7 @@ export default function ConnectThreeAnimation({
         star.life--;
         star.opacity = star.life / 100;
         
-        if (star.life <= 0 || star.y > height + 50) {
+        if (star.life <= 0 || star.x > width + 50 || star.y < -50) {
           shootingStars.splice(index, 1);
         }
       });
@@ -347,7 +347,7 @@ export default function ConnectThreeAnimation({
           meteorite.trail.shift();
         }
         
-        if (meteorite.x > width + 50) {
+        if (meteorite.x > width + 50 || meteorite.y < -50) {
           meteorites.splice(index, 1);
           // Create a new one to maintain count (longer delay)
           setTimeout(() => createMeteorite(), Math.random() * 15000 + 10000);
