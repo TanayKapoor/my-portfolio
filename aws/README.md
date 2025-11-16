@@ -36,33 +36,53 @@ Budget notification configuration with multiple alert thresholds.
 
 ### Prerequisites
 - AWS CLI installed and configured
-- AWS account ID
+- `.env` file configured in project root
 
-### Step 1: Get Your AWS Account ID
+### Step 1: Configure Environment Variables
+
+Create or update `.env` in the project root:
+
+```bash
+# AWS Configuration
+AWS_ACCOUNT_ID=your-aws-account-id
+AWS_REGION=us-east-1
+AWS_NOTIFICATION_EMAIL=your-email@example.com
+```
+
+To get your AWS Account ID:
 ```bash
 aws sts get-caller-identity --query Account --output text
 ```
 
-### Step 2: Update Notification Email
-Edit `notifications.json` and replace `your-email@example.com` with your email:
-```bash
-# macOS/Linux
-sed -i '' 's/your-email@example.com/your-actual-email@example.com/g' aws/notifications.json
+### Step 2: Run the Creation Script
 
-# Or manually edit the file
+```bash
+cd aws
+./create-budget.sh
 ```
 
-### Step 3: Create Budget
+The script will:
+- Load configuration from `.env`
+- Update notification email automatically
+- Create the budget with all alert thresholds
+
+### Step 3: Confirm Email Subscription
+Check your email and click the confirmation link from AWS SNS.
+
+### Manual Creation (Alternative)
+
+If you prefer to create the budget manually:
+
 ```bash
-# Replace YOUR_ACCOUNT_ID with your actual account ID
+# Export variables from .env
+export $(cat .env | grep -v '^#' | xargs)
+
+# Create budget
 aws budgets create-budget \
-  --account-id YOUR_ACCOUNT_ID \
+  --account-id "$AWS_ACCOUNT_ID" \
   --budget file://aws/budget.json \
   --notifications-with-subscribers file://aws/notifications.json
 ```
-
-### Step 4: Confirm Email Subscription
-Check your email and click the confirmation link from AWS SNS.
 
 ## Verifying Budget Creation
 

@@ -25,7 +25,7 @@
     "Subscribers": [
       {
         "SubscriptionType": "EMAIL",
-        "Address": "tanay@aurvix.xyz"
+        "Address": "your-email@example.com"
       }
     ]
   },
@@ -40,7 +40,7 @@
     "Subscribers": [
       {
         "SubscriptionType": "EMAIL",
-        "Address": "tanay@aurvix.xyz"
+        "Address": "your-email@example.com"
       }
     ]
   }
